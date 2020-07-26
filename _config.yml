@@ -44,6 +44,9 @@ author:
         icon: "fab fa-fw fa-twitter-square"
         url: "https://twitter.com/LizzyIsNotBusy"
 
+twitter:
+  username: "LizzyIsNotBusy"
+
 # fixes "pages-gem" bug https://github.com/github/pages-gem/issues/399
 github: [metadata]
 
@@ -116,9 +119,9 @@ yandex_site_verification :
 naver_site_verification  :
 
 # Analytics
-# analytics:
-#   provider               : "google-universal" # false (default), "google", "google-universal", "google-gtag", "custom"
-#   google:
-#     tracking_id          : "UA-2011187-3" # Replace this with your ID, or delete
-#     anonymize_ip         : true
+analytics:
+  provider               : "google-universal" # false (default), "google", "google-universal", "google-gtag", "custom"
+  google:
+    tracking_id          : "UA-173629504-1" # Replace this with your ID, or delete
+    anonymize_ip         : true
 

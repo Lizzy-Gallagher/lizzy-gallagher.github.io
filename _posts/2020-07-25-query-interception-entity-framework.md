@@ -1,6 +1,6 @@
 ---
 #layout: post
-title:  "Query interception in EntityFramework Core"
+title:  "Query interception in Entity Framework Core"
 date:   2020-07-25 7:00:00 -0500
 categories: 
 ---
@@ -19,7 +19,7 @@ There are a variety of real world use cases for this feature:
 - Log diagnostic information when a query fails with an exception
 - Log a warning when the number of rows read into memory is above a certain threshold
 
-### How do I use query interception in EntityFramework Core?
+### How do I use query interception in Entity Framework Core?
 
 EF Core exposes a base class `DbCommandInterceptor` with hooks into the query "life cycle".
 

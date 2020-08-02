@@ -2,7 +2,8 @@
 #layout: post
 title:  "So you want to use an undocumented feature"
 date:   2020-08-02 7:00:00 -0500
-categories: documentation
+toc: true
+tags: documentation
 ---
 It happens. You're building something complex and unique, but not *so* complex and unique that zero other humans could have run into the same problem, right?
 
@@ -10,7 +11,7 @@ So you search for hours and find a feature (or package (or tool)) that is perfec
 
 So what do you do?
 
-### Ask "Why is this feature undocumented?"
+## Ask "Why is this feature undocumented?"
 
 This question has a slew of possible answers:
 
@@ -70,19 +71,19 @@ Recently at work, I investigated "query interception" in EntityFramework Core, a
 
 Here's how I followed my own advice:
 
-#### Why was the feature undocumented?
+### Why was the feature undocumented?
 
 Query interception is a niche feature that was blocking many long-time consumers from migrating from EF 6 to EF Core. It was added in the third major version release of EF Core (a telling sign that it was not considered a "core" feature).
 
 Like my own team, consumers have built complicated cathedrals on the foundation on query interception and were not excited about migrating without the promise that they could lift and shift their setup.
 
-#### Seek out usages
+### Seek out usages
 
 I struck out when searching for real-world usages on GitHub, but I did find the excellent EntityFramework Core test suite. 
 
 An open question I had was how EF Core query interception handled exceptions thrown at various stages of the query lifecycle. I pleasantly surpised to find an entire file devoted to testing the exception-handling behavior!
 
-#### Read the source code
+### Read the source code
 
 The base class for query interception has 16 overrideable methods, some of which are async versions of each other. 
 
@@ -90,7 +91,7 @@ An open question I had (unanswered by my search for usages) was whether it was s
 
 Also, I discovered a super valuable static method for supressing query execution. I had not seen usage of this method in the tests (it was tested in a separate file), so I would not have known about this method without reading the source!
 
-#### Take it for a test drive
+### Take it for a test drive
 
 Here are the steps to my minimal environment:
 - Created a console app from a built-in Visual Studio template

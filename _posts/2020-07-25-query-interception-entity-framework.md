@@ -2,7 +2,7 @@
 #layout: post
 title:  "Query interception in Entity Framework Core"
 date:   2020-07-25 7:00:00 -0500
-categories: documentation
+tag: documentation
 ---
 At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.
 

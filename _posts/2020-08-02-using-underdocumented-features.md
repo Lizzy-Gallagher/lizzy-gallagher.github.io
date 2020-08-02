@@ -1,17 +1,17 @@
 ---
 #layout: post
-title:  "So you want to use an undocumented feature"
+title:  "So you want to use an underdocumented feature"
 date:   2020-08-02 7:00:00 -0500
 toc: true
 tags: documentation
 ---
 It happens. You're building something complex and unique, but not *so* complex and unique that zero other humans could have run into the same problem, right?
 
-So you search for hours and find a feature (or package (or tool)) that is perfect for your use case... except that has no documentation. Maybe it's referenced in a bullet in the changelog or pops up in intellisense, but as far as you can tell there are no (answered) StackOverflow questions, no blog posts, and no mention in the readme or docs.
+So you search for hours and find a feature (or package (or tool)) that is perfect for your use case... except that has no documentation. Maybe it's referenced in a bullet in the changelog or pops up in intellisense, but as far as you can tell there are no (answered) StackOverflow questions, no blog posts, and little mention in the readme or docs.
 
 So what do you do?
 
-## Ask "Why is this feature undocumented?"
+## Ask "Why is this feature underdocumented?"
 
 This question has a slew of possible answers:
 
@@ -71,7 +71,7 @@ Recently at work, I investigated "query interception" in EntityFramework Core, a
 
 Here's how I followed my own advice:
 
-### Why was the feature undocumented?
+### Why was the feature underdocumented?
 
 Query interception is a niche feature that was blocking many long-time consumers from migrating from EF 6 to EF Core. It was added in the third major version release of EF Core (a telling sign that it was not considered a "core" feature).
 

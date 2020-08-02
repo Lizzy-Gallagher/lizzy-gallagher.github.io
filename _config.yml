@@ -23,17 +23,16 @@ url: https://lizzy-gallagher.github.io
 
 # appears in the feed.xml and the site description
 description: >- # this means to ignore newlines until "baseurl:"
-  This is the developer blog of Lizzy Gallager. Focusing mostly on .NET
-  and API design, though I also love productivity hacks and have OPINIONS on
-  front-end infrastructure, so expect those too.
-twitter_username: erg.gallagher
+  A tech blog about .NET, features without documentation, API design,
+  and front-end infrastructure. Written and maintained by Lizzy Gallagher.  
+twitter_username: LizzyIsNotBusy
 github_username:  lizzy-gallagher
 search: true
 
 # Site author
 author:
   name     : *name
-  bio      : "Writing code @ Mastercard. Walking enthusiast. Not a party person."
+  bio      : "Writing code @ Mastercard. Walking enthusiast. Creature of habit."
   avatar   : "/assets/images/lizzy-author.png"
   location : "Arlington, VA"
   links:

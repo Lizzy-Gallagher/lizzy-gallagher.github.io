@@ -1,6 +1,6 @@
 ---
 #layout: post
-title:  "Run an MSBuild target only once per project instead of once per target framework"
+title:  "Run an MSBuild target once per project instead of once per target framework"
 date:   2020-08-09 5:00:00 -0500
 tags: msbuild
 ---

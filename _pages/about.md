@@ -3,8 +3,8 @@ permalink: /about/
 title: "Hi. I'm Lizzy."
 ---
 
-I am an engineer at Mastercard who loves learning about .NET and API design. Though I am an excellent Duck Duck Go-er, there are some topics that just don't seem to have documenation / blog posts yet. I'm starting to write those blog posts that I wish already existed.
+By day, I am a software engineer at Mastercard. I enjoy reading tech blogs, so thought I would start one to write the blog posts I look for but can't seem to find.
 
-In my freetime, I love reading about city design, walking around my city, serving on the Arlington County pedestrian advisory committee (we advise the county, not pedestians!), playing board games, and volunteering at my church.
+In my freetime, I love reading about city design, walking around my city, reading about the newly awarded building permits, and sitting on my county's pedestrian advisory committee. Although less on brand, I also enjoy board games and volunteering at my church.
 
-P.S. I am looking to speak at conferences / meet-ups. Please reach out if you're interested in having me!
+P.S. In addition to blogging, I am looking to speak at meet-ups and tech conferences. If you come across this blog and think I would be a good fit, please reach out!

@@ -1,6 +1,6 @@
 ---
 #layout: post
-title:  "So you want to use an underdocumented feature"
+title:  "Using underdocumented features"
 date:   2020-08-02 7:00:00 -0500
 toc: true
 tags: documentation

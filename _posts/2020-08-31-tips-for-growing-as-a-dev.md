@@ -6,7 +6,7 @@ tags: growth
 
 After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.
 
-“One form of perseverance is the daily discipline of trying to do things better than we did yesterday.”
+> “One form of perseverance is the daily discipline of trying to do things better than we did yesterday.”
 ― Angela Duckworth, Grit: The Power of Passion and Perseverance 
 
 ## 1. Read (and not just tweets)

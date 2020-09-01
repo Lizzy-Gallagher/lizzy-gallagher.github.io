@@ -23,14 +23,14 @@ Use tools like Twitter, HackerNews, or blog aggregators to discover new authors.
 Curating your RSS feed (i.e. deciding who to follow) is a personal journey that I won't comment on.
 
 ### Read books
-I know, this is a very old school suggestion. There is unique value in hearing information in long-form. Books are a medium give the author more breathing room to provide context and in-depth examples without having to worry about user engagement metrics like a blogger does.
+I know, this is a very old school suggestion. There is unique value in hearing information in long-form. Books as a medium give the author more breathing room to provide context and in-depth examples without having to worry about user engagement metrics like a blogger does.
 
 Seek out books that are more than reference guides. In the .NET, the north star is _C# in Depth_ which discusses design decisions made when developing C# features in addition to practical guides on how to make use of these features.
 
 ## 2. Take advantage of existing opportunities
 As you approach projects in your day-to-day, take opportunities to understand the technologies you work with. For example, when tackling a bugfix for a dependency injection error, don't stop at the first StackOverflow post that "fixes" your problem. Spend time reading through the official documentation or blog posts of your dependency injection library and its philosophy. While at it, try to understand what why dependency injection (and more broadly "inversion of control") is valuable _and_ why it never was a part of class projects. 
 
-As you approach designing a new feature, seek out similiar examples -- from open source, your own company's code bases, or blog posts from other companies. Gettting outside perspective on how others approached design trade-offs can elevate your own technical design.
+As you approach designing a new feature, seek out similiar examples -- from open source, your own company's code bases, or blog posts from other companies. Getting outside perspective on how others approached design trade-offs can elevate your own technical design.
 
 Beyond external resources, leverage your excellent coworker's know-how. Ask the senior engineers on your team about big picture questions, they will appreciate the opportunity to share their technical knowledge!
 

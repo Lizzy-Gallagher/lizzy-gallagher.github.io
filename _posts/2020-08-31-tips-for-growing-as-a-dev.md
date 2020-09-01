@@ -1,5 +1,5 @@
 ---
-title:  "3 tips to accelerate your tehcnical growth as a software engineer (without giving up your weekends)"
+title:  "3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)"
 date:   2020-08-30 7:00:00 -0500
 tags: growth
 ---

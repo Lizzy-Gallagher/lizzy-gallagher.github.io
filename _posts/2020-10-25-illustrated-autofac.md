@@ -11,7 +11,7 @@ This article is for those who have used Autofac without understanding the *why* 
 This post will take a step back from specific API details and instead explain Autofac using the analogy of a restaurant.
 
 # Autofac, a restaurant kitchen
-<img src="../assets/images/autofac-2.png">
+<img src="../assets/images/autofac-main.png">
 
 ## Why do restaurants exist?
 Most of us have kitchens, access to grocery stores, and (thanks to the internet!) step-by-step instructions for a million different dishes.
@@ -110,7 +110,7 @@ builder.RegisterType<BeefWellington>();
 ```
 
 ## Vocabulary
-<img src="../assets/images/autofac-2.png">
+<img src="../assets/images/autofac-main.png">
 
 Now that our appetite has been whetted, let's break down this restaurant metaphor.
 

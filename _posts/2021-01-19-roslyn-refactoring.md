@@ -1,5 +1,5 @@
 ---
-title: "How to refactor C# code with the Roslyn Syntax API"
+title: "Refactoring C# code with the Roslyn Syntax API"
 date: 2021-01-19 12:00:00 -0500
 tags: dotnet
 ---

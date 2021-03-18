@@ -119,7 +119,6 @@ void ReplaceUsagesOfQueryString(SyntaxEditor editor)
         });
 }
 ```
-> AG: may want to qualify what _transitioning_ is
 ```c#
 //
 // Although many attributes have a direct parallel from ASP.NET MVC or Web Api and ASP.NET Core,

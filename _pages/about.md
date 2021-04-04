@@ -11,7 +11,7 @@ Favorite posts:
 - [Learn MSBuild](/learn-msbuild-part-1). This 4-part series was another post trying to give the reader a conceptual model for MSBuild (which I <3).
 
 Public speaking:
-- [2 years, 200 applications: A .NET Core Migration at Enterprise Scale](https://www.youtube.com/watch?v=C-2haqb60No) (.NET Conf | November 2020)
+- [2 years, 200 applications: A .NET Core Migration at Enterprise Scale](https://www.youtube.com/watch?v=C-2haqb60No) (.NET Conf, November 2020)
 
 
 In my free time, I love reading about city design, walking around Arlington, looking at new building permits, and participating in local government. I also enjoy reading about history and volunteering at church.

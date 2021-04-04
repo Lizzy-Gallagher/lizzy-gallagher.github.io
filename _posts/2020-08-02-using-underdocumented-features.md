@@ -25,7 +25,7 @@ This question has a slew of possible answers:
 
 **The feature is new and the community hasn't found it yet.** Even in popular libraries, it takes time for new features to be adopted, blogged about, and asked about on StackOverflow.
 
-There isn't a hard rule here, but be open to the possibility that the answer to this question might dicate that you shouldn't use this feature.
+There isn't a hard rule here, but be open to the possibility that the answer to this question might dictate that you shouldn't use this feature.
 
 ## Seek out usages
 
@@ -59,11 +59,11 @@ If you take anything from this blog post, let it be "you should test out feature
 
 **What is a minimal environment?** Something you can iterate in quickly without interference from existing code. 
 
-This can be a scripting environment (e.g. LinqPad for C#, Jupyter notebooks for Python) or a single-file console application or a web route that loads a single JavaScript file.
+This can be a scripting environment (e.g. LINQPad for C#, Jupyter notebooks for Python) or a single-file console application or a web route that loads a single JavaScript file.
 
 Using a minimal sandbox saves you the effort spent integrating with your existing database, style rules, etc. It also saves you the time spent answering "is this not working because of the code using the new feature or because of the integration code I wrote?".
 
-Whatever you choose for your sandbox, it should be something *you* are comfortable with and that you can attach a debugger to. The fine-grained ability of a debugger to examine internals during execution is indispensible when trying to understand a new feature.
+Whatever you choose for your sandbox, it should be something *you* are comfortable with and that you can attach a debugger to. The fine-grained ability of a debugger to examine internals during execution is indispensable when trying to understand a new feature.
 
 ## A real-world example: Query interception in Entity Framework Core
 
@@ -81,15 +81,15 @@ Like my own team, consumers have built complicated cathedrals on the foundation 
 
 I struck out when searching for real-world usages on GitHub, but I did find the excellent EntityFramework Core test suite. 
 
-An open question I had was how EF Core query interception handled exceptions thrown at various stages of the query lifecycle. I pleasantly surpised to find an entire file devoted to testing the exception-handling behavior!
+An open question I had was how EF Core query interception handled exceptions thrown at various stages of the query lifecycle. I pleasantly surprised to find an entire file devoted to testing the exception-handling behavior!
 
 ### Read the source code
 
-The base class for query interception has 16 overrideable methods, some of which are async versions of each other. 
+The base class for query interception has 16 overridable methods, some of which are async versions of each other. 
 
 An open question I had (unanswered by my search for usages) was whether it was sufficient to override just one method from an async/sync pair. Reading the code, I learned that neither method of a async/async method pair called the other, so overriding both would be a must!
 
-Also, I discovered a super valuable static method for supressing query execution. I had not seen usage of this method in the tests (it was tested in a separate file), so I would not have known about this method without reading the source!
+Also, I discovered a super valuable static method for suppressing query execution. I had not seen usage of this method in the tests (it was tested in a separate file), so I would not have known about this method without reading the source!
 
 ### Take it for a test drive
 
@@ -105,7 +105,7 @@ So in about 10-15 minutes, I had a sandbox in which to run many tiny experiments
 
 Being able to learn about features without relying on documentation is a valuable skill to have in your software development toolbox. 
 
-Although this post has primarily focuses on using open-source features (with publically available code), the advice also applies to working with legacy code at your organization.
+Although this post has primarily focuses on using open-source features (with publicly available code), the advice also applies to working with legacy code at your organization.
 
 Finally, consider documenting the outcome of your research!
 

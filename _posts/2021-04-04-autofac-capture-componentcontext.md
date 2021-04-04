@@ -46,8 +46,11 @@ As explained below, there are no meaningful downsides to this technique for 99.9
 
 # Why does this work?
 
-**Note:** This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.
+**Disclaimer:** This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.
 {: .notice--warning}
+
+**Note:** This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try [An illustrated guide to Autofac](/illustrated-autofac).
+{: .notice--info}
 
 The first thing to understand is that the `IComponentContext` resolved _inside_ `Register` is not the same instance as the `IComponentContext` which is a parameter.
 ```c#
@@ -94,7 +97,7 @@ At first blush, the error appears nonsensical, `Apple` doesn't depend on `Apple`
 
 Because `DefaultResolveRequestContext` is not designed to be used by multiple threads, it interprets the *parallel* `Resolve<Apple>()` to be happening *sequentially*. Specifically, the [`CircularDependencyDetectorMiddleware`](https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/Middleware/CircularDependencyDetectorMiddleware.cs) maintains a non-thread safe stack of `Resolve` requests that occur in the current [`ResolveOperation`](https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/ResolveOperation.cs) in order to detect circular dependencies. For example, if the constructor for `Apple` took `Apple` as a parameter, the middleware would find a circular dependency by recognizing that `Apple` appears twice in the stack of requests. In our example, the `CircularDependencyDetectorMiddleware` errors out because it believes that our parallel requests are a recursive resolution with a circular dependency!
 
-## Summary 
+## Summary
 
 - Knowing that `DefaultResolveRequestContext` is short-lived and disposed at the conclusion of a resolution operation, helps us understand the error message a the top of this blog post. We cannot capture `DefaultResolveRequestContext` for later use because it will have been disposed by then!
 

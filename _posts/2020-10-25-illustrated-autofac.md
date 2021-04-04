@@ -1,7 +1,7 @@
 ---
 title:  "An illustrated guide to Autofac"
 date:   2020-10-25 10:00:00 -0500
-tags: dotnet
+tags: dotnet autofac
 ---
 
 [Autofac](https://autofac.org/) is a popular .NET "[inversion of control](https://martinfowler.com/articles/injection.html)" library. Designed to be unobtrusive, Autofac fades into the background of large applications.
@@ -191,6 +191,6 @@ builder.RegisterModule<PastryModule>();
 Autofac is a flexible technology that is a delight to use. This post is purposely just an introduction to the main concepts of Autofac. If you want to dive deeper, you should spend some time with the [official documentation]("https://autofaccn.readthedocs.io/en/latest/getting-started/index.html") which is excellent.
 
 # Postscript - Real life Wellingtons!
-Since you made it this far, here is a picture of real-life Beef Welligton my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.
+Since you made it this far, here is a picture of real-life Beef Wellington my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.
 
 <img src="../assets/images/autofac-wellington.jpg" height="200px">

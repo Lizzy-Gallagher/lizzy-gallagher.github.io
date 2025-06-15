@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+</head>
+<body>
+	<h1>Lizzy Gallagher</h1>
+	<p style="text-align: center;">
+		Writing code at Mastercard. Walking enthusiast. Creature of habit.
+	</p>	
+	<p style="text-align: center;">
+		<i class="fa-solid fa-location-dot"></i> Arlington, Virginia |
+		<i class="fa-brands fa-github"></i> <a href="https://github.com/lizzy-gallagher">lizzy-gallagher</a><br>
+	</p>
+
+	<hr />
+	<div style="text-align: center;">
+		<a href="index.html">Home</a> |
+		Blog
+	</div>
+	<hr />
+
+    <h3>Run an MSBuild target once per project instead of once per target framework</h3>
+    <div style="text-align: center;">08-09-20</div>
+    
+    <hr />
+<h2 id="layout-post-title-run-an-msbuild-target-once-per-project-instead-of-once-per-target-framework-date-2020-08-09-50000-0500-tags-msbuild">#layout: post
+title:  &quot;Run an MSBuild target once per project instead of once per target framework&quot;
+date:   2020-08-09 5:00:00 -0500
+tags: msbuild</h2>
+<p>Most online resources will recommend using <code>BeforeTargets</code> or <code>AfterTargets</code> to hook your target into the MSBuild lifecycle <code>Build</code> method.</p>
+<pre><code class="language-xml">&lt;Target Name=&quot;MyPackage_BeforeBuild&quot;
+        BeforeTargets=&quot;Build&quot;&gt;
+    &lt;!-- Do things --&gt;
+&lt;/Target&gt;
+
+&lt;Target Name=&quot;MyPackage_AfterBuild&quot;
+        AfterTargets=&quot;Build&quot;&gt;
+    &lt;!-- Do things --&gt;
+&lt;/Target&gt;
+</code></pre>
+<p>But this breaks down if you add another target framework.</p>
+<pre><code class="language-xml">&lt;PropertyGroup&gt;
+  &lt;TargetFrameworks&gt;net472;netcoreapp3.1&lt;/TargetFrameworks&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;Target Name=&quot;MyPackage_BeforeBuild&quot;
+        BeforeTargets=&quot;Build&quot;&gt;
+    &lt;Message Text=&quot;Before build: '$(TargetFramework)'&quot; /&gt;
+&lt;/Target&gt;
+</code></pre>
+<pre><code>Before build: 'net472'
+Before build: 'netcoreapp3.0'
+Before build: ''
+</code></pre>
+<p>Oof. Your target now runs N+1 times (if the project has N target frameworks).</p>
+<p>At best, this slows down your build. At worst, it'll break it due to a race condition (e.g. if each iteration attempts to write to the same file).</p>
+<h2 id="run-a-target-once-per-project-if-multi-targeted">Run a target once per project (if multi-targeted)</h2>
+<p>Most of the time you can replace <code>Build</code> with <code>DispatchToInnerBuilds</code>.</p>
+<pre><code class="language-xml">&lt;PropertyGroup&gt;
+  &lt;TargetFrameworks&gt;net472;netcoreapp3.1&lt;/TargetFrameworks&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;Target Name=&quot;MyPackage_BeforeBuild&quot;
+        BeforeTargets=&quot;DispatchToInnerBuilds&quot;&gt;
+    &lt;Message Text=&quot;Before build '$(TargetFramework)'&quot; /&gt;
+&lt;/Target&gt;
+</code></pre>
+<pre><code>Before build: ''
+</code></pre>
+<p>Success!</p>
+<p>Well, except that <code>DispatchToInnerBuilds</code> only exists for multi-targeted projects, so it will not run in a single-targeted project.</p>
+<pre><code class="language-xml">&lt;PropertyGroup&gt;
+  &lt;TargetFramework&gt;netcoreapp3.1&lt;/TargetFramework&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;Target Name=&quot;MyPackage_BeforeBuild&quot;
+        BeforeTargets=&quot;DispatchToInnerBuilds&quot;&gt;
+  &lt;Message Text=&quot;Before build: '$(TargetFramework)'&quot; /&gt;
+&lt;/Target&gt;
+</code></pre>
+<pre><code></code></pre>
+<h2 id="run-a-target-once-per-project">Run a target once per project</h2>
+<p>This is the layout of a NuGet package that distributes a target that runs only once per project regardless of whether the project is single- or multi-targeted.</p>
+<p><code>MyPackage.nuspec</code></p>
+<pre><code class="language-xml">...
+&lt;files&gt;
+  &lt;!-- files in the build/ directory run per target framework --&gt;
+  &lt;file src=&quot;MyPackage.targets&quot; target=&quot;build&quot; /&gt;
+  
+  &lt;!-- files in the buildMultiTargeting/ directory run once 
+       per project (regardless of # of target frameworks), 
+       but *only* if the project is multi-targeted --&gt;
+  &lt;file src=&quot;MyPackage.targets&quot; target=&quot;buildMultiTargeting&quot; /&gt;
+  &lt;file src=&quot;MyPackage.props&quot; target=&quot;buildMultiTargeting&quot; /&gt;
+&lt;/files&gt;
+</code></pre>
+<p>Creates this package layout:</p>
+<pre><code>buildMultitargeting/
+  MyPackage.props
+  MyPackage.targets
+build/
+  MyPackage.targets (same content as other MyPackage.targets)
+</code></pre>
+<p><code>buildMultiTargeting/MyPackage.props</code></p>
+<pre><code class="language-xml">&lt;Project&gt;
+  &lt;PropertyGroup&gt;
+    &lt;!-- this file only executes in the &quot;outer&quot; build of a
+         multi-targeted project, so we set this variable to
+         keep track of that information --&gt; 
+    &lt;IsOuterBuild&gt;true&lt;/IsOuterBuild&gt;
+  &lt;/PropertyGroup&gt;
+&lt;/Project&gt;
+</code></pre>
+<p><code>build/MyPackage.targets</code></p>
+<pre><code class="language-xml">&lt;PropertyGroup&gt;
+  &lt;IsOuterBuild 
+    Condition=&quot;'$(IsOuterBuild)' == ''&quot;&gt;false&lt;/IsOuterBuild&gt;
+   
+  &lt;!-- Uue DispatchToInnerBuilds if a multi-targetedBuild --&gt;
+  &lt;MyBeforeTargets&gt;BuildDependsOn&lt;/MyBeforeTargets&gt;
+  &lt;MyBeforeTargets 
+    Condition=&quot;$(IsOuterBuild)&quot;&gt;DispatchToInnerBuilds&lt;/MyBeforeTargets&gt;
+   
+   &lt;MyAfterTargets&gt;Build&lt;/MyAfterTargets&gt;
+   &lt;MyAfterTargets 
+     Condition=&quot;$(IsOuterBuild)&quot;&gt;DispatchToInnerBuilds&lt;/MyAfterTargets&gt;
+
+  &lt;!-- to prevent targets from being run extra times,
+       enforce that only the outer build of a multi-targeted
+       project or a single-targeted build can run --&gt;
+  &lt;ShouldRunTarget&gt;false&lt;/ShouldRunTarget&gt;
+  &lt;ShouldRunTarget 
+    Condition=&quot;'$(TargetFrameworks)' == '' 
+      OR $(IsOuterBuild)'&quot;&gt;true&lt;/ShouldRunTarget&gt;
+&lt;/PropertyGroup&gt;
+
+&lt;Target Name=&quot;MyBeforeBuild&quot;
+        Condition=&quot;$(ShouldRunTarget)&quot;
+        BeforeTargets=&quot;$(MyAfterTargets)&quot;&gt;
+    &lt;!-- Do thing --&gt;
+&lt;/Target&gt;
+
+&lt;Target Name=&quot;MyAfterBuild&quot;
+        Condition=&quot;$(ShouldRunTarget)&quot;
+        AfterTargets=&quot;$(MyAfterTargets)&quot;&gt;
+    &lt;!-- Do thing --&gt;
+&lt;/Target&gt;
+</code></pre>
+<p>NOTE: This above snippets were edited for horizontal brevity. In production code, you should always prefix your MSBuild variables with the name of your NuGet package (e.g. ShouldRunTarget -&gt; MyProject_ShouldRunTarget). This is because MSBuild allows overwriting of variable names, so you want to be careful not to pollute the global pool of names.</p>
+
+</body>
+</html>
+

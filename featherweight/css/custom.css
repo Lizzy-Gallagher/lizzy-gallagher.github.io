@@ -1,0 +1,29 @@
+.notice--warning {
+    margin: 2em 0;
+    padding: 1em;
+    color: #3d4144;
+    background-color: #f7e5cd;
+    text-indent: initial;
+    font-size: .75em;
+    border-radius: 4px;
+
+    h5 {         
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+}
+
+.notice--success { 
+    margin: 2em 0;
+    padding: 1em;
+    color: #3d4144;
+    background-color: #d9edd9;
+    text-indent: initial;
+    font-size: .75em;
+    border-radius: 4px;
+
+    h5 {         
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+}

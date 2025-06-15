@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+</head>
+<body>
+	<h1>Lizzy Gallagher</h1>
+	<p style="text-align: center;">
+		Writing code at Mastercard. Walking enthusiast. Creature of habit.
+	</p>	
+	<p style="text-align: center;">
+		<i class="fa-solid fa-location-dot"></i> Arlington, Virginia |
+		<i class="fa-brands fa-github"></i> <a href="https://github.com/lizzy-gallagher">lizzy-gallagher</a><br>
+	</p>
+
+	<hr />
+	<div style="text-align: center;">
+		<a href="index.html">Home</a> |
+		Blog
+	</div>
+	<hr />
+
+    <h3>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</h3>
+    <div style="text-align: center;">04-04-21</div>
+    
+    <hr />
+<h2 id="title-how-to-fix-resolve-operation-has-already-ended-exceptions-in-lambda-autofac-registrations-date-2021-04-04-173500-0500-tags-autofac-documentation">title: How to fix &quot;resolve operation has already ended&quot; exceptions in lambda Autofac registrations
+date: 2021-04-04 17:35:00 -0500
+tags: autofac documentation</h2>
+<p>At work today, we ran into an <code>ObjectDisposedException</code> when writing a lambda Autofac registration:</p>
+<blockquote>
+<p>This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&lt;&gt; based factory to create subsequent components from.</p>
+</blockquote>
+<h1 id="solution">Solution</h1>
+<p>This error happens at runtime when attempting to resolve a component from a &quot;captured&quot; <code>IComponentContext</code> that belonged to the <code>Register</code> method:</p>
+<pre><code class="language-c#">var cb = new ContainerBuilder();
+
+// maybe the IComponentContext was captured inside the body of a Lazy&lt;&gt;
+cb.Register(cc =&gt; 
+    new ApplePie(new Lazy&lt;Apple&gt;(() =&gt; cc.Resolve&lt;Apple&gt;())));
+
+// ...or captured as a parameter (and stored inside) the instance
+cb.Register(cc =&gt; new ApplePie(cc));
+
+// ...or captured inside the body of a Func&lt;&gt;
+cb.Register&lt;Func&lt;Apple&gt;&gt;(cc =&gt; () =&gt; cc.Resolve&lt;Apple&gt;());
+
+var container = cb.Build();
+container.Resolve&lt;ApplePie&gt;().UseApple(); // ERROR! This resolve operation h...
+</code></pre>
+<p>The resolution is to resolve <code>IComponentContext</code> <em>outside</em> of the capture context and resolve from it instead:</p>
+<pre><code class="language-c#">cb.Register(cc =&gt;
+{
+    var context = cc.Resolve&lt;IComponentContext&gt;();
+    return new ApplePie(new Lazy&lt;Apple&gt;(() =&gt; context.Resolve&lt;Apple&gt;()));
+});
+
+// depending on which pattern from above maybe instead
+// ... new ApplePie(context)
+// ... or () =&gt; context.Resolve&lt;Apple&gt;
+</code></pre>
+<p>As explained below, there are no meaningful downsides to this technique for 99.9% of projects. The impact is a very, very small performance hit as the <code>IComponentContext</code> from <code>cc.Resolve&lt;IComponentContext&gt;()</code> is a tiny bit slower than the parameter <code>IComponentContext</code> (<code>cc</code>).</p>
+<h1 id="why-does-this-work">Why does this work?</h1>
+<p><strong>Disclaimer:</strong> This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.</p>
+<p><strong>Note:</strong> This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try <a href="/illustrated-autofac">An illustrated guide to Autofac</a>.</p>
+<p>The first thing to understand is that the <code>IComponentContext</code> resolved <em>inside</em> <code>Register</code> is not the same instance as the <code>IComponentContext</code> which is a parameter.</p>
+<pre><code class="language-c#">cb.Register(cc =&gt; {
+    var context = cc.Resolve&lt;IComponentContext&gt;();
+    context != cc; // true
+    ...
+});
+</code></pre>
+<p>The <em>parameter</em> <code>IComponentContext</code> (<code>cc</code>) is a <a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/Pipeline/DefaultResolveRequestContext.cs"><code>DefaultResolveRequestContext</code></a>, and the <em>resolved</em> <code>IComponentContext</code> (<code>context</code>) is a <a href="https://github.com/autofac/Autofac/blob/e662b6bace37a569eec1e42335336b3fe015855c/src/Autofac/Core/Lifetime/LifetimeScope.cs"><code>LifetimeScope</code></a>. Both of these classes implement <code>IComponentContext</code>, an interface which exposes methods for resolving services from the container, but differ greatly in their implementation.</p>
+<p>As its name implies, <code>LifetimeScope</code> is designed to persist for the length of a lifetime scope, e.g. an HTTP request, resolving hundreds of thousands of services across multiple threads. <code>LifetimeScope</code> is the smallest unit of &quot;sharing&quot; in Autofac, so this class must keep track (in a thread safe manner) any services that were created with an <code>InstancePerLifetimeScope</code> registration.</p>
+<p>By contrast to meticulous, long-lived <code>LifetimeScope</code>, <code>DefaultResolveRequestContext</code> is an <code>IComponentContext</code> spun up exclusively for the lifetime of a single <code>Resolve</code> call, to be disposed of immediately afterward. To keep this short-lived service inexpensive, <code>DefaultResolveRequestContext</code> is not-thread safe.</p>
+<p>Here's an example of what this &quot;lack of thread-safety&quot; looks like:</p>
+<pre><code class="language-c#">public class Apple { }
+// ...
+var cb = new ContainerBuilder();
+cb.RegisterType&lt;Apple&gt;();
+cb.Register(cc =&gt;
+{
+    // attempt use 'cc' simulatenously across multiple threads
+    Enumerable.Range(0, 100)
+        .Select(_ =&gt; Task.Run(() =&gt; cc.Resolve&lt;Apple&gt;()))
+        .ToList();
+
+    // give the other threads space to execute before 'cc'
+    // is disposed
+    Thread.Sleep(500);
+
+    return new object();
+});
+
+// This error will appear 0-99 times (it is a race condition after all!):
+// DependencyResolutionException: Circular dependency detected: 
+//      System.Object -&gt; Apple -&gt; Apple.
+cb.Build().Resolve&lt;object&gt;();
+</code></pre>
+<p>At first blush, the error appears nonsensical, <code>Apple</code> doesn't depend on <code>Apple</code>, where is the &quot;circular dependency?&quot;</p>
+<p>Because <code>DefaultResolveRequestContext</code> is not designed to be used by multiple threads, it interprets the <em>parallel</em> <code>Resolve&lt;Apple&gt;()</code> to be happening <em>sequentially</em>. Specifically, the <a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/Middleware/CircularDependencyDetectorMiddleware.cs"><code>CircularDependencyDetectorMiddleware</code></a> maintains a non-thread safe stack of <code>Resolve</code> requests that occur in the current <a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/ResolveOperation.cs"><code>ResolveOperation</code></a> in order to detect circular dependencies. For example, if the constructor for <code>Apple</code> took <code>Apple</code> as a parameter, the middleware would find a circular dependency by recognizing that <code>Apple</code> appears twice in the stack of requests. In our example, the <code>CircularDependencyDetectorMiddleware</code> errors out because it believes that our parallel requests are a recursive resolution with a circular dependency!</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><p>Knowing that <code>DefaultResolveRequestContext</code> is short-lived and disposed at the conclusion of a resolution operation, helps us understand the error message a the top of this blog post. We cannot capture <code>DefaultResolveRequestContext</code> for later use because it will have been disposed by then!</p>
+</li>
+<li><p>Knowing that <code>DefaultResolveRequestContext</code> is not thread safe in order to be cheap, helps us understand the tradeoffs of the &quot;fix&quot;. <code>DefaultResolveRequestContext</code> does less bookkeeping than <code>LifetimeScope</code>. Specifically <code>LifetimeScope</code> initializes a new stack (for circular dependency detection) for every <code>Resolve</code> request, but <code>DefaultResolveRequestContext</code> reuses the same stack each time.</p>
+</li>
+</ul>
+<p>It is important to note that <code>DefaultResolveRequestContext</code> uses <code>LifetimeScope</code> under the hood to manage creating and sharing instances. This means that both have <em>identical</em> business logic behavior. The only trade-off is that <code>LifetimeScope</code> is a very small amount slower because of additional bookkeeping to ensure thread safety. Autofac is rarely a performance bottleneck, so 99.9% of projects can make this tradeoff without losing any sleep.</p>
+<p>Curious about the philosophy toward thread safety in Autofac? The <a href="https://autofaccn.readthedocs.io/en/latest/advanced/concurrency.html">&quot;Concurrency&quot; section</a> of their documentation is quite good.</p>
+
+</body>
+</html>
+

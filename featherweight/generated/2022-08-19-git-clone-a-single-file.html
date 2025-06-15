@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
+	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+</head>
+<body>
+	<h1>Lizzy Gallagher</h1>
+	<p style="text-align: center;">
+		Writing code at Mastercard. Walking enthusiast. Creature of habit.
+	</p>	
+	<p style="text-align: center;">
+		<i class="fa-solid fa-location-dot"></i> Arlington, Virginia |
+		<i class="fa-brands fa-github"></i> <a href="https://github.com/lizzy-gallagher">lizzy-gallagher</a><br>
+	</p>
+
+	<hr />
+	<div style="text-align: center;">
+		<a href="index.html">Home</a> |
+		Blog
+	</div>
+	<hr />
+
+    <h3>How to git clone a single file</h3>
+    <div style="text-align: center;">08-19-22</div>
+    
+    <hr />
+<h2 id="title-how-to-git-clone-a-single-file-date-2022-08-19-60000-0500-tags-git-documentation">title: &quot;How to git clone a single file&quot;
+date: 2022-08-19 6:00:00 -0500
+tags: git documentation</h2>
+<div class="notice--warning" markdown="1">
+<h4 class="no_toc"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
+This method uses [`git archive`](https://git-scm.com/docs/git-archive) which is not supported by all source control services.
+ <table>
+  <tr>
+    <th>Service</th>
+    <th>Supported?</th>
+  </tr>
+  <tr>
+    <td>GitHub</td>
+    <td>❌<sup>†</sup></td>
+  </tr>
+  <tr>
+    <td>GitLab</td>
+    <td>✔️</td>
+  </tr>
+  <tr>
+    <td>Atlassian Bitbucket</td>
+    <td>✔️</td>
+  </tr>
+</table> 
+<p><sup>†</sup><a href="https://twitter.com/GitHubHelp/status/322818593748303873">Official acknowledgement from GitHub</a>.</p>
+</div>
+<pre><code class="language-bash"># Create .tar archive containing only the single file
+git archive --remote &lt;repositoryUri&gt; &lt;branchName&gt;:&lt;directoryPathFromGitRoot&gt; &lt;fileName&gt; -o &lt;archiveName&gt;
+# Extract the single file to the current directory
+tar -xf &lt;archiveName&gt;
+# (optional) Delete the archive
+rm &lt;archiveName&gt;
+</code></pre>
+<h4 id="example">Example</h4>
+<pre><code>git archive --remote git@gitlab.com:gitlab-org/gitlab.git HEAD:.github/ ISSUE_TEMPLATE.md -o myArchive.tar
+tar -xf myArchive.tar
+rm myArchive.tar
+</code></pre>
+<p>Clones <a href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/.github/ISSUE_TEMPLATE.md">ISSUE_TEMPLATE.md</a> from the main GitLab repo to the current directory. Try it out! As of writing, this example is functional!</p>
+<h4 id="parameters">Parameters</h4>
+<p>With the following parameters:</p>
+<ul>
+<li><code>repositoryUri</code>. The uri of your repository.
+<ul>
+<li>NOTE: when copying this uri from the UI, select the <code>ssh</code> option. Choosing the <code>https</code> option will cause your command to fail with <code>fatal: operation not supported by protocol</code></li>
+</ul>
+</li>
+<li><code>branchName</code>. You can also use <code>HEAD</code> to get the default branch.</li>
+<li><code>directoryPathFromGitRoot</code>. If the file is not at the root of the repository, the path to the directory containing the single file.</li>
+<li><code>fileName</code>. File name without directory information.</li>
+<li><code>archiveName</code>. A fun name for your temporary archive.</li>
+</ul>
+<div class="notice--success" markdown="1">
+<h4 class="no_toc"><i class="fas fa-lightbulb"></i> Tip</h4>
+When crafting the parameters for your use case, I recommend using [7Zip](https://www.7-zip.org/) to inspect the `.tar` archives locally.
+</div>
+<h1 id="why-did-i-care">Why did I care?</h1>
+<p>At work, I worked on a utility to perform &quot;checkups&quot; on .NET applications. One genre of &quot;checkup&quot; it runs is verifying whether files matched the latest version of some master copy. For example, each application has a CI configuration file based on a centrally maintained version. A checkup by our utility provided the application owners wanted an quick way to verify whether their configuration file was up-to-date with the master copy.</p>
+<p>Initially, we included the text of the master copy in the utility itself, which was about as sustainable as any &quot;hardcoded&quot; solution usually is. When researching alternatives to &quot;grab latest version of a master copy,&quot; I came across a helpful <a href="https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository">StackOverflow</a>, but still struggled to connect all the pieces. This quick write-up is to hopefully save someone else an afternoon of throwing <code>tar</code> options at a wall.</p>
+<p>P.S. It was only testing these commands in writing this blog post that I learned <code>git archive</code> is not supported in GitHub. I found this <a href="https://www.gilesorr.com/blog/git-archive-github.html">blog post</a> to be the clearest explanation of workarounds.</p>
+<h1 id="bonus-implementation-in-c">Bonus! Implementation in C#.</h1>
+<p>Our &quot;checkup&quot; application is a .NET console app, so we needed to run the above commands from C#. This was an excellent opportunity to use my favorite command running library: <a href="https://github.com/madelson/MedallionShell">MedallionShell</a>!</p>
+<div class="notice--warning" markdown="1">
+<h4 class="no_toc"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
+This implementation uses two utilities internal to Mastercard: `TempDirectoryProvider` and `CoreUtilities.UniqueId()`. It should be clear how you might write your a replacement in your own code.
+</div>
+<pre><code class="language-c#">using System.IO;
+using Medallion.Shell;
+
+...
+
+/// &lt;summary&gt;
+/// Provides the content for a file in source control.
+/// &lt;/summary&gt;
+public class SourceControlledFileProvider
+{
+    public static string GetFileContents(string fileName, string repositoryUri, string directoryPathFromGitRoot)
+    {
+        var shell = new Shell(o =&gt; o.WorkingDirectory(TempDirectoryProvider.TempDirectory).ThrowOnError());
+
+        var filePath = Path.Combine(TempDirectoryProvider.TempDirectory, fileName);
+        if (!File.Exists(filePath))
+        {
+            // Download a single file from a remote git repository as a .tar archive.
+            //
+            // Options:
+            // -o       - Write the archive to &lt;file&gt; instead of stdout
+            // --remote - Retrieve a tar archive from a remote repository
+            var archiveName = CoreUtilities.UniqueId() + &quot;.tar&quot;;
+            var archiveCommand = shell.Run(
+                &quot;git&quot;, 
+                &quot;archive&quot;, 
+                &quot;--remote&quot;, repositoryUri, 
+                &quot;HEAD:&quot; + directoryPathFromGitRoot, 
+                &quot;-o&quot;, archiveName);
+            archiveCommand.Wait();
+
+            // Extract the file from the .tar archive.
+            //
+            // NOTE: This uses the Windows default &quot;tar&quot;
+            // which does not have the same options as UNIX &quot;tar&quot;.
+            var tarCommand = shell.Run(&quot;tar&quot;, &quot;-xf&quot;, archiveName );
+            tarCommand.Wait();
+        }
+
+        return File.ReadAllText(filePath);
+    }
+}
+</code></pre>
+
+</body>
+</html>
+

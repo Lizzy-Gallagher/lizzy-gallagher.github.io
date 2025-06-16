@@ -18,15 +18,12 @@
 	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
 
     <!-- For syntax-highlighting-->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
     <!-- TODO -->
-	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
 </head>
 <body>
 	<h1>Lizzy Gallagher</h1>
@@ -40,7 +37,7 @@
 
 	<hr />
 	<div style="text-align: center;">
-		<a href="index.html">Home</a> |
+		<a href="../index.html">Home</a> |
 		Blog
 	</div>
 	<hr />
@@ -48,13 +45,8 @@
     <h3>Learn MSBuild - Part 4 - Real-world MSBuild</h3>
     <div style="text-align: center;">03-31-21</div>
     
-    <hr />
-<h2 id="title-learn-msbuild-part-4-real-world-msbuild-date-2021-03-31-194800-0500-excerpt-to-reinforce-what-weve-learned-we-are-going-to-dissect-a-real-world.targets-file.tags-msbuild">title: &quot;Learn MSBuild - Part 4 - Real-world MSBuild&quot;
-date: 2021-03-31 19:48:00 -0500
-excerpt: To reinforce what we've learned, we are going to dissect a real-world <code>.targets</code> file.
-tags: msbuild</h2>
-<div class="notice--info" markdown="1">
-[Previous post](/learn-msbuild-part-3)
+    <div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-3.html">Previous post</a>
 </div>
 <p>This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world <code>.targets</code> file: <a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets">TSLint.MSBuild.targets</a>.</p>
 <div class="notice--warning" markdown="1">
@@ -68,7 +60,7 @@ I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package beca
 <p>Instead of walking through the <code>TSLint.MSBuild.targets</code> file line-by-line, we'll instead tour various sections. The full text of file is available at the bottom of this post.</p>
 <h2 id="use-the-condition-attribute-of-a-property-to-only-define-the-variable-if-it-has-not-already-been-defined">Use the <code>Condition</code> attribute of a <code>Property</code> to only define the variable if it has not already been defined</h2>
 <p>Recall that the <code>Condition</code> attribute can be used to evaluate &quot;has this <code>Property</code> already been defined?&quot;</p>
-<pre><code class="language-xml">&lt;PropertyGroup&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;PropertyGroup&gt;
     &lt;TSLintTimestampFile 
         Condition=&quot;'$(TSLintTimestampFile)' == ''&quot;&gt;
         $(OutputPath)\$(MSBuildProjectName).TSLint.timestamp.txt
@@ -77,7 +69,7 @@ I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package beca
 </code></pre>
 <h2 id="use-string-templating-to-compose-a-complex-property">Use string templating to compose a complex <code>Property</code></h2>
 <p>The string templating support for <code>Properties</code> can be used like the <code>$PATH</code> variable to compose long sequences.</p>
-<pre><code class="language-xml">&lt;!-- Build the TSLint arguments --&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Build the TSLint arguments --&gt;
 &lt;PropertyGroup&gt;
     &lt;TSLintArgs&gt;&lt;/TSLintArgs&gt;
     &lt;TSLintArgs Condition=&quot;'$(TSLintConfig)' != ''&quot;&gt;$(TSLintArgs) --config &quot;$(TSLintConfig)&quot;&lt;/TSLintArgs&gt;
@@ -87,7 +79,7 @@ I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package beca
 </code></pre>
 <h2 id="use-the-inputs-attribute-so-a-target-can-execute-incrementally">Use the <code>Inputs</code> attribute so a <code>Target</code> can execute incrementally</h2>
 <p>Recall that MSBuild supports &quot;incremental builds&quot; and <code>Targets</code> support timestamp based caching.</p>
-<pre><code class="language-xml">&lt;Target
+<pre class="prettyprint"><code class="language-xml">&lt;Target
     AfterTargets=&quot;CompileTypeScript&quot;
     ...
     Inputs=&quot;@(TSLintInclude);@(TypeScriptCompile)&quot;
@@ -100,18 +92,18 @@ I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package beca
 </code></pre>
 <h2 id="use-tasks-to-report-on-status-and-validate-information">Use <code>Tasks</code> to report on status and validate information</h2>
 <p>The built-in <code>Message</code> <code>Task</code> is a go to for reporting status to the consumer.</p>
-<pre><code class="language-xml">&lt;Message Text=&quot;Running TSLint...&quot; Importance=&quot;high&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Message Text=&quot;Running TSLint...&quot; Importance=&quot;high&quot; /&gt;
 </code></pre>
 <p>The built-in <code>Error</code> <code>Task</code> is useful for validating inputs...</p>
-<pre><code class="language-xml">&lt;Error Condition=&quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&quot; Text=&quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Error Condition=&quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&quot; Text=&quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&quot; /&gt;
 </code></pre>
 <p>... and reporting if something doesn't work as expected.</p>
-<pre><code class="language-xml">&lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&gt;
 &lt;Error Condition=&quot;'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'&quot; Text=&quot;TSLint checks failed&quot; /&gt;
 </code></pre>
 <h2 id="use-the-exec-built-in-task-to-run-an-executable">Use the <code>Exec</code> built-in <code>Task</code> to run an executable</h2>
 <p>The built-in <code>Exec</code> <code>Task</code> makes it simple to delegate more complex behavior to external executables.</p>
-<pre><code class="language-xml">&lt;!-- Run TSLint using the Node executable --&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Run TSLint using the Node executable --&gt;
 &lt;Exec
     Command=&quot;&amp;quot;$(TSLintNodeExe)&amp;quot; &amp;quot;$(TSLintCli)&amp;quot; $(TSLintArgs)&quot;
     Condition=&quot;'$(TSLintDisabled)' != 'true'&quot;
@@ -126,12 +118,12 @@ I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package beca
 <p>In this post, we reviewed what what's possible using <code>Properties</code>, <code>Items</code>, <code>Tasks</code>, and <code>Targets</code> by looking at a real-life open-source example.</p>
 <p>Hopefully this series has been a helpful explanation of MSBuild as a programming language. If anything was unclear or you'd like to hear more, please feel free to reach out to me on <a href="https://twitter.com/LizzyIsNotBusy">Twitter</a>!</p>
 <div class="notice--info" markdown="1">
-[Previous post](/learn-msbuild-part-3)
+<a href="./learn-msbuild-part-3.html">Previous post</a>
 </div>
 <h1 id="appendix-full-source-of-tslint.msbuild.targets">Appendix: Full source of <code>TSLint.MSBuild.targets</code></h1>
 <p>Source available at:
 <a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets">https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets</a></p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
 &lt;Project ToolsVersion=&quot;4.0&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
 
   &lt;!-- Ensures that if this file changes it forces a TypeScript rebuild --&gt;

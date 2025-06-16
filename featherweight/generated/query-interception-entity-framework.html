@@ -18,15 +18,12 @@
 	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
 
     <!-- For syntax-highlighting-->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
     <!-- TODO -->
-	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
 </head>
 <body>
 	<h1>Lizzy Gallagher</h1>
@@ -40,7 +37,7 @@
 
 	<hr />
 	<div style="text-align: center;">
-		<a href="index.html">Home</a> |
+		<a href="../index.html">Home</a> |
 		Blog
 	</div>
 	<hr />
@@ -48,12 +45,7 @@
     <h3>Query interception in Entity Framework Core</h3>
     <div style="text-align: center;">07-25-20</div>
     
-    <hr />
-<h2 id="layout-post-title-query-interception-in-entity-framework-core-date-2020-07-25-70000-0500-tag-documentation">#layout: post
-title:  &quot;Query interception in Entity Framework Core&quot;
-date:   2020-07-25 7:00:00 -0500
-tag: documentation</h2>
-<p>At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.</p>
+    <p>At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.</p>
 <p>I investigated query interception. Although this is a heavily used feature internally, I found literally two paragraphs of information about the feature in Entity Framework Core.</p>
 <p>This is a summary of what I learned about the feature and is attempting to be the blog post that I wish I would have found during my investigation.</p>
 <h3 id="what-is-query-interception">What is query interception?</h3>
@@ -67,13 +59,13 @@ tag: documentation</h2>
 <h3 id="how-do-i-use-query-interception-in-entity-framework-core">How do I use query interception in Entity Framework Core?</h3>
 <p>EF Core exposes a base class <code>DbCommandInterceptor</code> with hooks into the query &quot;life cycle&quot;.</p>
 <p>Create a class that extends DbCommandInterceptor</p>
-<pre><code class="language-cs">public class TestQueryInterceptor : DbCommandInterceptor
+<pre class="prettyprint"><code class="language-cs">public class TestQueryInterceptor : DbCommandInterceptor
 {
   ...
 }
 </code></pre>
 <p>then override the individual life cycle methods you care about:</p>
-<pre><code class="language-cs">// runs before a query is executed
+<pre class="prettyprint"><code class="language-cs">// runs before a query is executed
 public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
 {
     ...
@@ -88,7 +80,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 <p>NOTE: Most life cycle methods have a synchronous and an asynchronous version. Annoyingly, asynchronous queries only trigger the asynchronous method (and vice-versa), so you must override both when writing an interceptor.</p>
 <h4 id="how-to-install-a-dbcommandinterceptor">How to install a DbCommandInterceptor</h4>
 <p>You can add multiple interceptors when configuring your DbContext.</p>
-<pre><code class="language-cs">public class SampleDbContext : DbContext
+<pre class="prettyprint"><code class="language-cs">public class SampleDbContext : DbContext
 {
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -102,7 +94,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 </code></pre>
 <h4 id="how-to-modify-the-command-before-execution">How to modify the command before execution</h4>
 <p>This is fairly straightforward because most of <code>DbCommand</code>'s properties are settable.</p>
-<pre><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
 {
    command.CommandText += &quot; OPTION (OPTIMIZE FOR UNKNOWN)&quot;;
    
@@ -114,7 +106,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 <h4 id="how-to-suppress-execution">How to suppress execution</h4>
 <p>By returning a new <code>InterceptionResult</code> created via <code>InterceptionResult&lt;T&gt;.SuppressWithResult()</code> from a pre-event life cycle method, the command will not be executed.</p>
 <p>It is important to note that any other <code>DbCommandInterceptor</code>s installed will still execute (and can check whether another interceptor has suppressed execution via the <code>HasResult</code> property on <code>result</code>).</p>
-<pre><code class="language-cs">public override InterceptionResult&lt;object&gt; ScalarExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;object&gt; result)
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;object&gt; ScalarExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;object&gt; result)
 {
     if (this.ShouldSuppressExecution(command))
     {
@@ -125,7 +117,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 }
 </code></pre>
 <p>It is worth mentioning that an exception thrown in a pre-event life cycle method will technically prevent execution. Do not take advantage of this fact. It is almost always bad design to use exceptions for control flow. Exceptions should be save for exceptional situations.</p>
-<pre><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
 {
    if (this.IsSomethingWrongWithThisCommand(command, out var reasonSomethingIsWrong))
    {
@@ -138,7 +130,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 </code></pre>
 <h4 id="change-the-result-of-execution">Change the result of execution</h4>
 <p>From a post-event life cycle method, you can opt to return a different result.</p>
-<pre><code class="language-cs">public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
+<pre class="prettyprint"><code class="language-cs">public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
 {
     if (this.ShouldChangeResult(command, out var changedResult))
     {
@@ -150,7 +142,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 </code></pre>
 <h4 id="how-to-log-diagnostic-data-if-theres-an-exception">How to log diagnostic data if there's an exception</h4>
 <p>Although you can't catch exceptions, you can respond to them before they are thrown.</p>
-<pre><code class="language-cs"> public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
+<pre class="prettyprint"><code class="language-cs"> public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
   {
       // there is a lot of other metadata on `eventData` that you might find useful
       this.LogDiagnosticInformation(

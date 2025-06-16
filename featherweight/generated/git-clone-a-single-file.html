@@ -18,15 +18,12 @@
 	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
 
     <!-- For syntax-highlighting-->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
     <!-- TODO -->
-	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
 </head>
 <body>
 	<h1>Lizzy Gallagher</h1>
@@ -40,7 +37,7 @@
 
 	<hr />
 	<div style="text-align: center;">
-		<a href="index.html">Home</a> |
+		<a href="../index.html">Home</a> |
 		Blog
 	</div>
 	<hr />
@@ -48,13 +45,9 @@
     <h3>How to git clone a single file</h3>
     <div style="text-align: center;">08-19-22</div>
     
-    <hr />
-<h2 id="title-how-to-git-clone-a-single-file-date-2022-08-19-60000-0500-tags-git-documentation">title: &quot;How to git clone a single file&quot;
-date: 2022-08-19 6:00:00 -0500
-tags: git documentation</h2>
-<div class="notice--warning" markdown="1">
+    <div class="notice--warning" markdown="1">
 <h4 class="no_toc"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
-This method uses [`git archive`](https://git-scm.com/docs/git-archive) which is not supported by all source control services.
+This method uses <a href=".https://git-scm.com/docs/git-archive.html">`git archive`</a> which is not supported by all source control services.
  <table>
   <tr>
     <th>Service</th>
@@ -75,7 +68,7 @@ This method uses [`git archive`](https://git-scm.com/docs/git-archive) which is 
 </table> 
 <p><sup>†</sup><a href="https://twitter.com/GitHubHelp/status/322818593748303873">Official acknowledgement from GitHub</a>.</p>
 </div>
-<pre><code class="language-bash"># Create .tar archive containing only the single file
+<pre class="prettyprint"><code class="language-bash"># Create .tar archive containing only the single file
 git archive --remote &lt;repositoryUri&gt; &lt;branchName&gt;:&lt;directoryPathFromGitRoot&gt; &lt;fileName&gt; -o &lt;archiveName&gt;
 # Extract the single file to the current directory
 tar -xf &lt;archiveName&gt;
@@ -83,7 +76,7 @@ tar -xf &lt;archiveName&gt;
 rm &lt;archiveName&gt;
 </code></pre>
 <h4 id="example">Example</h4>
-<pre><code>git archive --remote git@gitlab.com:gitlab-org/gitlab.git HEAD:.github/ ISSUE_TEMPLATE.md -o myArchive.tar
+<pre class="prettyprint"><code>git archive --remote git@gitlab.com:gitlab-org/gitlab.git HEAD:.github/ ISSUE_TEMPLATE.md -o myArchive.tar
 tar -xf myArchive.tar
 rm myArchive.tar
 </code></pre>
@@ -103,7 +96,7 @@ rm myArchive.tar
 </ul>
 <div class="notice--success" markdown="1">
 <h4 class="no_toc"><i class="fas fa-lightbulb"></i> Tip</h4>
-When crafting the parameters for your use case, I recommend using [7Zip](https://www.7-zip.org/) to inspect the `.tar` archives locally.
+When crafting the parameters for your use case, I recommend using <a href=".https://www.7-zip.org/.html">7Zip</a> to inspect the `.tar` archives locally.
 </div>
 <h1 id="why-did-i-care">Why did I care?</h1>
 <p>At work, I worked on a utility to perform &quot;checkups&quot; on .NET applications. One genre of &quot;checkup&quot; it runs is verifying whether files matched the latest version of some master copy. For example, each application has a CI configuration file based on a centrally maintained version. A checkup by our utility provided the application owners wanted an quick way to verify whether their configuration file was up-to-date with the master copy.</p>
@@ -115,7 +108,7 @@ When crafting the parameters for your use case, I recommend using [7Zip](https:/
 <h4 class="no_toc"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
 This implementation uses two utilities internal to Mastercard: `TempDirectoryProvider` and `CoreUtilities.UniqueId()`. It should be clear how you might write your a replacement in your own code.
 </div>
-<pre><code class="language-c#">using System.IO;
+<pre class="prettyprint"><code class="language-c#">using System.IO;
 using Medallion.Shell;
 
 ...

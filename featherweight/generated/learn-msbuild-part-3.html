@@ -18,15 +18,12 @@
 	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
 
     <!-- For syntax-highlighting-->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
     <!-- TODO -->
-	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
 </head>
 <body>
 	<h1>Lizzy Gallagher</h1>
@@ -40,7 +37,7 @@
 
 	<hr />
 	<div style="text-align: center;">
-		<a href="index.html">Home</a> |
+		<a href="../index.html">Home</a> |
 		Blog
 	</div>
 	<hr />
@@ -48,52 +45,47 @@
     <h3>Learn MSBuild - Part 3 - Functions</h3>
     <div style="text-align: center;">03-31-21</div>
     
-    <hr />
-<h2 id="title-learn-msbuild-part-3-functions-date-2021-03-31-194700-0500-excerpt-msbuild-has-a-concept-of-tasks-that-are-executed-within-targets-i.e.event-handlers.tags-msbuild">title: &quot;Learn MSBuild - Part 3 - Functions&quot;
-date: 2021-03-31 19:47:00 -0500
-excerpt: MSBuild has a concept of <code>Tasks</code> that are executed within <code>Targets</code> (i.e. event handlers).
-tags: msbuild</h2>
-<div class="notice--info" markdown="1">
-[Previous post](/learn-msbuild-part-2) | [Next post](/learn-msbuild-part-4)
+    <div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-2.html">Previous post</a> | <a href="./learn-msbuild-part-4.html">Next post</a>
 </div>
 <p>MSBuild is a <a href="https://en.wikipedia.org/wiki/Domain-specific_language">domain-specific language</a>, tailored to customizing how a .NET project is built. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles functions.</p>
 <p>MSBuild has a concept of <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-tasks"><code>Tasks</code></a> (i.e. functions) that are executed within <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-targets"><code>Targets</code></a> (i.e. event handlers).</p>
 <h1 id="tasks-i.e.functions"><code>Tasks</code> (i.e. functions)</h1>
 <p>A function is executed by locating an XML node inside a <code>Target</code> XML node (more on these later).</p>
-<pre><code class="language-xml">&lt;Target&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Target&gt;
     &lt;Error Text=&quot;Something went wrong!&quot; /&gt;
 &lt;/Target&gt;
 </code></pre>
 <p>Here would be the equivalent C#:</p>
-<pre><code class="language-c#">throw new Exception(&quot;Something went wrong!&quot;)
+<pre class="prettyprint"><code class="language-c#">throw new Exception(&quot;Something went wrong!&quot;)
 </code></pre>
 <p>There are dozens of built-in tasks. Most tasks make common I/O operations easy:</p>
-<pre><code class="language-xml">&lt;Delete Files=&quot;@(MyFiles)&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Delete Files=&quot;@(MyFiles)&quot; /&gt;
 </code></pre>
-<pre><code class="language-c#">foreach (var fileName in myFiles)
+<pre class="prettyprint"><code class="language-c#">foreach (var fileName in myFiles)
 {
     File.Delete(fileName);
 }
 </code></pre>
-<pre><code class="language-xml">&lt;WriteLinesToFile 
+<pre class="prettyprint"><code class="language-xml">&lt;WriteLinesToFile 
     File=&quot;$(CacheFile)&quot;
     Lines=&quot;$([System.DateTime]::Now)&quot; 
     Overwrite=&quot;true&quot; /&gt;
 </code></pre>
-<pre><code class="language-c#">File.WriteAllText(
+<pre class="prettyprint"><code class="language-c#">File.WriteAllText(
     cacheFile,
     DateTime.Now)
 </code></pre>
 <p>There's even a task called <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/exec-task"><code>Exec</code></a> that allows you to run arbitrary console commands!</p>
-<pre><code class="language-xml">&lt;Exec Command=&quot;dir&quot; WorkingDirectory=&quot;$(MSBuildProjectDirectory)&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Exec Command=&quot;dir&quot; WorkingDirectory=&quot;$(MSBuildProjectDirectory)&quot; /&gt;
 </code></pre>
-<pre><code class="language-c#">Command.Run(&quot;dir&quot;, o =&gt; o
+<pre class="prettyprint"><code class="language-c#">Command.Run(&quot;dir&quot;, o =&gt; o
     .WorkingDirectory(projectDirectory));
 </code></pre>
 <p><strong>Note:</strong> The above C# example uses <a href="https://github.com/madelson/MedallionShell">MedallionShell</a></p>
 <p>You can also define your own task by implementing the <code>ITask</code> interface. This is a must-know trick when writing complex MSBuild logic. Custom tasks can utilize NuGet packages and are far easier to unit test. The <a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/task-writing">official docs</a> are very good on this.</p>
 <p>Here's an example of how a custom task for minifying code would be invoked:</p>
-<pre><code class="language-xml">&lt;UsingTask TaskName=&quot;Minify&quot; AssemblyFile=&quot;.\bin\Debug\My.Minification.Project.MSBuild.dll&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;UsingTask TaskName=&quot;Minify&quot; AssemblyFile=&quot;.\bin\Debug\My.Minification.Project.MSBuild.dll&quot; /&gt;
 
 &lt;Target Name=&quot;MinifyJavaScriptFiles&quot; BeforeTargets=&quot;AfterBuild&quot;&gt;
     &lt;Info Text=&quot;Minifying files...&quot;&gt;
@@ -102,11 +94,11 @@ tags: msbuild</h2>
 </code></pre>
 <h1 id="targets-i.e.event-handlers"><code>Targets</code> (i.e. event handlers)</h1>
 <p>MSBuild has an additional concept <code>Targets</code> that allows you to &quot;schedule&quot; your tasks. It is easy to think of these like event handlers. Targets are run at a specific point in the lifecycle of a build.</p>
-<pre><code class="language-xml">&lt;Target Name=&quot;MyTarget&quot; BeforeTargets=&quot;BeforeBuild&quot;&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Target Name=&quot;MyTarget&quot; BeforeTargets=&quot;BeforeBuild&quot;&gt;
     &lt;Error Text=&quot;Fail the build!&quot; /&gt;
 &lt;/Target&gt;
 </code></pre>
-<pre><code class="language-c#">c.BeforeBuild += MyTarget;
+<pre class="prettyprint"><code class="language-c#">c.BeforeBuild += MyTarget;
 ...
 static void MyTarget(object sender, BeforeBuildEventArgs e)
 {
@@ -125,7 +117,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
 <li>If an <code>Inputs</code> attribute is specified, the <code>Target</code> will only execute if the &quot;last modified&quot; timestamp of any of files is later than the last execution.</li>
 <li>If the <code>Target</code> does execute, <code>Inputs</code> will be edited to only contain items that have been modified since the last execution.</li>
 </ul>
-<pre><code class="language-xml">&lt;ItemGroup&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;ItemGroup&gt;
     &lt;JavaScriptFiles Include=&quot;wwwroot/*.js&quot; Exclude=&quot;wwwroot/*.min.js&quot;/&gt;
 &lt;/ItemGroup&gt;
 
@@ -133,7 +125,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
     ... minify files ...
 &lt;/Target&gt;
 </code></pre>
-<pre><code class="language-c#">public void MinifyJavaScriptFiles(javaScriptFiles)
+<pre class="prettyprint"><code class="language-c#">public void MinifyJavaScriptFiles(javaScriptFiles)
 {
     if (HaveAnyTimestampsBeenUpdatedSinceLastExecution(javaScriptFiles)) 
     { 
@@ -147,7 +139,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
 <p>MSBuild has the same primitives as general-purpose languages like C#.</p>
 <p>In this post, we covered its support for functions and event handlers. In the next post, we'll take a look at a real-world example to reinforce what we've learned.</p>
 <div class="notice--info" markdown="1">
-[Previous post](/learn-msbuild-part-2) | [Next post](/learn-msbuild-part-4)
+<a href="./learn-msbuild-part-2.html">Previous post</a> | <a href="./learn-msbuild-part-4.html">Next post</a>
 </div>
 <h1 id="appendix-a-quick-note-on-importing-targets">Appendix: A quick note on importing <code>Targets</code></h1>
 <p>There are three ways to define / import a <code>Target</code> into your .csproj:</p>
@@ -156,7 +148,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
 <li><strong>Define a <code>Target</code> in a <code>.targets</code> file in the <code>build/</code> folder of a <code>NuGet</code> package.</strong> This is the most reusable and a very valuable skill to be able to deploy if the situation calls for it.</li>
 <li><strong><code>Import</code> the <code>Target</code> from a <code>.targets</code> file.</strong> This makes organization simple since you can group related <code>Targets</code> and <code>Properties</code> in the same files together.</li>
 </ol>
-<pre><code class="language-xml">&lt;Import Project=&quot;FileWithProperties.props&quot; /&gt;
+<pre class="prettyprint"><code class="language-xml">&lt;Import Project=&quot;FileWithProperties.props&quot; /&gt;
 &lt;Import Project=&quot;FileWithTargets.targets&quot; /&gt;
 </code></pre>
 

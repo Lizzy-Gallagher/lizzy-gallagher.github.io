@@ -18,15 +18,12 @@
 	<link href="../css/fontawesome/css/fontawesome.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/brands.css" rel="stylesheet" />
 	<link href="../css/fontawesome/css/solid.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/duotone-thin.css" rel="stylesheet" />
-	<link href="../css/fontawesome/css/sharp-duotone-thin.css" rel="stylesheet" />
 
     <!-- For syntax-highlighting-->
     <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 
     <!-- TODO -->
-	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/feed.rss" />
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
 </head>
 <body>
 	<h1>Lizzy Gallagher</h1>
@@ -40,7 +37,7 @@
 
 	<hr />
 	<div style="text-align: center;">
-		<a href="index.html">Home</a> |
+		<a href="../index.html">Home</a> |
 		Blog
 	</div>
 	<hr />
@@ -48,17 +45,13 @@
     <h3>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</h3>
     <div style="text-align: center;">04-04-21</div>
     
-    <hr />
-<h2 id="title-how-to-fix-resolve-operation-has-already-ended-exceptions-in-lambda-autofac-registrations-date-2021-04-04-173500-0500-tags-autofac-documentation">title: How to fix &quot;resolve operation has already ended&quot; exceptions in lambda Autofac registrations
-date: 2021-04-04 17:35:00 -0500
-tags: autofac documentation</h2>
-<p>At work today, we ran into an <code>ObjectDisposedException</code> when writing a lambda Autofac registration:</p>
+    <p>At work today, we ran into an <code>ObjectDisposedException</code> when writing a lambda Autofac registration:</p>
 <blockquote>
 <p>This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&lt;&gt; based factory to create subsequent components from.</p>
 </blockquote>
 <h1 id="solution">Solution</h1>
 <p>This error happens at runtime when attempting to resolve a component from a &quot;captured&quot; <code>IComponentContext</code> that belonged to the <code>Register</code> method:</p>
-<pre><code class="language-c#">var cb = new ContainerBuilder();
+<pre class="prettyprint"><code class="language-c#">var cb = new ContainerBuilder();
 
 // maybe the IComponentContext was captured inside the body of a Lazy&lt;&gt;
 cb.Register(cc =&gt; 
@@ -74,7 +67,7 @@ var container = cb.Build();
 container.Resolve&lt;ApplePie&gt;().UseApple(); // ERROR! This resolve operation h...
 </code></pre>
 <p>The resolution is to resolve <code>IComponentContext</code> <em>outside</em> of the capture context and resolve from it instead:</p>
-<pre><code class="language-c#">cb.Register(cc =&gt;
+<pre class="prettyprint"><code class="language-c#">cb.Register(cc =&gt;
 {
     var context = cc.Resolve&lt;IComponentContext&gt;();
     return new ApplePie(new Lazy&lt;Apple&gt;(() =&gt; context.Resolve&lt;Apple&gt;()));
@@ -89,7 +82,7 @@ container.Resolve&lt;ApplePie&gt;().UseApple(); // ERROR! This resolve operation
 <p><strong>Disclaimer:</strong> This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.</p>
 <p><strong>Note:</strong> This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try <a href="/illustrated-autofac">An illustrated guide to Autofac</a>.</p>
 <p>The first thing to understand is that the <code>IComponentContext</code> resolved <em>inside</em> <code>Register</code> is not the same instance as the <code>IComponentContext</code> which is a parameter.</p>
-<pre><code class="language-c#">cb.Register(cc =&gt; {
+<pre class="prettyprint"><code class="language-c#">cb.Register(cc =&gt; {
     var context = cc.Resolve&lt;IComponentContext&gt;();
     context != cc; // true
     ...
@@ -99,7 +92,7 @@ container.Resolve&lt;ApplePie&gt;().UseApple(); // ERROR! This resolve operation
 <p>As its name implies, <code>LifetimeScope</code> is designed to persist for the length of a lifetime scope, e.g. an HTTP request, resolving hundreds of thousands of services across multiple threads. <code>LifetimeScope</code> is the smallest unit of &quot;sharing&quot; in Autofac, so this class must keep track (in a thread safe manner) any services that were created with an <code>InstancePerLifetimeScope</code> registration.</p>
 <p>By contrast to meticulous, long-lived <code>LifetimeScope</code>, <code>DefaultResolveRequestContext</code> is an <code>IComponentContext</code> spun up exclusively for the lifetime of a single <code>Resolve</code> call, to be disposed of immediately afterward. To keep this short-lived service inexpensive, <code>DefaultResolveRequestContext</code> is not-thread safe.</p>
 <p>Here's an example of what this &quot;lack of thread-safety&quot; looks like:</p>
-<pre><code class="language-c#">public class Apple { }
+<pre class="prettyprint"><code class="language-c#">public class Apple { }
 // ...
 var cb = new ContainerBuilder();
 cb.RegisterType&lt;Apple&gt;();

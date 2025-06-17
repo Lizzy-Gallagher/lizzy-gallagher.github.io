@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher.github.io/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../assets/css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../assets/css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
+</head>
+<body>
+	<h3>What's Keeping Lizzy Busy?</h3>
+	<hr />
+	<div style="text-align: center;">
+		<a href="../index.html">Home</a> |
+		<a href="./blog.html">Blog</a>
+	</div>
+	<hr />
+
+    <h3>Learn MSBuild - Part 1 - Motivation</h3>
+    <div style="text-align: center;">03-31-21</div>
+    
+    <div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-2.html">Next post</a>
+</div>
+<p>You can get pretty far as a .NET developer without understanding MSBuild. Sure, very few months you may need to frantically copy/paste a line of MSBuild from StackOverflow into a .csproj, but you can mostly live in blissful ignorance.</p>
+<p>As some who has had the (mis?)fortune of spending a lot of time writing MSBuild,  I wanted to put together a resource to empower others to understand it.</p>
+<h3 id="why-learn-msbuild">Why learn MSBuild?</h3>
+<h4 id="msbuild-is-a-useful-tool-for-your-toolbox">1. MSBuild is a useful tool for your toolbox</h4>
+<p><strong>Does your application have a multi-step README for how to build the project?</strong> Using MSBuild, you can smush all those steps together -- restoring npm packages, running webpack, transpiling TypeScript -- into a single <code>dotnet build</code> command.</p>
+<p><strong>Does your organization need validation done in every application?</strong> Using MSBuild, you can easily implement validations that can break the build if not satisfied. An ASP.NET project missing a <code>.ConfigureAwait(false)</code>? Fail the build!</p>
+<p><strong>Want to the &quot;go-to expert&quot; at your organization in something?</strong> Pick MSBuild. You'll be able to help .NET developers in their darkest days.</p>
+<h4 id="msbuild-inspires-fear-due-to-unfamiliarity">2. MSBuild inspires fear due to unfamiliarity</h4>
+<p>I have seen the eyes of many excellent engineers glaze over when opening an MSBuild file. Hours sunk into throwing copy/pasted statements against the wall to see if anything sticks.</p>
+<h3 id="how-will-this-blog-series-teach-me-msbuild">How will this blog series teach me MSBuild?</h3>
+<p>It's easiest to learn new idea by connecting them to old ones, so this series is going to teach MSBuild by explaining it as a programming language.</p>
+<p>This series contains 3 posts:</p>
+<ol>
+<li><a href="/learn-msbuild-part-2">Learn MSBuild - Part 2 - Variables</a></li>
+<li><a href="/learn-msbuild-part-3">Learn MSBuild - Part 3 - Functions</a></li>
+<li><a href="/learn-msbuild-part-4">Learn MSBuild - Part 4 - Real-world MSBuild</a></li>
+</ol>
+<p>Ready?</p>
+<div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-2.html">Next post</a>
+</div>
+
+</body>
+</html>
+

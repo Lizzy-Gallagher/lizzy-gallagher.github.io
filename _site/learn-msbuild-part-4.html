@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher.github.io/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../assets/css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../assets/css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
+</head>
+<body>
+	<h3>What's Keeping Lizzy Busy?</h3>
+	<hr />
+	<div style="text-align: center;">
+		<a href="../index.html">Home</a> |
+		<a href="./blog.html">Blog</a>
+	</div>
+	<hr />
+
+    <h3>Learn MSBuild - Part 4 - Real-world MSBuild</h3>
+    <div style="text-align: center;">03-31-21</div>
+    
+    <div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-3.html">Previous post</a>
+</div>
+<p>This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world <code>.targets</code> file: <a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets">TSLint.MSBuild.targets</a>.</p>
+<div class="notice--warning" markdown="1">
+<h4 id="disclaimer"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
+<p>I am not the author of <code>TSLint.MSBuild.targets</code>. I chose this NuGet package because</p>
+<ol>
+<li>It is open-source</li>
+<li>The context is easy to gain: the package lints TypeScript files on build.</li>
+<li>I think the MSBuild is approachable while being non-trivial</li>
+</ol>
+</div>
+<h3 id="a-tour-through-tslint.msbuild">A Tour through <code>TSLint.MSBuild</code></h3>
+<p>Instead of walking through the <code>TSLint.MSBuild.targets</code> file line-by-line, we'll instead tour various sections. The full text of file is available at the bottom of this post.</p>
+<h4 id="use-the-condition-attribute-of-a-property-to-only-define-the-variable-if-it-has-not-already-been-defined">Use the <code>Condition</code> attribute of a <code>Property</code> to only define the variable if it has not already been defined</h4>
+<p>Recall that the <code>Condition</code> attribute can be used to evaluate &quot;has this <code>Property</code> already been defined?&quot;</p>
+<pre class="prettyprint"><code class="language-xml">&lt;PropertyGroup&gt;
+    &lt;TSLintTimestampFile 
+        Condition=&quot;'$(TSLintTimestampFile)' == ''&quot;&gt;
+        $(OutputPath)\$(MSBuildProjectName).TSLint.timestamp.txt
+    &lt;/TSLintTimestampFile&gt;
+&lt;/PropertyGroup&gt;
+</code></pre>
+<h4 id="use-string-templating-to-compose-a-complex-property">Use string templating to compose a complex <code>Property</code></h4>
+<p>The string templating support for <code>Properties</code> can be used like the <code>$PATH</code> variable to compose long sequences.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Build the TSLint arguments --&gt;
+&lt;PropertyGroup&gt;
+    &lt;TSLintArgs&gt;&lt;/TSLintArgs&gt;
+    &lt;TSLintArgs Condition=&quot;'$(TSLintConfig)' != ''&quot;&gt;$(TSLintArgs) --config &quot;$(TSLintConfig)&quot;&lt;/TSLintArgs&gt;
+    &lt;TSLintArgs Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;$(TSLintArgs) --exclude &quot;$(TSLintExcludeJoined)&quot;&lt;/TSLintArgs&gt;
+    ...
+&lt;/PropertyGroup&gt;
+</code></pre>
+<h4 id="use-the-inputs-attribute-so-a-target-can-execute-incrementally">Use the <code>Inputs</code> attribute so a <code>Target</code> can execute incrementally</h4>
+<p>Recall that MSBuild supports &quot;incremental builds&quot; and <code>Targets</code> support timestamp based caching.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;Target
+    AfterTargets=&quot;CompileTypeScript&quot;
+    ...
+    Inputs=&quot;@(TSLintInclude);@(TypeScriptCompile)&quot;
+    Name=&quot;TSLint&quot;
+    Outputs=&quot;$(TSLintTimestampFile)&quot;&gt;
+
+    ...
+
+&lt;/Target&gt;
+</code></pre>
+<h3 id="use-tasks-to-report-on-status-and-validate-information">Use <code>Tasks</code> to report on status and validate information</h3>
+<p>The built-in <code>Message</code> <code>Task</code> is a go to for reporting status to the consumer.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;Message Text=&quot;Running TSLint...&quot; Importance=&quot;high&quot; /&gt;
+</code></pre>
+<p>The built-in <code>Error</code> <code>Task</code> is useful for validating inputs...</p>
+<pre class="prettyprint"><code class="language-xml">&lt;Error Condition=&quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&quot; Text=&quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&quot; /&gt;
+</code></pre>
+<p>... and reporting if something doesn't work as expected.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&gt;
+&lt;Error Condition=&quot;'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'&quot; Text=&quot;TSLint checks failed&quot; /&gt;
+</code></pre>
+<h4 id="use-the-exec-built-in-task-to-run-an-executable">Use the <code>Exec</code> built-in <code>Task</code> to run an executable</h4>
+<p>The built-in <code>Exec</code> <code>Task</code> makes it simple to delegate more complex behavior to external executables.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;!-- Run TSLint using the Node executable --&gt;
+&lt;Exec
+    Command=&quot;&amp;quot;$(TSLintNodeExe)&amp;quot; &amp;quot;$(TSLintCli)&amp;quot; $(TSLintArgs)&quot;
+    Condition=&quot;'$(TSLintDisabled)' != 'true'&quot;
+    ConsoleToMsBuild=&quot;true&quot;
+    ...
+    Timeout=&quot;$(TSLintTimeout)&quot;&gt;
+        ...
+&lt;/Exec&gt;
+</code></pre>
+<h3 id="summary">Summary</h3>
+<p>MSBuild has the same primitives as general-purpose languages like C#.</p>
+<p>In this post, we reviewed what what's possible using <code>Properties</code>, <code>Items</code>, <code>Tasks</code>, and <code>Targets</code> by looking at a real-life open-source example.</p>
+<p>Hopefully this series has been a helpful explanation of MSBuild as a programming language. If anything was unclear or you'd like to hear more, please feel free to reach out to me on <a href="https://twitter.com/LizzyIsNotBusy">Twitter</a>!</p>
+<div class="notice--info" markdown="1">
+<a href="./learn-msbuild-part-3.html">Previous post</a>
+</div>
+<h3 id="appendix-full-source-of-tslint.msbuild.targets">Appendix: Full source of <code>TSLint.MSBuild.targets</code></h3>
+<p>Source available at <a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets">GitHub</a>.</p>
+<pre class="prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+&lt;Project ToolsVersion=&quot;4.0&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;
+
+  &lt;!-- Ensures that if this file changes it forces a TypeScript rebuild --&gt;
+  &lt;PropertyGroup&gt;
+    &lt;TypeScriptAllProjects&gt;$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)&lt;/TypeScriptAllProjects&gt;
+    &lt;TSLintTimestampFile Condition=&quot;'$(TSLintTimestampFile)' == ''&quot;&gt;$(OutputPath)\$(MSBuildProjectName).TSLint.timestamp.txt&lt;/TSLintTimestampFile&gt;
+    &lt;TSLintTimestampFile Condition=&quot;'$(TSLintForceBuild)' == 'true'&quot;&gt;$([System.DateTime]::UtcNow.Ticks)&lt;/TSLintTimestampFile&gt;
+  &lt;/PropertyGroup&gt;
+
+  &lt;Target
+    AfterTargets=&quot;CompileTypeScript&quot;
+    Condition=&quot;('@(TSLintInclude)' != '' or '@(TypeScriptCompile)' != '') and ('$(BuildingProject)' == 'true' or '$(TSLintRunWhenNotBuilding)' == 'true')&quot;
+    Inputs=&quot;@(TSLintInclude);@(TypeScriptCompile)&quot;
+    Name=&quot;TSLint&quot;
+    Outputs=&quot;$(TSLintTimestampFile)&quot;&gt;
+
+    &lt;Message Text=&quot;Running TSLint...&quot; Importance=&quot;high&quot; /&gt;
+
+    &lt;ItemGroup Condition=&quot;'$(TSLintExcludeTypeScriptCompile)' != 'true'&quot;&gt;
+      &lt;TSLintInclude Include=&quot;@(TypeScriptCompile)&quot; /&gt;
+    &lt;/ItemGroup&gt;
+
+    &lt;PropertyGroup&gt;
+      &lt;TSLintBreakBuildOnError Condition=&quot;'$(TSLintBreakBuildOnError)' == ''&quot;&gt;false&lt;/TSLintBreakBuildOnError&gt;
+      &lt;TSLintCreateTimestampFile Condition=&quot;'$(TSLintCreateTimestampFile)' == ''&quot;&gt;true&lt;/TSLintCreateTimestampFile&gt;
+      &lt;TSLintFormat Condition=&quot;'$(TSLintFormat)' == ''&quot;&gt;msbuild&lt;/TSLintFormat&gt;
+      &lt;TSLintNodeExe Condition=&quot;'$(TSLintNodeExe)' == ''&quot;&gt;$([System.IO.Path]::GetFullPath(&quot;$(MSBuildThisFileDirectory)..\tools\node-12.4.0.exe&quot;))&lt;/TSLintNodeExe&gt;
+      &lt;TSLintTimeout Condition=&quot;'$(TSLintTimeout)' == ''&quot;&gt;10000000&lt;/TSLintTimeout&gt;
+      &lt;TSLintVersion Condition=&quot;'$(TSLintVersion)' == ''&quot;&gt;*.*.*&lt;/TSLintVersion&gt;
+    &lt;/PropertyGroup&gt;
+
+    &lt;!-- Grab the first matching TSLint CLI in a NuGet packages install --&gt;
+    &lt;ItemGroup Condition=&quot;'$(TSLintCli)' == ''&quot;&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(SolutionDir)packages\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(SolutionDir)packages\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(MSBuildThisFileDirectory)..\..\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(MSBuildThisFileDirectory)..\..\..\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&quot; /&gt;
+      &lt;!-- support for tslint 5.10 and below --&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(SolutionDir)packages\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(SolutionDir)packages\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(MSBuildThisFileDirectory)..\..\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(MSBuildThisFileDirectory)..\..\..\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&quot; /&gt;
+      &lt;TSLintPotentialCli Include=&quot;$(ProjectDir)node_modules\tslint\bin\tslint&quot; /&gt;
+    &lt;/ItemGroup&gt;
+    &lt;PropertyGroup Condition=&quot;'$(TSLintCli)' == ''&quot;&gt;
+      &lt;TSLintCliProperty&gt;@(TSLintPotentialCli);&lt;/TSLintCliProperty&gt;
+      &lt;TSLintCli&gt;$(TSLintCliProperty.Substring(0, $(TSLintCliProperty.IndexOf(';'))))&lt;/TSLintCli&gt;
+    &lt;/PropertyGroup&gt;
+
+    &lt;!-- TSLintExclude might include special characters, so those should be escaped --&gt;
+    &lt;PropertyGroup&gt;
+      &lt;TSLintExclude Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;@(TSLintExclude.Replace(&quot;*&quot;, &quot;%2A&quot;))&lt;/TSLintExclude&gt;
+      &lt;TSLintExclude Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;@(TSLintExclude.Replace(&quot;.&quot;, &quot;%2E&quot;))&lt;/TSLintExclude&gt;
+      &lt;TSLintExclude Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;@(TSLintExclude.Replace('&quot;', &quot;%22&quot;))&lt;/TSLintExclude&gt;
+      
+      &lt;TSLintExcludeJoined Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;@(TSLintExclude, '&quot; --exclude &quot;')&lt;/TSLintExcludeJoined&gt;
+    &lt;/PropertyGroup&gt;
+
+    &lt;!-- Build the TSLint arguments --&gt;
+    &lt;PropertyGroup&gt;
+      &lt;TSLintArgs&gt;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'$(TSLintConfig)' != ''&quot;&gt;$(TSLintArgs) --config &quot;$(TSLintConfig)&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'@(TSLintExclude)' != ''&quot;&gt;$(TSLintArgs) --exclude &quot;$(TSLintExcludeJoined)&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs&gt;$(TSLintArgs) --format &quot;$(TSLintFormat)&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'$(TSLintProject)' != ''&quot;&gt;$(TSLintArgs) --project &quot;$(TSLintProject)&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'$(TSLintTypeCheck)' != ''&quot;&gt;$(TSLintArgs) --type-check &quot;$(TSLintTypeCheck)&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'@(TSLintRulesDirectory)' != ''&quot;&gt;$(TSLintArgs) --rules-dir &quot;@(TSLintRulesDirectory, '&quot; --rules-dir &quot;')&quot;&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'$(TSLintExtraArgs)' != ''&quot;&gt;$(TSLintArgs) $(TSLintExtraArgs)&lt;/TSLintArgs&gt;
+      &lt;TSLintArgs Condition=&quot;'$(TSLintFileListDisabled)' != 'true' And '@(TSLintInclude)' != ''&quot;&gt;$(TSLintArgs) &quot;@(TSLintInclude, '&quot; &quot;')&quot;&lt;/TSLintArgs&gt;
+    &lt;/PropertyGroup&gt;
+
+    &lt;Error Condition=&quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&quot; Text=&quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&quot; /&gt;
+
+    &lt;MakeDir Directories=&quot;$(OutputPath)&quot; /&gt;
+
+    &lt;!-- Run TSLint using the Node executable --&gt;
+    &lt;Exec
+      Command=&quot;&amp;quot;$(TSLintNodeExe)&amp;quot; &amp;quot;$(TSLintCli)&amp;quot; $(TSLintArgs)&quot;
+      Condition=&quot;'$(TSLintDisabled)' != 'true'&quot;
+      ConsoleToMsBuild=&quot;true&quot;
+      EchoOff=&quot;true&quot;
+      IgnoreExitCode=&quot;true&quot;
+      Timeout=&quot;$(TSLintTimeout)&quot;&gt;
+      &lt;Output TaskParameter=&quot;ConsoleOutput&quot; ItemName=&quot;TSLintOutput&quot; /&gt;
+      &lt;Output TaskParameter=&quot;ExitCode&quot; PropertyName=&quot;TSLintErrorCode&quot; /&gt;
+    &lt;/Exec&gt;
+
+    &lt;Touch
+      Condition=&quot;'$(TSLintCreateTimestampFile)' == 'true' and $(TSLintErrorCode) == 0&quot;
+      AlwaysCreate=&quot;true&quot;
+      Files=&quot;$(TSLintTimestampFile)&quot; /&gt;
+
+    &lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&gt;
+    &lt;Error Condition=&quot;'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'&quot; Text=&quot;TSLint checks failed&quot; /&gt;
+  &lt;/Target&gt;
+&lt;/Project&gt;
+</code></pre>
+
+</body>
+</html>
+

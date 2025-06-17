@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher.github.io/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../assets/css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../assets/css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
+</head>
+<body>
+	<h3>What's Keeping Lizzy Busy?</h3>
+	<hr />
+	<div style="text-align: center;">
+		<a href="../index.html">Home</a> |
+		<a href="./blog.html">Blog</a>
+	</div>
+	<hr />
+
+    <h3>Query interception in Entity Framework Core</h3>
+    <div style="text-align: center;">07-25-20</div>
+    
+    <p>At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.</p>
+<p>I investigated query interception. Although this is a heavily used feature internally, I found literally two paragraphs of information about the feature in Entity Framework Core.</p>
+<p>This is a summary of what I learned about the feature and is attempting to be the blog post that I wish I would have found during my investigation.</p>
+<h3 id="what-is-query-interception">What is query interception?</h3>
+<p>Query interception is the ability to insert logic before a query executes on the database or insert logic immediately after a query executes (and before control returns to the calling code).</p>
+<p>There are a variety of real world use cases for this feature:</p>
+<ul>
+<li>Extend the timeout of a command that has certain characteristics</li>
+<li>Log diagnostic information when a query fails with an exception</li>
+<li>Log a warning when the number of rows read into memory is above a certain threshold</li>
+</ul>
+<h3 id="how-do-i-use-query-interception-in-entity-framework-core">How do I use query interception in Entity Framework Core?</h3>
+<p>EF Core exposes a base class <code>DbCommandInterceptor</code> with hooks into the query &quot;life cycle&quot;.</p>
+<p>Create a class that extends DbCommandInterceptor</p>
+<pre class="prettyprint"><code class="language-cs">public class TestQueryInterceptor : DbCommandInterceptor
+{
+  ...
+}
+</code></pre>
+<p>then override the individual life cycle methods you care about:</p>
+<pre class="prettyprint"><code class="language-cs">// runs before a query is executed
+public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
+{
+    ...
+}
+
+// runs after a query is executed
+public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
+{
+    ...
+}
+</code></pre>
+<p>NOTE: Most life cycle methods have a synchronous and an asynchronous version. Annoyingly, asynchronous queries only trigger the asynchronous method (and vice-versa), so you must override both when writing an interceptor.</p>
+<h4 id="how-to-install-a-dbcommandinterceptor">How to install a DbCommandInterceptor</h4>
+<p>You can add multiple interceptors when configuring your DbContext.</p>
+<pre class="prettyprint"><code class="language-cs">public class SampleDbContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseSqlite(@&quot;Data Source=Sample.db;&quot;)
+            .AddInterceptors(new SampleInterceptor1(), new SampleInterceptor2());
+    }
+
+    ...
+}
+</code></pre>
+<h4 id="how-to-modify-the-command-before-execution">How to modify the command before execution</h4>
+<p>This is fairly straightforward because most of <code>DbCommand</code>'s properties are settable.</p>
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
+{
+   command.CommandText += &quot; OPTION (OPTIMIZE FOR UNKNOWN)&quot;;
+   
+   command.CommandTimeout = 12345;
+   
+   return result;
+}
+</code></pre>
+<h4 id="how-to-suppress-execution">How to suppress execution</h4>
+<p>By returning a new <code>InterceptionResult</code> created via <code>InterceptionResult&lt;T&gt;.SuppressWithResult()</code> from a pre-event life cycle method, the command will not be executed.</p>
+<p>It is important to note that any other <code>DbCommandInterceptor</code>s installed will still execute (and can check whether another interceptor has suppressed execution via the <code>HasResult</code> property on <code>result</code>).</p>
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;object&gt; ScalarExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;object&gt; result)
+{
+    if (this.ShouldSuppressExecution(command))
+    {
+        return InterceptionResult.SuppressWithResult&lt;object&gt;(null);
+    }
+    
+    return result;
+}
+</code></pre>
+<p>It is worth mentioning that an exception thrown in a pre-event life cycle method will technically prevent execution. Do not take advantage of this fact. It is almost always bad design to use exceptions for control flow. Exceptions should be save for exceptional situations.</p>
+<pre class="prettyprint"><code class="language-cs">public override InterceptionResult&lt;DbDataReader&gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&lt;DbDataReader&gt; result)
+{
+   if (this.IsSomethingWrongWithThisCommand(command, out var reasonSomethingIsWrong))
+   {
+       // query will not be executed
+       throw new InvalidOperationException(reasonSomethingIsWrong);
+   }
+   
+   return result;
+}
+</code></pre>
+<h4 id="change-the-result-of-execution">Change the result of execution</h4>
+<p>From a post-event life cycle method, you can opt to return a different result.</p>
+<pre class="prettyprint"><code class="language-cs">public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
+{
+    if (this.ShouldChangeResult(command, out var changedResult))
+    {
+        return changedResult;
+    }
+    
+    return result;
+}
+</code></pre>
+<h4 id="how-to-log-diagnostic-data-if-theres-an-exception">How to log diagnostic data if there's an exception</h4>
+<p>Although you can't catch exceptions, you can respond to them before they are thrown.</p>
+<pre class="prettyprint"><code class="language-cs"> public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
+  {
+      // there is a lot of other metadata on `eventData` that you might find useful
+      this.LogDiagnosticInformation(
+          eventData.Duration,
+          eventData.Exception,
+          command.CommandText);
+  }
+</code></pre>
+<h3 id="appendix-1-what-types-of-operations-can-you-intercept">Appendix 1: What types of operations can you intercept?</h3>
+<p>There are 17 methods you can overwrite when implementing <code>DbCommandInterceptor</code>.</p>
+<p>Here is a cheat sheet:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CommandCreating</td>
+<td>Before a command is created (NOTE: Everything is a command, so this will intercept all queries)</td>
+</tr>
+<tr>
+<td>CommandCreated</td>
+<td>After a command creation but before execution</td>
+</tr>
+<tr>
+<td>CommandFailed[Async]</td>
+<td>After a command has failed with an exception during execution</td>
+</tr>
+<tr>
+<td>ReaderExecuting[Async]</td>
+<td>Before a &quot;query&quot; command is executed</td>
+</tr>
+<tr>
+<td>ReaderExecuted[Async]</td>
+<td>After a &quot;query&quot; command is executed</td>
+</tr>
+<tr>
+<td>NonQueryExecuting[Async]</td>
+<td>Before a &quot;non-query&quot; command is executed (NOTE: An example of a non-query are usages of <code>ExecuteSqlRaw</code>)</td>
+</tr>
+<tr>
+<td>NonQueryExecuted[Async]</td>
+<td>After a &quot;non-query&quot; command is executed</td>
+</tr>
+<tr>
+<td>ScalarExecuting[Async]</td>
+<td>Before a &quot;scalar&quot; command is executed (NOTE: &quot;scalar&quot; is kind of synonymous with stored procedure)</td>
+</tr>
+<tr>
+<td>ScalarExecuted[Async]</td>
+<td>After a &quot;scalar&quot; command is executed</td>
+</tr>
+<tr>
+<td>DataReaderDisposing</td>
+<td>After a command is executed</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
+

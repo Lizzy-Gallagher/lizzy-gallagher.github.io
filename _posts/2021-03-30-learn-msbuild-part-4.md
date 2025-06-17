@@ -9,23 +9,28 @@ tags: msbuild
 [Previous post](/learn-msbuild-part-3)
 </div>
 
-This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world `.targets` file: [TSLint.MSBuild.targets](https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets). 
+This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world `.targets` file: [TSLint.MSBuild.targets](https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets).
 
 <div class="notice--warning" markdown="1">
 
-<h4 class="no_toc"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
+#### <i class="fas fa-exclamation-triangle"></i> Disclaimer
+
 I am not the author of `TSLint.MSBuild.targets`. I chose this NuGet package because
+
 1. It is open-source
 2. The context is easy to gain: the package lints TypeScript files on build.
 3. I think the MSBuild is approachable while being non-trivial
+
 </div>
 
-# A Tour through `TSLint.MSBuild`
+### A Tour through `TSLint.MSBuild`
 
 Instead of walking through the `TSLint.MSBuild.targets` file line-by-line, we'll instead tour various sections. The full text of file is available at the bottom of this post.
 
-## Use the `Condition` attribute of a `Property` to only define the variable if it has not already been defined
+#### Use the `Condition` attribute of a `Property` to only define the variable if it has not already been defined
+
 Recall that the `Condition` attribute can be used to evaluate "has this `Property` already been defined?"
+
 ```xml
 <PropertyGroup>
     <TSLintTimestampFile 
@@ -35,8 +40,10 @@ Recall that the `Condition` attribute can be used to evaluate "has this `Propert
 </PropertyGroup>
 ```
 
-## Use string templating to compose a complex `Property`
+#### Use string templating to compose a complex `Property`
+
 The string templating support for `Properties` can be used like the `$PATH` variable to compose long sequences.
+
 ```xml
 <!-- Build the TSLint arguments -->
 <PropertyGroup>
@@ -47,7 +54,8 @@ The string templating support for `Properties` can be used like the `$PATH` vari
 </PropertyGroup>
 ```
 
-## Use the `Inputs` attribute so a `Target` can execute incrementally
+#### Use the `Inputs` attribute so a `Target` can execute incrementally
+
 Recall that MSBuild supports "incremental builds" and `Targets` support timestamp based caching.
 
 ```xml
@@ -63,24 +71,29 @@ Recall that MSBuild supports "incremental builds" and `Targets` support timestam
 </Target>
 ```
 
-## Use `Tasks` to report on status and validate information
+### Use `Tasks` to report on status and validate information
 
 The built-in `Message` `Task` is a go to for reporting status to the consumer.
+
 ```xml
 <Message Text="Running TSLint..." Importance="high" />
 ```
 
 The built-in `Error` `Task` is useful for validating inputs...
+
 ```xml
 <Error Condition="'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''" Text="You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject." />
 ```
+
 ... and reporting if something doesn't work as expected.
+
 ```xml
 <!-- Return an error if TSLint returned an exit code and we should break on errors -->
 <Error Condition="'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'" Text="TSLint checks failed" />
 ```
 
-## Use the `Exec` built-in `Task` to run an executable
+#### Use the `Exec` built-in `Task` to run an executable
+
 The built-in `Exec` `Task` makes it simple to delegate more complex behavior to external executables.
 
 ```xml
@@ -95,7 +108,7 @@ The built-in `Exec` `Task` makes it simple to delegate more complex behavior to 
 </Exec>
 ```
 
-# Summary
+### Summary
 
 MSBuild has the same primitives as general-purpose languages like C#.
 
@@ -107,9 +120,10 @@ Hopefully this series has been a helpful explanation of MSBuild as a programming
 [Previous post](/learn-msbuild-part-3)
 </div>
 
-# Appendix: Full source of `TSLint.MSBuild.targets`
-Source available at:
-https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets
+### Appendix: Full source of `TSLint.MSBuild.targets`
+
+Source available at [GitHub](https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets).
+
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">

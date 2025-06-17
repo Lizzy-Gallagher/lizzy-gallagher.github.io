@@ -31,7 +31,8 @@ But this breaks down if you add another target framework.
     <Message Text="Before build: '$(TargetFramework)'" />
 </Target>
 ```
-```
+
+```text
 Before build: 'net472'
 Before build: 'netcoreapp3.0'
 Before build: ''
@@ -41,7 +42,7 @@ Oof. Your target now runs N+1 times (if the project has N target frameworks).
 
 At best, this slows down your build. At worst, it'll break it due to a race condition (e.g. if each iteration attempts to write to the same file).
 
-## Run a target once per project (if multi-targeted)
+### Run a target once per project (if multi-targeted)
 
 Most of the time you can replace `Build` with `DispatchToInnerBuilds`.
 
@@ -55,13 +56,15 @@ Most of the time you can replace `Build` with `DispatchToInnerBuilds`.
     <Message Text="Before build '$(TargetFramework)'" />
 </Target>
 ```
-```
+
+```text
 Before build: ''
 ```
 
 Success!
 
 Well, except that `DispatchToInnerBuilds` only exists for multi-targeted projects, so it will not run in a single-targeted project.
+
 ```xml
 <PropertyGroup>
   <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -72,13 +75,16 @@ Well, except that `DispatchToInnerBuilds` only exists for multi-targeted project
   <Message Text="Before build: '$(TargetFramework)'" />
 </Target>
 ```
-```
+
+```text
 ```
 
-## Run a target once per project
+### Run a target once per project
+
 This is the layout of a NuGet package that distributes a target that runs only once per project regardless of whether the project is single- or multi-targeted.
 
 `MyPackage.nuspec`
+
 ```xml
 ...
 <files>
@@ -94,7 +100,8 @@ This is the layout of a NuGet package that distributes a target that runs only o
 ```
 
 Creates this package layout:
-```
+
+```text
 buildMultitargeting/
   MyPackage.props
   MyPackage.targets
@@ -103,6 +110,7 @@ build/
 ```
 
 `buildMultiTargeting/MyPackage.props`
+
 ```xml
 <Project>
   <PropertyGroup>
@@ -115,6 +123,7 @@ build/
 ```
 
 `build/MyPackage.targets`
+
 ```xml
 <PropertyGroup>
   <IsOuterBuild 

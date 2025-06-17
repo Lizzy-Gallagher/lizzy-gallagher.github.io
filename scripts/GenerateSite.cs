@@ -7,28 +7,33 @@ using Markdig.Helpers;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
-var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+var markdownPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
 var homeDirectory = Path.Combine(Directory.GetCurrentDirectory(), "..");
-var generatedDirectory = Path.Combine(homeDirectory, "generated");
-var blogPostHtmlTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogPost.template.html"));
-var blogPostHomeTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogHome.template.html"));
+var outputDirectory = Path.Combine(homeDirectory, "_site");
+var markdownDirectory = Path.Combine(homeDirectory, "_posts");
 
-// Clean up from previous runs of this script
-foreach (var previouslyGeneratedFile in Directory.EnumerateFiles(generatedDirectory))
+var blogPostHtmlTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogPost.template.html"));
+var blogHomeTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogHome.template.html"));
+
+//
+// STEP 0: Clean up from previous runs of this script
+//
+foreach (var previouslyGeneratedFile in Directory.EnumerateFiles(outputDirectory))
 {
     File.Delete(previouslyGeneratedFile);
 }
 
-var blogPosts = new List<BlogPostMetadata>();
-
-var markdownDirectory = Path.Combine(homeDirectory, "../_posts");
+//
+// STEP 1: Generate blog posts HTML files from Markdown files
+//
+var blogPostMetadatas = new List<BlogPostMetadata>();
 foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.md"))
 {
     // read Markdown content
     var content = File.ReadAllText(markdownLocation);
 
-    // extract section like
+    // extract values from metadata header like:
     // ---
     // #layout: post
     // title:  "Query interception in Entity Framework Core"
@@ -47,20 +52,20 @@ foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.
         .Trim();
     var date = DateTime.Parse(dateString);
 
-    // remove header
+    // strip the metadata header
     var headerEndIndex = lines.FindIndex(startIndex: 1, l => l.Trim() == "---");
     content = string.Join(Environment.NewLine, lines.Skip(headerEndIndex + 1));
 
     // generate HTML content
-    var htmlContent = Markdown.ToHtml(content, pipeline);
+    var htmlContent = Markdown.ToHtml(content, markdownPipeline);
 
-    // populate the blog post template
+    // populate the template
     var templatedContent = blogPostHtmlTemplate
         .Replace("<!-- TEMPLATE: TITLE -->", title)
         .Replace("<!-- TEMPLATE: DATE -->", date.ToString("MM-dd-yy"))
         .Replace("<!-- TEMPLATE: CONTENT -->", htmlContent);
 
-    // support highlighting
+    // support syntax highlighting
     templatedContent = templatedContent
         .Replace("<pre>", "<pre class=\"prettyprint\">");
 
@@ -73,26 +78,29 @@ foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.
         return $"<a href=\".{relativeLink}.html\">{displayText}</a>";
     });
 
-    var markdownFileName = Path.GetFileNameWithoutExtension(markdownLocation);
-    var fileNameWithoutDate = string.Join(string.Empty, markdownFileName.SkipWhile(c => !c.IsAlpha()));
-    var htmlFileName = fileNameWithoutDate + ".html";
-    var htmlLocation = Path.Combine(homeDirectory, "generated", htmlFileName);
-
+    var htmlFileName = string.Join(string.Empty, Path.GetFileNameWithoutExtension(markdownLocation).SkipWhile(c => !c.IsAlpha())) + ".html";;
+    var htmlLocation = Path.Combine(outputDirectory, htmlFileName);
     File.WriteAllText(path: htmlLocation, contents: templatedContent);
-    blogPosts.Add(new BlogPostMetadata(Title: title, PublishDate: date, FileName: htmlFileName));
+
+    blogPostMetadatas.Add(new BlogPostMetadata(Title: title, PublishDate: date, FileName: htmlFileName));
 }
 
-// Generate blog post home
+//
+// STEP 2: Generate blog homepage
+//
 
-blogPosts.Sort((x, y) => -DateTime.Compare(x.PublishDate, y.PublishDate));
-var listItemsHtml = blogPosts
+// sort posts so most recent post is first
+blogPostMetadatas.Sort((x, y) => -DateTime.Compare(x.PublishDate, y.PublishDate));
+var listItemsHtml = blogPostMetadatas
     .Select(b => $"<li><a href=\"./{b.FileName}\">{b.Title}</a><small> ({b.PublishDate:MM/dd/yy})</small></li>");
 
-var templatedBlogPostHome = blogPostHomeTemplate
+var templatedBlogHome = blogHomeTemplate
     .Replace("<!-- TEMPLATE: ITEMS -->", string.Join(Environment.NewLine, listItemsHtml));
-File.WriteAllText(path: Path.Combine(homeDirectory, "generated", "blog.html"), templatedBlogPostHome);
+File.WriteAllText(path: Path.Combine(outputDirectory, "blog.html"), templatedBlogHome);
 
-// Generate RSS feed
+//
+// STEP 3: Generate RSS feed
+//
 
 var feed = new SyndicationFeed(
     title: "What's Keeping Lizzy Busy?",
@@ -101,11 +109,11 @@ var feed = new SyndicationFeed(
     id: "FeedID",
     DateTime.Now)
 {
-    Items = blogPosts
-        .Select(b => new SyndicationItem(title: b.Title, content: "test", itemAlternateLink: new Uri("https://lizzy-gallagher.github.io/featherweight/generated/" + b.FileName)))
+    Items = blogPostMetadatas
+        .Select(b => new SyndicationItem(title: b.Title, content: "test", itemAlternateLink: new Uri("https://lizzy-gallagher.github.io/_site/" + b.FileName)))
 };
 
-using XmlWriter writer = XmlWriter.Create("../generated/rss.xml");
+using XmlWriter writer = XmlWriter.Create(Path.Combine(outputDirectory, "rss.xml"));
 var rssFormatter = new Rss20FeedFormatter(feed);
 rssFormatter.WriteTo(writer);
 

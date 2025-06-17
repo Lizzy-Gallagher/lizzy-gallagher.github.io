@@ -15,7 +15,8 @@ This is a summary of what I learned about the feature and is attempting to be th
 Query interception is the ability to insert logic before a query executes on the database or insert logic immediately after a query executes (and before control returns to the calling code).
 
 There are a variety of real world use cases for this feature:
-- Extend the timeout of a command that has certain charateristics
+
+- Extend the timeout of a command that has certain characteristics
 - Log diagnostic information when a query fails with an exception
 - Log a warning when the number of rows read into memory is above a certain threshold
 
@@ -24,6 +25,7 @@ There are a variety of real world use cases for this feature:
 EF Core exposes a base class `DbCommandInterceptor` with hooks into the query "life cycle".
 
 Create a class that extends DbCommandInterceptor
+
 ```cs
 public class TestQueryInterceptor : DbCommandInterceptor
 {
@@ -32,6 +34,7 @@ public class TestQueryInterceptor : DbCommandInterceptor
 ```
 
 then override the individual life cycle methods you care about:
+
 ```cs
 // runs before a query is executed
 public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult<DbDataReader> result)
@@ -39,7 +42,7 @@ public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand comma
     ...
 }
 
-// runs after a query is excuted
+// runs after a query is executed
 public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
 {
     ...
@@ -67,6 +70,7 @@ public class SampleDbContext : DbContext
 ```
 
 #### How to modify the command before execution
+
 This is fairly straightforward because most of `DbCommand`'s properties are settable.
 
 ```cs
@@ -81,6 +85,7 @@ public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand comma
 ```
 
 #### How to suppress execution
+
 By returning a new `InterceptionResult` created via `InterceptionResult<T>.SuppressWithResult()` from a pre-event life cycle method, the command will not be executed.
 
 It is important to note that any other `DbCommandInterceptor`s installed will still execute (and can check whether another interceptor has suppressed execution via the `HasResult` property on `result`).
@@ -113,7 +118,9 @@ public override InterceptionResult<DbDataReader> ReaderExecuting(DbCommand comma
 ```
 
 #### Change the result of execution
+
 From a post-event life cycle method, you can opt to return a different result.
+
 ```cs
 public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
 {
@@ -127,6 +134,7 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 ```
 
 #### How to log diagnostic data if there's an exception
+
 Although you can't catch exceptions, you can respond to them before they are thrown.
 
 ```cs
@@ -142,18 +150,18 @@ Although you can't catch exceptions, you can respond to them before they are thr
 
 ### Appendix 1: What types of operations can you intercept?
 
-There are 17 methods you can overwrite when implementing `DbCommandInterceptor`. 
+There are 17 methods you can overwrite when implementing `DbCommandInterceptor`.
 
-Here is a cheatsheet:
+Here is a cheat sheet:
 
 | Method | Description
-|---|---|
+|---|---
 | CommandCreating | Before a command is created (NOTE: Everything is a command, so this will intercept all queries)
 | CommandCreated | After a command creation but before execution
-| CommandFailed[Async] | After a command has failed with an exception during execution 
+| CommandFailed[Async] | After a command has failed with an exception during execution
 | ReaderExecuting[Async] | Before a "query" command is executed
 | ReaderExecuted[Async] | After a "query" command is executed
-| NonQueryExecuting[Async] | Before a "non-query" command is executed (NOTE: An example of a non-query are usages of `ExecuteSqlRaw`
+| NonQueryExecuting[Async] | Before a "non-query" command is executed (NOTE: An example of a non-query are usages of `ExecuteSqlRaw`)
 | NonQueryExecuted[Async] | After a "non-query" command is executed
 | ScalarExecuting[Async] | Before a "scalar" command is executed (NOTE: "scalar" is kind of synonymous with stored procedure)
 | ScalarExecuted[Async] | After a "scalar" command is executed

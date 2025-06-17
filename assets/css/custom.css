@@ -1,3 +1,21 @@
+img {
+    border: 1px solid black;
+}
+
+table {
+    border-collapse: collapse;
+
+    td, th {
+        border: 1px solid rgb(190,190,190);
+        padding: 10px 20px;
+    }
+    
+    tr:nth-child(odd) td {
+        background-color: rgb(245,245,245);
+    }
+}
+
+  
 .notice--warning {
     margin: 2em 0;
     padding: 1em;

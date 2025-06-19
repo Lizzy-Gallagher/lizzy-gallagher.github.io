@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>What's keeping Lizzy Busy?</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Writing code at Mastercard. Walking enthusiast. Creature of habit.">
+	<meta name="author" content="Lizzy Gallagher">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="What's keeping Lizzy busy?">
+    <meta property="og:description" content="I write about technical things.">
+    <meta property="og:image" content="https://lizzy-gallagher.github.io/assets/images/lizzy-author.png">
+    <meta property="og:url" content="https://lizzy-gallagher.github.io/index.html"> 
+	
+	<link rel="stylesheet" type="text/css" href="../assets/css/custom.css">
+	<link rel="stylesheet" type="text/css" href="../assets/css/modesty.css">
+	
+	<!-- TODO: Decide if I actually want this bloat... -->
+	<link href="../assets/css/fontawesome/css/fontawesome.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/brands.css" rel="stylesheet" />
+	<link href="../assets/css/fontawesome/css/solid.css" rel="stylesheet" />
+
+    <!-- For syntax-highlighting-->
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+    <!-- TODO -->
+	<link rel="alternate" type="application/rss+xml" title="RSS feed for lizzy-gallagher.github.io" href="https://lizzy-gallagher.github.io/blog/rss.xml" />
+</head>
+<body>
+	<h3>What's Keeping Lizzy Busy?</h3>
+	<hr />
+	<div style="text-align: center;">
+		<a href="../index.html">Home</a> |
+		<a href="./blog.html">Blog</a>
+	</div>
+	<hr />
+
+    <h3>What I wish I'd known when rolling my own RSS feed in .NET</h3>
+    <div style="text-align: center;">06-19-25</div>
+    
+    <p>I recently rewrote this website to be more lightweight and throw off the shackles of a third-party static site generator.</p>
+<p>When you have a hand-rolled website, it follows that you'll need a hand-rolled RSS feed. I love RSS and have strong RSS <em>opinions</em> on what makes a feed great: full text and working images.</p>
+<p>Since there are already a number of posts online about how to write an RSS feed in .NET, I'll keep this post to just the work I did to satisfy the &quot;edge&quot; cases I ran into due to these opinions.</p>
+<div class="notice--warning" markdown="1">
+<h5 id="disclaimer"><i class="fas fa-exclamation-triangle"></i> Disclaimer</h5>
+<p>All the heavy lifting is done by the <a href="https://www.nuget.org/packages/System.ServiceModel.Syndication"><code>System.ServiceModel.Syndication</code> NuGet package</a>.</p>
+<p>I'm not going to echo their <a href="https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-create-a-basic-rss-feed">excellent documentation</a> here. Start there and that might be all you need!</p>
+</div>
+<h4 id="what-do-i-need-to-know-about-rss">What do I need to know about RSS?</h4>
+<p>It's not magic. It's just an opinionated XML file<sup>1</sup>!</p>
+<p>The XML needs to contain a <code>&lt;channel&gt;</code> element with one or more <code>&lt;item&gt;</code> elements. <code>&lt;channel&gt;</code> should contain metadata about your blog as a whole. <code>&lt;item&gt;</code> should contain metadata about a specific blog post.</p>
+<p>The fields are fairly self-explanatory. For example, I imagine the following is fairly digestible:</p>
+<pre class="prettyprint"><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;rss xmlns:a10=&quot;http://www.w3.org/2005/Atom&quot; version=&quot;2.0&quot;&gt;
+    &lt;channel&gt;
+        &lt;title&gt;What's Keeping Lizzy Busy?&lt;/title&gt;
+        &lt;link&gt;https://lizzy-gallagher.github.io/rss.xml&lt;/link&gt;
+        &lt;description&gt;RSS feed for Lizzy Gallagher's tech blog&lt;/description&gt;
+        &lt;lastBuildDate&gt;Wed, 18 Jun 2025 20:48:07 -0400&lt;/lastBuildDate&gt;
+        &lt;a10:id&gt;https://lizzy-gallagher.github.io&lt;/a10:id&gt;
+        &lt;item&gt;
+            &lt;guid isPermaLink=&quot;false&quot;&gt;1408cefb-6afc-1b46-2c00-662a918b8b7b&lt;/guid&gt;
+            &lt;link&gt;https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html&lt;/link&gt;
+            &lt;title&gt;How to git clone a single file&lt;/title&gt;
+            &lt;description&gt;...&lt;/description&gt;
+            &lt;a10:updated&gt;2025-06-18T20:48:07-04:00&lt;/a10:updated&gt;
+        &lt;/item&gt;
+        ...
+    &lt;/channel&gt;
+&lt;/rss&gt;
+</code></pre>
+<p>However, straightforward as it might be, I have a few tips:</p>
+<ul>
+<li>Most RSS readers will render HTML if you give it to them. However, the environment is sandboxed (i.e. no JavaScript, CSS), but they will make HTTP requests for images as long as the urls are absolute.</li>
+<li>The <code>&lt;description&gt;</code> of an <code>&lt;item&gt;</code> can be <em>either</em> a snippet of the overall content <em>or</em> the complete content. If you choose to go with a snippet, the <code>&lt;link&gt;</code> element should contain the direct link to the full content. I mention this because I kept looking for a <code>&lt;content&gt;</code> element, but really <code>&lt;description&gt;</code> just plays double-duty.</li>
+<li>As far as I can tell, a channel's <code>&lt;id&gt;</code> is used to differentiate it from other RSS feeds that might have the same name. To save myself future headache from fending off the many upstart tech bloggers also named Lizzy, I used my website's url as the ID. I may change hosting at some point which <em>might</em> cause a future headache, but <em>eh</em>, I'll cross that bridge when I get to it.</li>
+</ul>
+<p><sup>1</sup> The <a href="https://www.rssboard.org/rss-specification">official specification</a> is quite approachable, and I would recommend it to the curious. Although <code>System.ServiceModel.Syndication</code> is a workhorse, it was built to support both Atom and RSS. At times, this can make their API a bit confusing since it's naming doesn't alway match the official specification / outputted file. The official specification also gives lots of good advice as to <em>how</em> to populate fields, so that's nice too.</p>
+<h4 id="how-to-include-entire-content-of-the-rss-feed">How to include entire content of the RSS feed</h4>
+<p>It was non-negotiable that my RSS feed would include the full content of each blog post in its pure HTML form. I prefer to read my RSS feeds offline, so it's annoying when an otherwise interesting post drops that only includes a teaser sentence or too.</p>
+<p>In order to do this, we need to embed the HTML body content into the RSS's XML. Importantly, we do not need to include the whole HTML <em>document</em> but instead just the body. This is because, most RSS readers will render HTML elements but will not respect the <code>&lt;script&gt;</code> tags, etc. that are present in the <code>&lt;head&gt;</code> element.</p>
+<p>You have two choices:</p>
+<ol>
+<li>Encode all the HTML (e.g. <code>&amp;lt;</code> instead of <code>&lt;</code>).</li>
+<li>Use a <code>CDATA</code> section.</li>
+</ol>
+<p>Fun fact: I thought I had been fancy and using <code>CDATA</code> (option 2). However, in the course of writing this this blog post, I realized that I'd accidentally been doing the first...</p>
+<p><code>CDATA</code> is a tool in XML to delineate a specific section of the document as &quot;character data&quot;, text that is meant to be taken <em>literally</em>. This means that it can use characters like <code>&lt;</code> and <code>&gt;</code> unescaped without messing up the outer XML document.</p>
+<p>For those (like me!) who are unfamiliar with CDATA, it looks like the following:</p>
+<pre class="prettyprint"><code class="language-xml">&lt;![CDATA[
+Look at me!! I can contain things like &lt;&gt; and &lt;/element&gt; and it won't mess up the XML of the outer document!
+]]&gt;
+</code></pre>
+<p>Here's how you <em>would</em> create a <code>CDATA</code> section in .NET:</p>
+<pre class="prettyprint"><code class="language-c#">// &lt;![CDATA[&lt;div&gt;I am HTML!&lt;/div&gt;]]&gt;
+var cDataContent = new XmlDocument().CreateCDataSection(unencodedHtmlContent).OuterText;
+</code></pre>
+<p>However, here's what I was doing:</p>
+<pre class="prettyprint"><code class="language-c#">// &lt;div&gt;I am HTML!&lt;/div&gt;
+var cDataContent = new XmlDocument().CreateCDataSection(unencodedHtmlContent).InnerText;
+</code></pre>
+<p>That's what we in the business call a no-op... 🤦🏻‍♀️</p>
+<p>What had been <em>actually</em> encoding my HTML was the default serialization behavior of the <code>XmlWriter</code> which I had been using to save the generated RSS XML file.</p>
+<pre class="prettyprint"><code class="language-c#">using XmlWriter writer = XmlWriter.Create(rssLocation); // does the encoding for you!
+var rssFormatter = new Rss20FeedFormatter(feed);
+rssFormatter.WriteTo(writer);
+</code></pre>
+<h4 id="how-to-test-your-rss-feed-for-correctness">How to test your RSS feed for correctness</h4>
+<p>I knew I didn't want to have to deploy my new RSS XML file in order to test it. As someone scared of pushing a bug to prod (even when prod is my just a dev blog), I wanted to iterate without deploying.</p>
+<p>Thankfully, since RSS is a specification, you can validate correctness against that specification. Once you've generated a XML file, you can upload it to this <a href="https://validator.w3.org/feed/#validate_by_input">free validator from W3</a>.</p>
+<p>I was never able to get to zero errors, mostly due to built-in namespacing decisions that Microsoft made that aren't able to be disabled.</p>
+<p>And then of course, once you feel confident enough to deploy, you can subscribe via your favorite RSS reader:</p>
+<p><img src="https://lizzy-gallagher.github.io/assets/images/rss-example.jpeg" alt="Showcase of RSS feed" /></p>
+<h4 id="how-to-populate-updated-for-an-item">How to populate <code>&lt;updated&gt;</code> for an <code>&lt;item&gt;</code></h4>
+<p>Each <code>&lt;item&gt;</code>'s <code>&lt;updated&gt;</code> element seem to be very important to the user experience when using an RSS reader, e.g. the ordering of items. I wanted to spend some time getting this right instead of using <code>DateTime.Now</code> and moving on with my life.</p>
+<p>It was easy enough to write down the blog's publish date in the metadata of corresponding markdown file.</p>
+<pre class="prettyprint"><code class="language-text">---
+title: How to fix &quot;resolve operation has already ended&quot; exceptions in lambda Autofac registrations
+date: 2021-04-04 17:35:00 -0500
+---
+</code></pre>
+<p>Great, this covered the initial creation of an <code>&lt;item&gt;</code>, but what about if the blog post had been updated? Could I get this to be reflected in <code>&lt;updated&gt;</code>?</p>
+<p>To start, I'd need a way to identify matching entries in the existing RSS XML file. <code>&lt;id&gt;</code> to the rescue!</p>
+<p>I used the title as <code>&lt;id&gt;</code>, the unique identifier of the blog post. As I write this blog post, I realize that I probably should have used file name or something less likely to change than a title. Who among us has not thought of a catchier title five minutes after publishing a blog post?</p>
+<pre class="prettyprint"><code class="language-c#">var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
+
+// NOTE: I was not sure if there were special character restrictions (e.g. !), so I just GUID-ed it
+var id = new Guid(hash).ToString(); 
+</code></pre>
+<p>And then I used a content check to determine whether the blog post has been updated since last generating the feed:</p>
+<pre class="prettyprint"><code class="language-c#">var previousEntry = existingFeed?.Items.SingleOrDefault(item =&gt; item.Id == id);
+
+// NOTE 1: yes, my encoding buffs, even though the RSS feed's HTML content is encoded, previousEntry.Summary.Text
+// is decoded. Therefore this comparison is &quot;&lt;div&gt;I am HTML!&lt;/div&gt;&quot; == &quot;&lt;div&gt;I am HTML!&lt;/div&gt;&quot;
+
+// NOTE 2: yes, my reference vs. value equality buffs, in .NET string's &quot;==&quot; has an override to preform a
+// case sensitive, ordinal value comparison (instead of reference comparison)
+
+var lastUpdatedTime = previousEntry == null || previousEntry.Summary.Text == b.HtmlContentForRssFeed
+    ? b.PublishDate
+    : DateTime.Now;
+</code></pre>
+<p>This check was not particularly robust. For example, if I were to change the classname of a CSS element, it would register as the content being changed. I can't currently think of a better way to determine whether the <em>meaningful</em> content of the blog post changed, so this is how it's going to be.</p>
+<p>In summary, I would generate the initial date by using the metadata from the Markdown file. Each time the RSS feed is regenerated, the code checks whether the content of a blog post had changed. If it did, use <code>DateTime.Now</code>. If it didn't, keep using that initial date.</p>
+<h4 id="appendix-all-the-code-that-makes-this-work">Appendix: All the code that makes this work</h4>
+<p>If you find this interesting, you can see the rest of the code to &quot;generate this website&quot; in <a href="https://github.com/Lizzy-Gallagher/lizzy-gallagher.github.io/blob/master/scripts/GenerateSite.cs"><code>GenerateSite.cs</code></a>.</p>
+<pre class="prettyprint"><code class="language-c#">var rssLocation = Path.Combine(outputDirectory, &quot;rss.xml&quot;);
+
+// Handle the case where the rss file does not exist
+XmlReader? reader = null;
+SyndicationFeed? existingFeed = null;
+if (File.Exists(rssLocation))
+{
+    reader = XmlReader.Create(rssLocation);
+    existingFeed = SyndicationFeed.Load(reader);
+}
+
+// Create the &lt;channel&gt; for the RSS feed
+var feed = new SyndicationFeed(
+    title: &quot;What's Keeping Lizzy Busy?&quot;,
+    description: &quot;RSS feed for Lizzy Gallagher's tech blog&quot;,
+    new Uri(&quot;https://lizzy-gallagher.github.io/rss.xml&quot;),
+    id: &quot;https://lizzy-gallagher.github.io&quot;,
+    DateTime.Now)
+{
+    // Create the &lt;item&gt;s for the channel
+    Items = blogPostMetadatas
+        .Select(b =&gt;
+        {
+            // title determines uniqueness (so... new title == new post)
+            var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
+            var id = new Guid(hash).ToString();
+
+            var previousEntry = existingFeed?.Items.SingleOrDefault(item =&gt; item.Id == id);
+            var lastUpdatedTime = previousEntry == null || previousEntry.Summary.Text == b.HtmlContentForRssFeed
+                ? b.PublishDate
+                : DateTime.Now;
+
+            return new SyndicationItem(
+                id: id,
+                title: b.Title,
+                content: b.HtmlContentForRssFeed,
+                lastUpdatedTime: lastUpdatedTime,
+                itemAlternateLink: new Uri(&quot;https://lizzy-gallagher.github.io/_site/&quot; + b.FileName));
+        })
+};
+
+reader?.Close();
+
+// Not shown: logic that deletes the existing rss.xml
+
+using XmlWriter writer = XmlWriter.Create(rssLocation);
+var rssFormatter = new Rss20FeedFormatter(feed);
+rssFormatter.WriteTo(writer);
+</code></pre>
+
+</body>
+</html>
+

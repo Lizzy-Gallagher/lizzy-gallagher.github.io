@@ -1,4 +1,159 @@
-﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Wed, 18 Jun 2025 20:48:07 -0400</lastBuildDate><a10:id>https://lizzy-gallagher.github.io</a10:id><item><guid isPermaLink="false">1408cefb-6afc-1b46-2c00-662a918b8b7b</guid><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>&lt;div class="notice--warning" markdown="1"&gt;
+﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Thu, 19 Jun 2025 17:00:08 -0400</lastBuildDate><a10:id>https://lizzy-gallagher.github.io</a10:id><item><guid isPermaLink="false">87a0d2d8-f5a0-359e-5501-80edfbe42188</guid><link>https://lizzy-gallagher.github.io/_site/rss-feed-in-net.html</link><title>What I wish I'd known when rolling my own RSS feed in .NET</title><description>&lt;p&gt;I recently rewrote this website to be more lightweight and throw off the shackles of a third-party static site generator.&lt;/p&gt;
+&lt;p&gt;When you have a hand-rolled website, it follows that you'll need a hand-rolled RSS feed. I love RSS and have strong RSS &lt;em&gt;opinions&lt;/em&gt; on what makes a feed great: full text and working images.&lt;/p&gt;
+&lt;p&gt;Since there are already a number of posts online about how to write an RSS feed in .NET, I'll keep this post to just the work I did to satisfy the &amp;quot;edge&amp;quot; cases I ran into due to these opinions.&lt;/p&gt;
+&lt;div class="notice--warning" markdown="1"&gt;
+&lt;h5 id="disclaimer"&gt;&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Disclaimer&lt;/h5&gt;
+&lt;p&gt;All the heavy lifting is done by the &lt;a href="https://www.nuget.org/packages/System.ServiceModel.Syndication"&gt;&lt;code&gt;System.ServiceModel.Syndication&lt;/code&gt; NuGet package&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I'm not going to echo their &lt;a href="https://learn.microsoft.com/en-us/dotnet/framework/wcf/feature-details/how-to-create-a-basic-rss-feed"&gt;excellent documentation&lt;/a&gt; here. Start there and that might be all you need!&lt;/p&gt;
+&lt;/div&gt;
+&lt;h4 id="what-do-i-need-to-know-about-rss"&gt;What do I need to know about RSS?&lt;/h4&gt;
+&lt;p&gt;It's not magic. It's just an opinionated XML file&lt;sup&gt;1&lt;/sup&gt;!&lt;/p&gt;
+&lt;p&gt;The XML needs to contain a &lt;code&gt;&amp;lt;channel&amp;gt;&lt;/code&gt; element with one or more &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt; elements. &lt;code&gt;&amp;lt;channel&amp;gt;&lt;/code&gt; should contain metadata about your blog as a whole. &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt; should contain metadata about a specific blog post.&lt;/p&gt;
+&lt;p&gt;The fields are fairly self-explanatory. For example, I imagine the following is fairly digestible:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;
+&amp;lt;rss xmlns:a10=&amp;quot;http://www.w3.org/2005/Atom&amp;quot; version=&amp;quot;2.0&amp;quot;&amp;gt;
+    &amp;lt;channel&amp;gt;
+        &amp;lt;title&amp;gt;What's Keeping Lizzy Busy?&amp;lt;/title&amp;gt;
+        &amp;lt;link&amp;gt;https://lizzy-gallagher.github.io/rss.xml&amp;lt;/link&amp;gt;
+        &amp;lt;description&amp;gt;RSS feed for Lizzy Gallagher's tech blog&amp;lt;/description&amp;gt;
+        &amp;lt;lastBuildDate&amp;gt;Wed, 18 Jun 2025 20:48:07 -0400&amp;lt;/lastBuildDate&amp;gt;
+        &amp;lt;a10:id&amp;gt;https://lizzy-gallagher.github.io&amp;lt;/a10:id&amp;gt;
+        &amp;lt;item&amp;gt;
+            &amp;lt;guid isPermaLink=&amp;quot;false&amp;quot;&amp;gt;1408cefb-6afc-1b46-2c00-662a918b8b7b&amp;lt;/guid&amp;gt;
+            &amp;lt;link&amp;gt;https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html&amp;lt;/link&amp;gt;
+            &amp;lt;title&amp;gt;How to git clone a single file&amp;lt;/title&amp;gt;
+            &amp;lt;description&amp;gt;...&amp;lt;/description&amp;gt;
+            &amp;lt;a10:updated&amp;gt;2025-06-18T20:48:07-04:00&amp;lt;/a10:updated&amp;gt;
+        &amp;lt;/item&amp;gt;
+        ...
+    &amp;lt;/channel&amp;gt;
+&amp;lt;/rss&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, straightforward as it might be, I have a few tips:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Most RSS readers will render HTML if you give it to them. However, the environment is sandboxed (i.e. no JavaScript, CSS), but they will make HTTP requests for images as long as the urls are absolute.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; of an &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt; can be &lt;em&gt;either&lt;/em&gt; a snippet of the overall content &lt;em&gt;or&lt;/em&gt; the complete content. If you choose to go with a snippet, the &lt;code&gt;&amp;lt;link&amp;gt;&lt;/code&gt; element should contain the direct link to the full content. I mention this because I kept looking for a &lt;code&gt;&amp;lt;content&amp;gt;&lt;/code&gt; element, but really &lt;code&gt;&amp;lt;description&amp;gt;&lt;/code&gt; just plays double-duty.&lt;/li&gt;
+&lt;li&gt;As far as I can tell, a channel's &lt;code&gt;&amp;lt;id&amp;gt;&lt;/code&gt; is used to differentiate it from other RSS feeds that might have the same name. To save myself future headache from fending off the many upstart tech bloggers also named Lizzy, I used my website's url as the ID. I may change hosting at some point which &lt;em&gt;might&lt;/em&gt; cause a future headache, but &lt;em&gt;eh&lt;/em&gt;, I'll cross that bridge when I get to it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;sup&gt;1&lt;/sup&gt; The &lt;a href="https://www.rssboard.org/rss-specification"&gt;official specification&lt;/a&gt; is quite approachable, and I would recommend it to the curious. Although &lt;code&gt;System.ServiceModel.Syndication&lt;/code&gt; is a workhorse, it was built to support both Atom and RSS. At times, this can make their API a bit confusing since it's naming doesn't alway match the official specification / outputted file. The official specification also gives lots of good advice as to &lt;em&gt;how&lt;/em&gt; to populate fields, so that's nice too.&lt;/p&gt;
+&lt;h4 id="how-to-include-entire-content-of-the-rss-feed"&gt;How to include entire content of the RSS feed&lt;/h4&gt;
+&lt;p&gt;It was non-negotiable that my RSS feed would include the full content of each blog post in its pure HTML form. I prefer to read my RSS feeds offline, so it's annoying when an otherwise interesting post drops that only includes a teaser sentence or too.&lt;/p&gt;
+&lt;p&gt;In order to do this, we need to embed the HTML body content into the RSS's XML. Importantly, we do not need to include the whole HTML &lt;em&gt;document&lt;/em&gt; but instead just the body. This is because, most RSS readers will render HTML elements but will not respect the &lt;code&gt;&amp;lt;script&amp;gt;&lt;/code&gt; tags, etc. that are present in the &lt;code&gt;&amp;lt;head&amp;gt;&lt;/code&gt; element.&lt;/p&gt;
+&lt;p&gt;You have two choices:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Encode all the HTML (e.g. &lt;code&gt;&amp;amp;lt;&lt;/code&gt; instead of &lt;code&gt;&amp;lt;&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Use a &lt;code&gt;CDATA&lt;/code&gt; section.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Fun fact: I thought I had been fancy and using &lt;code&gt;CDATA&lt;/code&gt; (option 2). However, in the course of writing this this blog post, I realized that I'd accidentally been doing the first...&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;CDATA&lt;/code&gt; is a tool in XML to delineate a specific section of the document as &amp;quot;character data&amp;quot;, text that is meant to be taken &lt;em&gt;literally&lt;/em&gt;. This means that it can use characters like &lt;code&gt;&amp;lt;&lt;/code&gt; and &lt;code&gt;&amp;gt;&lt;/code&gt; unescaped without messing up the outer XML document.&lt;/p&gt;
+&lt;p&gt;For those (like me!) who are unfamiliar with CDATA, it looks like the following:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;![CDATA[
+Look at me!! I can contain things like &amp;lt;&amp;gt; and &amp;lt;/element&amp;gt; and it won't mess up the XML of the outer document!
+]]&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here's how you &lt;em&gt;would&lt;/em&gt; create a &lt;code&gt;CDATA&lt;/code&gt; section in .NET:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;// &amp;lt;![CDATA[&amp;lt;div&amp;gt;I am HTML!&amp;lt;/div&amp;gt;]]&amp;gt;
+var cDataContent = new XmlDocument().CreateCDataSection(unencodedHtmlContent).OuterText;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, here's what I was doing:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;// &amp;lt;div&amp;gt;I am HTML!&amp;lt;/div&amp;gt;
+var cDataContent = new XmlDocument().CreateCDataSection(unencodedHtmlContent).InnerText;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;That's what we in the business call a no-op... 🤦🏻‍♀️&lt;/p&gt;
+&lt;p&gt;What had been &lt;em&gt;actually&lt;/em&gt; encoding my HTML was the default serialization behavior of the &lt;code&gt;XmlWriter&lt;/code&gt; which I had been using to save the generated RSS XML file.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;using XmlWriter writer = XmlWriter.Create(rssLocation); // does the encoding for you!
+var rssFormatter = new Rss20FeedFormatter(feed);
+rssFormatter.WriteTo(writer);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="how-to-test-your-rss-feed-for-correctness"&gt;How to test your RSS feed for correctness&lt;/h4&gt;
+&lt;p&gt;I knew I didn't want to have to deploy my new RSS XML file in order to test it. As someone scared of pushing a bug to prod (even when prod is my just a dev blog), I wanted to iterate without deploying.&lt;/p&gt;
+&lt;p&gt;Thankfully, since RSS is a specification, you can validate correctness against that specification. Once you've generated a XML file, you can upload it to this &lt;a href="https://validator.w3.org/feed/#validate_by_input"&gt;free validator from W3&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I was never able to get to zero errors, mostly due to built-in namespacing decisions that Microsoft made that aren't able to be disabled.&lt;/p&gt;
+&lt;p&gt;And then of course, once you feel confident enough to deploy, you can subscribe via your favorite RSS reader:&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/rss-example.jpeg" alt="Showcase of RSS feed" /&gt;&lt;/p&gt;
+&lt;h4 id="how-to-populate-updated-for-an-item"&gt;How to populate &lt;code&gt;&amp;lt;updated&amp;gt;&lt;/code&gt; for an &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;Each &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt;'s &lt;code&gt;&amp;lt;updated&amp;gt;&lt;/code&gt; element seem to be very important to the user experience when using an RSS reader, e.g. the ordering of items. I wanted to spend some time getting this right instead of using &lt;code&gt;DateTime.Now&lt;/code&gt; and moving on with my life.&lt;/p&gt;
+&lt;p&gt;It was easy enough to write down the blog's publish date in the metadata of corresponding markdown file.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;---
+title: How to fix &amp;quot;resolve operation has already ended&amp;quot; exceptions in lambda Autofac registrations
+date: 2021-04-04 17:35:00 -0500
+---
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Great, this covered the initial creation of an &lt;code&gt;&amp;lt;item&amp;gt;&lt;/code&gt;, but what about if the blog post had been updated? Could I get this to be reflected in &lt;code&gt;&amp;lt;updated&amp;gt;&lt;/code&gt;?&lt;/p&gt;
+&lt;p&gt;To start, I'd need a way to identify matching entries in the existing RSS XML file. &lt;code&gt;&amp;lt;id&amp;gt;&lt;/code&gt; to the rescue!&lt;/p&gt;
+&lt;p&gt;I used the title as &lt;code&gt;&amp;lt;id&amp;gt;&lt;/code&gt;, the unique identifier of the blog post. As I write this blog post, I realize that I probably should have used file name or something less likely to change than a title. Who among us has not thought of a catchier title five minutes after publishing a blog post?&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
+
+// NOTE: I was not sure if there were special character restrictions (e.g. !), so I just GUID-ed it
+var id = new Guid(hash).ToString(); 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And then I used a content check to determine whether the blog post has been updated since last generating the feed:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var previousEntry = existingFeed?.Items.SingleOrDefault(item =&amp;gt; item.Id == id);
+
+// NOTE 1: yes, my encoding buffs, even though the RSS feed's HTML content is encoded, previousEntry.Summary.Text
+// is decoded. Therefore this comparison is &amp;quot;&amp;lt;div&amp;gt;I am HTML!&amp;lt;/div&amp;gt;&amp;quot; == &amp;quot;&amp;lt;div&amp;gt;I am HTML!&amp;lt;/div&amp;gt;&amp;quot;
+
+// NOTE 2: yes, my reference vs. value equality buffs, in .NET string's &amp;quot;==&amp;quot; has an override to preform a
+// case sensitive, ordinal value comparison (instead of reference comparison)
+
+var lastUpdatedTime = previousEntry == null || previousEntry.Summary.Text == b.HtmlContentForRssFeed
+    ? b.PublishDate
+    : DateTime.Now;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This check was not particularly robust. For example, if I were to change the classname of a CSS element, it would register as the content being changed. I can't currently think of a better way to determine whether the &lt;em&gt;meaningful&lt;/em&gt; content of the blog post changed, so this is how it's going to be.&lt;/p&gt;
+&lt;p&gt;In summary, I would generate the initial date by using the metadata from the Markdown file. Each time the RSS feed is regenerated, the code checks whether the content of a blog post had changed. If it did, use &lt;code&gt;DateTime.Now&lt;/code&gt;. If it didn't, keep using that initial date.&lt;/p&gt;
+&lt;h4 id="appendix-all-the-code-that-makes-this-work"&gt;Appendix: All the code that makes this work&lt;/h4&gt;
+&lt;p&gt;If you find this interesting, you can see the rest of the code to &amp;quot;generate this website&amp;quot; in &lt;a href="https://github.com/Lizzy-Gallagher/lizzy-gallagher.github.io/blob/master/scripts/GenerateSite.cs"&gt;&lt;code&gt;GenerateSite.cs&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var rssLocation = Path.Combine(outputDirectory, &amp;quot;rss.xml&amp;quot;);
+
+// Handle the case where the rss file does not exist
+XmlReader? reader = null;
+SyndicationFeed? existingFeed = null;
+if (File.Exists(rssLocation))
+{
+    reader = XmlReader.Create(rssLocation);
+    existingFeed = SyndicationFeed.Load(reader);
+}
+
+// Create the &amp;lt;channel&amp;gt; for the RSS feed
+var feed = new SyndicationFeed(
+    title: &amp;quot;What's Keeping Lizzy Busy?&amp;quot;,
+    description: &amp;quot;RSS feed for Lizzy Gallagher's tech blog&amp;quot;,
+    new Uri(&amp;quot;https://lizzy-gallagher.github.io/rss.xml&amp;quot;),
+    id: &amp;quot;https://lizzy-gallagher.github.io&amp;quot;,
+    DateTime.Now)
+{
+    // Create the &amp;lt;item&amp;gt;s for the channel
+    Items = blogPostMetadatas
+        .Select(b =&amp;gt;
+        {
+            // title determines uniqueness (so... new title == new post)
+            var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
+            var id = new Guid(hash).ToString();
+
+            var previousEntry = existingFeed?.Items.SingleOrDefault(item =&amp;gt; item.Id == id);
+            var lastUpdatedTime = previousEntry == null || previousEntry.Summary.Text == b.HtmlContentForRssFeed
+                ? b.PublishDate
+                : DateTime.Now;
+
+            return new SyndicationItem(
+                id: id,
+                title: b.Title,
+                content: b.HtmlContentForRssFeed,
+                lastUpdatedTime: lastUpdatedTime,
+                itemAlternateLink: new Uri(&amp;quot;https://lizzy-gallagher.github.io/_site/&amp;quot; + b.FileName));
+        })
+};
+
+reader?.Close();
+
+// Not shown: logic that deletes the existing rss.xml
+
+using XmlWriter writer = XmlWriter.Create(rssLocation);
+var rssFormatter = new Rss20FeedFormatter(feed);
+rssFormatter.WriteTo(writer);
+&lt;/code&gt;&lt;/pre&gt;
+</description><a10:updated>2025-06-19T17:00:08-04:00</a10:updated></item><item><guid isPermaLink="false">1408cefb-6afc-1b46-2c00-662a918b8b7b</guid><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>&lt;div class="notice--warning" markdown="1"&gt;
 &lt;h5 id="disclaimer"&gt;&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Disclaimer&lt;/h5&gt;
 &lt;p&gt;This method uses &lt;a href="https://git-scm.com/docs/git-archive"&gt;&lt;code&gt;git archive&lt;/code&gt;&lt;/a&gt; which is not supported by all source control services.&lt;/p&gt;
 &lt;table&gt;
@@ -108,7 +263,7 @@ public class SourceControlledFileProvider
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">3aa24c04-c3b1-62a3-f50a-a1d75d42a2ba</guid><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>&lt;p&gt;At work today, we ran into an &lt;code&gt;ObjectDisposedException&lt;/code&gt; when writing a lambda Autofac registration:&lt;/p&gt;
+</description><a10:updated>2022-08-19T07:00:00-04:00</a10:updated></item><item><guid isPermaLink="false">3aa24c04-c3b1-62a3-f50a-a1d75d42a2ba</guid><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>&lt;p&gt;At work today, we ran into an &lt;code&gt;ObjectDisposedException&lt;/code&gt; when writing a lambda Autofac registration:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&amp;lt;&amp;gt; based factory to create subsequent components from.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -189,7 +344,7 @@ cb.Build().Resolve&amp;lt;object&amp;gt;();
 &lt;/ul&gt;
 &lt;p&gt;It is important to note that &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; uses &lt;code&gt;LifetimeScope&lt;/code&gt; under the hood to manage creating and sharing instances. This means that both have &lt;em&gt;identical&lt;/em&gt; business logic behavior. The only trade-off is that &lt;code&gt;LifetimeScope&lt;/code&gt; is a very small amount slower because of additional bookkeeping to ensure thread safety. Autofac is rarely a performance bottleneck, so 99.9% of projects can make this tradeoff without losing any sleep.&lt;/p&gt;
 &lt;p&gt;Curious about the philosophy toward thread safety in Autofac? The &lt;a href="https://autofaccn.readthedocs.io/en/latest/advanced/concurrency.html"&gt;&amp;quot;Concurrency&amp;quot; section&lt;/a&gt; of their documentation is quite good.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">1feabf51-375f-ee80-1f9f-e2c63b4bbcec</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2021-04-04T18:35:00-04:00</a10:updated></item><item><guid isPermaLink="false">1feabf51-375f-ee80-1f9f-e2c63b4bbcec</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Previous post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world &lt;code&gt;.targets&lt;/code&gt; file: &lt;a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets"&gt;TSLint.MSBuild.targets&lt;/a&gt;.&lt;/p&gt;
@@ -366,7 +521,7 @@ cb.Build().Resolve&amp;lt;object&amp;gt;();
   &amp;lt;/Target&amp;gt;
 &amp;lt;/Project&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">011a0c8c-5b87-2d5e-2573-348fec15abf9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2021-03-31T20:48:00-04:00</a10:updated></item><item><guid isPermaLink="false">011a0c8c-5b87-2d5e-2573-348fec15abf9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a .NET project is built. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles functions.&lt;/p&gt;
@@ -472,7 +627,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
 &lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Import Project=&amp;quot;FileWithProperties.props&amp;quot; /&amp;gt;
 &amp;lt;Import Project=&amp;quot;FileWithTargets.targets&amp;quot; /&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">d65c9c31-8cc4-4bfe-9b3a-a62ad39aedb9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2021-03-31T20:47:00-04:00</a10:updated></item><item><guid isPermaLink="false">d65c9c31-8cc4-4bfe-9b3a-a62ad39aedb9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a project is built and compiled. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles variables.&lt;/p&gt;
@@ -599,7 +754,7 @@ Here is the documentation on built-in `Property` and `Item` names:
 &lt;li&gt;&lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties"&gt;Reserved and well-known properties&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">a480a560-7dbd-4734-63e0-29c8f659df1d</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2021-03-31T20:47:00-04:00</a10:updated></item><item><guid isPermaLink="false">a480a560-7dbd-4734-63e0-29c8f659df1d</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;You can get pretty far as a .NET developer without understanding MSBuild. Sure, very few months you may need to frantically copy/paste a line of MSBuild from StackOverflow into a .csproj, but you can mostly live in blissful ignorance.&lt;/p&gt;
@@ -623,7 +778,7 @@ Here is the documentation on built-in `Property` and `Item` names:
 &lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">9da41a52-a6f4-e7a8-1f45-00bd43e4c994</guid><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>&lt;p&gt;Last year, I gave a talk (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;) at &lt;a href="https://www.dotnetconf.net/"&gt;.NET Conf&lt;/a&gt; about how my teammates and I automated the migration of 200 applications to .NET Core. At the core of our strategy were a handful of LINQPad scripts that leveraged Roslyn to refactor C# code.&lt;/p&gt;
+</description><a10:updated>2021-03-31T20:46:00-04:00</a10:updated></item><item><guid isPermaLink="false">9da41a52-a6f4-e7a8-1f45-00bd43e4c994</guid><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>&lt;p&gt;Last year, I gave a talk (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;) at &lt;a href="https://www.dotnetconf.net/"&gt;.NET Conf&lt;/a&gt; about how my teammates and I automated the migration of 200 applications to .NET Core. At the core of our strategy were a handful of LINQPad scripts that leveraged Roslyn to refactor C# code.&lt;/p&gt;
 &lt;p&gt;Some in attendance were curious about the specifics this refactoring, e.g. what APIs we used, how to get started writing a refactoring script. This post is my belated answer to those questions!&lt;/p&gt;
 &lt;p&gt;This post is not an attempt to exhaustively document the Roslyn APIs. It will attempt to do the opposite. Roslyn has a reputation for being complex and difficult because it has such a wide API surface area. The goal of this post is to share the minimum set of APIs that will provide a basis for writing a practical refactoring script of your own.&lt;/p&gt;
 &lt;h3 id="what-is-roslyn"&gt;What is Roslyn?&lt;/h3&gt;
@@ -859,7 +1014,7 @@ bool TryUpdateCSCode(string code, CSharpProject project, out string updatedCode)
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">b8cc3665-5f9a-7524-5f95-b8f8f6e7ace8</guid><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>&lt;p&gt;&lt;a href="https://autofac.org/"&gt;Autofac&lt;/a&gt; is a popular .NET &amp;quot;&lt;a href="https://martinfowler.com/articles/injection.html"&gt;inversion of control&lt;/a&gt;&amp;quot; library. Designed to be unobtrusive, Autofac fades into the background of large applications.&lt;/p&gt;
+</description><a10:updated>2021-01-19T12:00:00-05:00</a10:updated></item><item><guid isPermaLink="false">b8cc3665-5f9a-7524-5f95-b8f8f6e7ace8</guid><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>&lt;p&gt;&lt;a href="https://autofac.org/"&gt;Autofac&lt;/a&gt; is a popular .NET &amp;quot;&lt;a href="https://martinfowler.com/articles/injection.html"&gt;inversion of control&lt;/a&gt;&amp;quot; library. Designed to be unobtrusive, Autofac fades into the background of large applications.&lt;/p&gt;
 &lt;p&gt;This article is for those who have used Autofac without understanding the &lt;em&gt;why&lt;/em&gt; behind it. If you want specific API details, I highly recommend the &lt;a href="https://autofaccn.readthedocs.io/en/latest/"&gt;official documentation&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;This post will take a step back from specific API details and instead explain Autofac using the analogy of a restaurant.&lt;/p&gt;
 &lt;h3 id="autofac-a-restaurant-kitchen"&gt;Autofac, a restaurant kitchen&lt;/h3&gt;
@@ -1000,7 +1155,7 @@ builder.RegisterType&amp;lt;LettuceSalad&amp;gt;(); // ok because Lettuce is the
 &lt;h3 id="postscript-real-life-wellingtons"&gt;Postscript - Real life Wellingtons&lt;/h3&gt;
 &lt;p&gt;Since you made it this far, here is a picture of real-life Beef Wellington my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.&lt;/p&gt;
 &lt;p&gt;![Image showing a beef wellington](/assets/images/autofac-wellington.jpg&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">2aaa3709-4220-3baa-d270-9bbabbed039f</guid><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>&lt;p&gt;After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.&lt;/p&gt;
+</description><a10:updated>2020-10-25T11:00:00-04:00</a10:updated></item><item><guid isPermaLink="false">2aaa3709-4220-3baa-d270-9bbabbed039f</guid><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>&lt;p&gt;After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“One form of perseverance is the daily discipline of trying to do things better than we did yesterday.”
 ― Angela Duckworth, Grit: The Power of Passion and Perseverance&lt;/p&gt;
@@ -1026,7 +1181,7 @@ builder.RegisterType&amp;lt;LettuceSalad&amp;gt;(); // ok because Lettuce is the
 &lt;p&gt;Consider blocking off time on your calendar for a dedicated time for growth. Maybe that means picking 2 articles from your RSS reader while drinking your morning tea. Maybe that means watching part of a conference talk on YouTube right after lunch. Maybe that's meeting every other week with friends to go through a book or blog together.&lt;/p&gt;
 &lt;h4 id="summary"&gt;Summary&lt;/h4&gt;
 &lt;p&gt;Figure out how you like to learn -- reading books, participating in discussion groups, watching conference talks on YouTube -- and do figure out how to weave it into your work day or work week.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">c690f542-09b7-ed68-85cc-6fcd17410a22</guid><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>&lt;p&gt;Most online resources will recommend using &lt;code&gt;BeforeTargets&lt;/code&gt; or &lt;code&gt;AfterTargets&lt;/code&gt; to hook your target into the MSBuild lifecycle &lt;code&gt;Build&lt;/code&gt; method.&lt;/p&gt;
+</description><a10:updated>2020-08-30T08:00:00-04:00</a10:updated></item><item><guid isPermaLink="false">c690f542-09b7-ed68-85cc-6fcd17410a22</guid><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>&lt;p&gt;Most online resources will recommend using &lt;code&gt;BeforeTargets&lt;/code&gt; or &lt;code&gt;AfterTargets&lt;/code&gt; to hook your target into the MSBuild lifecycle &lt;code&gt;Build&lt;/code&gt; method.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
         BeforeTargets=&amp;quot;Build&amp;quot;&amp;gt;
     &amp;lt;!-- Do things --&amp;gt;
@@ -1146,7 +1301,7 @@ build/
 &amp;lt;/Target&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;NOTE: This above snippets were edited for horizontal brevity. In production code, you should always prefix your MSBuild variables with the name of your NuGet package (e.g. ShouldRunTarget -&amp;gt; MyProject_ShouldRunTarget). This is because MSBuild allows overwriting of variable names, so you want to be careful not to pollute the global pool of names.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">e5453f3d-d464-7d5a-46f0-9ca462925877</guid><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>&lt;p&gt;It happens. You're building something complex and unique, but not &lt;em&gt;so&lt;/em&gt; complex and unique that zero other humans could have run into the same problem, right?&lt;/p&gt;
+</description><a10:updated>2020-08-09T06:00:00-04:00</a10:updated></item><item><guid isPermaLink="false">e5453f3d-d464-7d5a-46f0-9ca462925877</guid><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>&lt;p&gt;It happens. You're building something complex and unique, but not &lt;em&gt;so&lt;/em&gt; complex and unique that zero other humans could have run into the same problem, right?&lt;/p&gt;
 &lt;p&gt;So you search for hours and find a feature (or package (or tool)) that is perfect for your use case... except that has no documentation. Maybe it's referenced in a bullet in the changelog or pops up in intellisense, but as far as you can tell there are no (answered) StackOverflow questions, no blog posts, and little mention in the readme or docs.&lt;/p&gt;
 &lt;p&gt;So what do you do?&lt;/p&gt;
 &lt;h3 id="ask-why-is-this-feature-underdocumented"&gt;Ask &amp;quot;Why is this feature underdocumented?&amp;quot;&lt;/h3&gt;
@@ -1211,7 +1366,7 @@ build/
 &lt;p&gt;It was this impulse to document the outcome of researching a feature that inspired me to start this blog!&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;&lt;sup&gt;1&lt;/sup&gt; Once, while waxing about Computer Science curriculums, my team lead lamented that classes overemphasize writing code over reading code, even though a large part of a developer's time is spent inside complex projects where understanding context is essential. My team lead proposed that to remedy this imbalance, CS classes could require &amp;quot;book reports&amp;quot; where students would write up their understanding of some project. I think it's a neat idea.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">fd7a9cc0-6800-5c46-69a0-0c5918ae9db4</guid><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>&lt;p&gt;At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.&lt;/p&gt;
+</description><a10:updated>2020-08-02T08:00:00-04:00</a10:updated></item><item><guid isPermaLink="false">fd7a9cc0-6800-5c46-69a0-0c5918ae9db4</guid><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>&lt;p&gt;At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.&lt;/p&gt;
 &lt;p&gt;I investigated query interception. Although this is a heavily used feature internally, I found literally two paragraphs of information about the feature in Entity Framework Core.&lt;/p&gt;
 &lt;p&gt;This is a summary of what I learned about the feature and is attempting to be the blog post that I wish I would have found during my investigation.&lt;/p&gt;
 &lt;h3 id="what-is-query-interception"&gt;What is query interception?&lt;/h3&gt;
@@ -1370,4 +1525,4 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item></channel></rss>
+</description><a10:updated>2020-07-25T08:00:00-04:00</a10:updated></item></channel></rss>

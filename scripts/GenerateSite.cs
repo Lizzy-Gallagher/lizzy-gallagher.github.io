@@ -8,6 +8,7 @@ using System.ServiceModel.Syndication;
 using System.Xml;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net;
 
 var markdownPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
@@ -137,22 +138,20 @@ var feed = new SyndicationFeed(
     Items = blogPostMetadatas
         .Select(b =>
         {
-            var cDataContent = new XmlDocument().CreateCDataSection(b.HtmlContentForRssFeed).InnerText;
-
             // title determines uniqueness (so... new title == new post)
             var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
             var id = new Guid(hash).ToString();
 
             var previousEntry = existingFeed?.Items.SingleOrDefault(item => item.Id == id);
-            var dateToUse = previousEntry == null || previousEntry.Summary.Text == cDataContent
-                ? DateTime.Now
-                : previousEntry.LastUpdatedTime;
+            var lastUpdatedTime = previousEntry == null || previousEntry.Summary.Text == b.HtmlContentForRssFeed
+                ? b.PublishDate
+                : DateTime.Now;
 
             return new SyndicationItem(
                 id: id,
                 title: b.Title,
-                content: cDataContent,
-                lastUpdatedTime: DateTime.Now,
+                content: b.HtmlContentForRssFeed,
+                lastUpdatedTime: lastUpdatedTime,
                 itemAlternateLink: new Uri("https://lizzy-gallagher.github.io/_site/" + b.FileName));
         })
 };

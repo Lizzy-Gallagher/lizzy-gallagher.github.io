@@ -1,1 +1,1373 @@
-﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Tue, 17 Jun 2025 11:36:14 -0400</lastBuildDate><a10:id>FeedID</a10:id><item><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>test</description></item><item><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>test</description></item></channel></rss>
+﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Wed, 18 Jun 2025 20:28:18 -0400</lastBuildDate><a10:id>https://lizzy-gallagher.github.io</a10:id><item><guid isPermaLink="false">1408cefb-6afc-1b46-2c00-662a918b8b7b</guid><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>&lt;div class="notice--warning" markdown="1"&gt;
+&lt;h5 id="disclaimer"&gt;&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Disclaimer&lt;/h5&gt;
+&lt;p&gt;This method uses &lt;a href="https://git-scm.com/docs/git-archive"&gt;&lt;code&gt;git archive&lt;/code&gt;&lt;/a&gt; which is not supported by all source control services.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Service&lt;/th&gt;
+&lt;th&gt;Supported&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;GitHub&lt;/td&gt;
+&lt;td&gt;❌&lt;sup&gt;†&lt;/sup&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;GitLab&lt;/td&gt;
+&lt;td&gt;✔️&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Atlassian Bitbucket&lt;/td&gt;
+&lt;td&gt;✔️&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;sup&gt;†&lt;/sup&gt;&lt;a href="https://twitter.com/GitHubHelp/status/322818593748303873"&gt;Official acknowledgement from GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;# Create .tar archive containing only the single file
+git archive --remote &amp;lt;repositoryUri&amp;gt; &amp;lt;branchName&amp;gt;:&amp;lt;directoryPathFromGitRoot&amp;gt; &amp;lt;fileName&amp;gt; -o &amp;lt;archiveName&amp;gt;
+# Extract the single file to the current directory
+tar -xf &amp;lt;archiveName&amp;gt;
+# (optional) Delete the archive
+rm &amp;lt;archiveName&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="example"&gt;Example&lt;/h4&gt;
+&lt;pre&gt;&lt;code class="language-bash"&gt;git archive --remote git@gitlab.com:gitlab-org/gitlab.git HEAD:.github/ ISSUE_TEMPLATE.md -o myArchive.tar
+tar -xf myArchive.tar
+rm myArchive.tar
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Clones &lt;a href="https://gitlab.com/gitlab-org/gitlab/-/blob/master/.github/ISSUE_TEMPLATE.md"&gt;ISSUE_TEMPLATE.md&lt;/a&gt; from the main GitLab repo to the current directory. Try it out! As of writing, this example is functional!&lt;/p&gt;
+&lt;h4 id="parameters"&gt;Parameters&lt;/h4&gt;
+&lt;p&gt;With the following parameters:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;repositoryUri&lt;/code&gt;. The uri of your repository.
+&lt;ul&gt;
+&lt;li&gt;NOTE: when copying this uri from the UI, select the &lt;code&gt;ssh&lt;/code&gt; option. Choosing the &lt;code&gt;https&lt;/code&gt; option will cause your command to fail with &lt;code&gt;fatal: operation not supported by protocol&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;branchName&lt;/code&gt;. You can also use &lt;code&gt;HEAD&lt;/code&gt; to get the default branch.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;directoryPathFromGitRoot&lt;/code&gt;. If the file is not at the root of the repository, the path to the directory containing the single file.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;fileName&lt;/code&gt;. File name without directory information.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;archiveName&lt;/code&gt;. A fun name for your temporary archive.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="notice--success" markdown="1"&gt;
+&lt;h5 id="tip"&gt;Tip &lt;i class="fas fa-lightbulb"&gt;&lt;/i&gt;&lt;/h5&gt;
+&lt;p&gt;When crafting the parameters for your use case, I recommend using &lt;a href="https://www.7-zip.org/"&gt;7Zip&lt;/a&gt; to inspect the &lt;code&gt;.tar&lt;/code&gt; archives locally.&lt;/p&gt;
+&lt;/div&gt;
+&lt;h3 id="why-did-i-care"&gt;Why did I care?&lt;/h3&gt;
+&lt;p&gt;At work, I worked on a utility to perform &amp;quot;checkups&amp;quot; on .NET applications. One genre of &amp;quot;checkup&amp;quot; it runs is verifying whether files matched the latest version of some master copy. For example, each application has a CI configuration file based on a centrally maintained version. A checkup by our utility provided the application owners wanted an quick way to verify whether their configuration file was up-to-date with the master copy.&lt;/p&gt;
+&lt;p&gt;Initially, we included the text of the master copy in the utility itself, which was about as sustainable as any &amp;quot;hardcoded&amp;quot; solution usually is. When researching alternatives to &amp;quot;grab latest version of a master copy,&amp;quot; I came across a helpful &lt;a href="https://stackoverflow.com/questions/1125476/retrieve-a-single-file-from-a-repository"&gt;StackOverflow&lt;/a&gt;, but still struggled to connect all the pieces. This quick write-up is to hopefully save someone else an afternoon of throwing &lt;code&gt;tar&lt;/code&gt; options at a wall.&lt;/p&gt;
+&lt;p&gt;P.S. It was only testing these commands in writing this blog post that I learned &lt;code&gt;git archive&lt;/code&gt; is not supported in GitHub. I found this &lt;a href="https://www.gilesorr.com/blog/git-archive-github.html"&gt;blog post&lt;/a&gt; to be the clearest explanation of workarounds.&lt;/p&gt;
+&lt;h3 id="bonus-implementation-in-c"&gt;Bonus! Implementation in C#&lt;/h3&gt;
+&lt;p&gt;Our &amp;quot;checkup&amp;quot; application is a .NET console app, so we needed to run the above commands from C#. This was an excellent opportunity to use my favorite command running library: &lt;a href="https://github.com/madelson/MedallionShell"&gt;MedallionShell&lt;/a&gt;!&lt;/p&gt;
+&lt;div class="notice--warning" markdown="1"&gt;
+&lt;h5 id="disclaimer-1"&gt;Disclaimer &lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt;&lt;/h5&gt;
+&lt;p&gt;This implementation uses two utilities internal to Mastercard: &lt;code&gt;TempDirectoryProvider&lt;/code&gt; and &lt;code&gt;CoreUtilities.UniqueId()&lt;/code&gt;. It should be clear how you might write your a replacement in your own code.&lt;/p&gt;
+&lt;/div&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;using System.IO;
+using Medallion.Shell;
+
+...
+
+/// &amp;lt;summary&amp;gt;
+/// Provides the content for a file in source control.
+/// &amp;lt;/summary&amp;gt;
+public class SourceControlledFileProvider
+{
+    public static string GetFileContents(string fileName, string repositoryUri, string directoryPathFromGitRoot)
+    {
+        var shell = new Shell(o =&amp;gt; o.WorkingDirectory(TempDirectoryProvider.TempDirectory).ThrowOnError());
+
+        var filePath = Path.Combine(TempDirectoryProvider.TempDirectory, fileName);
+        if (!File.Exists(filePath))
+        {
+            // Download a single file from a remote git repository as a .tar archive.
+            //
+            // Options:
+            // -o       - Write the archive to &amp;lt;file&amp;gt; instead of stdout
+            // --remote - Retrieve a tar archive from a remote repository
+            var archiveName = CoreUtilities.UniqueId() + &amp;quot;.tar&amp;quot;;
+            var archiveCommand = shell.Run(
+                &amp;quot;git&amp;quot;, 
+                &amp;quot;archive&amp;quot;, 
+                &amp;quot;--remote&amp;quot;, repositoryUri, 
+                &amp;quot;HEAD:&amp;quot; + directoryPathFromGitRoot, 
+                &amp;quot;-o&amp;quot;, archiveName);
+            archiveCommand.Wait();
+
+            // Extract the file from the .tar archive.
+            //
+            // NOTE: This uses the Windows default &amp;quot;tar&amp;quot;
+            // which does not have the same options as UNIX &amp;quot;tar&amp;quot;.
+            var tarCommand = shell.Run(&amp;quot;tar&amp;quot;, &amp;quot;-xf&amp;quot;, archiveName );
+            tarCommand.Wait();
+        }
+
+        return File.ReadAllText(filePath);
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">3aa24c04-c3b1-62a3-f50a-a1d75d42a2ba</guid><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>&lt;p&gt;At work today, we ran into an &lt;code&gt;ObjectDisposedException&lt;/code&gt; when writing a lambda Autofac registration:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&amp;lt;&amp;gt; based factory to create subsequent components from.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="solution"&gt;Solution&lt;/h3&gt;
+&lt;p&gt;This error happens at runtime when attempting to resolve a component from a &amp;quot;captured&amp;quot; &lt;code&gt;IComponentContext&lt;/code&gt; that belonged to the &lt;code&gt;Register&lt;/code&gt; method:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var cb = new ContainerBuilder();
+
+// maybe the IComponentContext was captured inside the body of a Lazy&amp;lt;&amp;gt;
+cb.Register(cc =&amp;gt; 
+    new ApplePie(new Lazy&amp;lt;Apple&amp;gt;(() =&amp;gt; cc.Resolve&amp;lt;Apple&amp;gt;())));
+
+// ...or captured as a parameter (and stored inside) the instance
+cb.Register(cc =&amp;gt; new ApplePie(cc));
+
+// ...or captured inside the body of a Func&amp;lt;&amp;gt;
+cb.Register&amp;lt;Func&amp;lt;Apple&amp;gt;&amp;gt;(cc =&amp;gt; () =&amp;gt; cc.Resolve&amp;lt;Apple&amp;gt;());
+
+var container = cb.Build();
+container.Resolve&amp;lt;ApplePie&amp;gt;().UseApple(); // ERROR! This resolve operation h...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The resolution is to resolve &lt;code&gt;IComponentContext&lt;/code&gt; &lt;em&gt;outside&lt;/em&gt; of the capture context and resolve from it instead:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;cb.Register(cc =&amp;gt;
+{
+    var context = cc.Resolve&amp;lt;IComponentContext&amp;gt;();
+    return new ApplePie(new Lazy&amp;lt;Apple&amp;gt;(() =&amp;gt; context.Resolve&amp;lt;Apple&amp;gt;()));
+});
+
+// depending on which pattern from above maybe instead
+// ... new ApplePie(context)
+// ... or () =&amp;gt; context.Resolve&amp;lt;Apple&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;As explained below, there are no meaningful downsides to this technique for 99.9% of projects. The impact is a very, very small performance hit as the &lt;code&gt;IComponentContext&lt;/code&gt; from &lt;code&gt;cc.Resolve&amp;lt;IComponentContext&amp;gt;()&lt;/code&gt; is a tiny bit slower than the parameter &lt;code&gt;IComponentContext&lt;/code&gt; (&lt;code&gt;cc&lt;/code&gt;).&lt;/p&gt;
+&lt;h3 id="why-does-this-work"&gt;Why does this work?&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Disclaimer:&lt;/strong&gt; This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try &lt;a href="https://lizzy-gallagher.github.io/_site/illustrated-autofac.html"&gt;An illustrated guide to Autofac&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The first thing to understand is that the &lt;code&gt;IComponentContext&lt;/code&gt; resolved &lt;em&gt;inside&lt;/em&gt; &lt;code&gt;Register&lt;/code&gt; is not the same instance as the &lt;code&gt;IComponentContext&lt;/code&gt; which is a parameter.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;cb.Register(cc =&amp;gt; {
+    var context = cc.Resolve&amp;lt;IComponentContext&amp;gt;();
+    context != cc; // true
+    ...
+});
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;em&gt;parameter&lt;/em&gt; &lt;code&gt;IComponentContext&lt;/code&gt; (&lt;code&gt;cc&lt;/code&gt;) is a &lt;a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/Pipeline/DefaultResolveRequestContext.cs"&gt;&lt;code&gt;DefaultResolveRequestContext&lt;/code&gt;&lt;/a&gt;, and the &lt;em&gt;resolved&lt;/em&gt; &lt;code&gt;IComponentContext&lt;/code&gt; (&lt;code&gt;context&lt;/code&gt;) is a &lt;a href="https://github.com/autofac/Autofac/blob/e662b6bace37a569eec1e42335336b3fe015855c/src/Autofac/Core/Lifetime/LifetimeScope.cs"&gt;&lt;code&gt;LifetimeScope&lt;/code&gt;&lt;/a&gt;. Both of these classes implement &lt;code&gt;IComponentContext&lt;/code&gt;, an interface which exposes methods for resolving services from the container, but differ greatly in their implementation.&lt;/p&gt;
+&lt;p&gt;As its name implies, &lt;code&gt;LifetimeScope&lt;/code&gt; is designed to persist for the length of a lifetime scope, e.g. an HTTP request, resolving hundreds of thousands of services across multiple threads. &lt;code&gt;LifetimeScope&lt;/code&gt; is the smallest unit of &amp;quot;sharing&amp;quot; in Autofac, so this class must keep track (in a thread safe manner) any services that were created with an &lt;code&gt;InstancePerLifetimeScope&lt;/code&gt; registration.&lt;/p&gt;
+&lt;p&gt;By contrast to meticulous, long-lived &lt;code&gt;LifetimeScope&lt;/code&gt;, &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; is an &lt;code&gt;IComponentContext&lt;/code&gt; spun up exclusively for the lifetime of a single &lt;code&gt;Resolve&lt;/code&gt; call, to be disposed of immediately afterward. To keep this short-lived service inexpensive, &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; is not-thread safe.&lt;/p&gt;
+&lt;p&gt;Here's an example of what this &amp;quot;lack of thread-safety&amp;quot; looks like:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;public class Apple { }
+// ...
+var cb = new ContainerBuilder();
+cb.RegisterType&amp;lt;Apple&amp;gt;();
+cb.Register(cc =&amp;gt;
+{
+    // attempt use 'cc' simultaneously across multiple threads
+    Enumerable.Range(0, 100)
+        .Select(_ =&amp;gt; Task.Run(() =&amp;gt; cc.Resolve&amp;lt;Apple&amp;gt;()))
+        .ToList();
+
+    // give the other threads space to execute before 'cc'
+    // is disposed
+    Thread.Sleep(500);
+
+    return new object();
+});
+
+// This error will appear 0-99 times (it is a race condition after all!):
+// DependencyResolutionException: Circular dependency detected: 
+//      System.Object -&amp;gt; Apple -&amp;gt; Apple.
+cb.Build().Resolve&amp;lt;object&amp;gt;();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;At first blush, the error appears nonsensical, &lt;code&gt;Apple&lt;/code&gt; doesn't depend on &lt;code&gt;Apple&lt;/code&gt;, where is the &amp;quot;circular dependency?&amp;quot;&lt;/p&gt;
+&lt;p&gt;Because &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; is not designed to be used by multiple threads, it interprets the &lt;em&gt;parallel&lt;/em&gt; &lt;code&gt;Resolve&amp;lt;Apple&amp;gt;()&lt;/code&gt; to be happening &lt;em&gt;sequentially&lt;/em&gt;. Specifically, the &lt;a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/Middleware/CircularDependencyDetectorMiddleware.cs"&gt;&lt;code&gt;CircularDependencyDetectorMiddleware&lt;/code&gt;&lt;/a&gt; maintains a non-thread safe stack of &lt;code&gt;Resolve&lt;/code&gt; requests that occur in the current &lt;a href="https://github.com/autofac/Autofac/blob/e477eb4632523d8780d32fb1105a10b0af988634/src/Autofac/Core/Resolving/ResolveOperation.cs"&gt;&lt;code&gt;ResolveOperation&lt;/code&gt;&lt;/a&gt; in order to detect circular dependencies. For example, if the constructor for &lt;code&gt;Apple&lt;/code&gt; took &lt;code&gt;Apple&lt;/code&gt; as a parameter, the middleware would find a circular dependency by recognizing that &lt;code&gt;Apple&lt;/code&gt; appears twice in the stack of requests. In our example, the &lt;code&gt;CircularDependencyDetectorMiddleware&lt;/code&gt; errors out because it believes that our parallel requests are a recursive resolution with a circular dependency!&lt;/p&gt;
+&lt;h2 id="summary"&gt;Summary&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Knowing that &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; is short-lived and disposed at the conclusion of a resolution operation, helps us understand the error message a the top of this blog post. We cannot capture &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; for later use because it will have been disposed by then!&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Knowing that &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; is not thread safe in order to be cheap, helps us understand the tradeoffs of the &amp;quot;fix&amp;quot;. &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; does less bookkeeping than &lt;code&gt;LifetimeScope&lt;/code&gt;. Specifically &lt;code&gt;LifetimeScope&lt;/code&gt; initializes a new stack (for circular dependency detection) for every &lt;code&gt;Resolve&lt;/code&gt; request, but &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; reuses the same stack each time.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It is important to note that &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; uses &lt;code&gt;LifetimeScope&lt;/code&gt; under the hood to manage creating and sharing instances. This means that both have &lt;em&gt;identical&lt;/em&gt; business logic behavior. The only trade-off is that &lt;code&gt;LifetimeScope&lt;/code&gt; is a very small amount slower because of additional bookkeeping to ensure thread safety. Autofac is rarely a performance bottleneck, so 99.9% of projects can make this tradeoff without losing any sleep.&lt;/p&gt;
+&lt;p&gt;Curious about the philosophy toward thread safety in Autofac? The &lt;a href="https://autofaccn.readthedocs.io/en/latest/advanced/concurrency.html"&gt;&amp;quot;Concurrency&amp;quot; section&lt;/a&gt; of their documentation is quite good.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">1feabf51-375f-ee80-1f9f-e2c63b4bbcec</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Previous post&lt;/a&gt;
+&lt;/div&gt;
+&lt;p&gt;This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world &lt;code&gt;.targets&lt;/code&gt; file: &lt;a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets"&gt;TSLint.MSBuild.targets&lt;/a&gt;.&lt;/p&gt;
+&lt;div class="notice--warning" markdown="1"&gt;
+&lt;h4 id="disclaimer"&gt;&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Disclaimer&lt;/h4&gt;
+&lt;p&gt;I am not the author of &lt;code&gt;TSLint.MSBuild.targets&lt;/code&gt;. I chose this NuGet package because&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;It is open-source&lt;/li&gt;
+&lt;li&gt;The context is easy to gain: the package lints TypeScript files on build.&lt;/li&gt;
+&lt;li&gt;I think the MSBuild is approachable while being non-trivial&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;h3 id="a-tour-through-tslint.msbuild"&gt;A Tour through &lt;code&gt;TSLint.MSBuild&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Instead of walking through the &lt;code&gt;TSLint.MSBuild.targets&lt;/code&gt; file line-by-line, we'll instead tour various sections. The full text of file is available at the bottom of this post.&lt;/p&gt;
+&lt;h4 id="use-the-condition-attribute-of-a-property-to-only-define-the-variable-if-it-has-not-already-been-defined"&gt;Use the &lt;code&gt;Condition&lt;/code&gt; attribute of a &lt;code&gt;Property&lt;/code&gt; to only define the variable if it has not already been defined&lt;/h4&gt;
+&lt;p&gt;Recall that the &lt;code&gt;Condition&lt;/code&gt; attribute can be used to evaluate &amp;quot;has this &lt;code&gt;Property&lt;/code&gt; already been defined?&amp;quot;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;TSLintTimestampFile 
+        Condition=&amp;quot;'$(TSLintTimestampFile)' == ''&amp;quot;&amp;gt;
+        $(OutputPath)\$(MSBuildProjectName).TSLint.timestamp.txt
+    &amp;lt;/TSLintTimestampFile&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="use-string-templating-to-compose-a-complex-property"&gt;Use string templating to compose a complex &lt;code&gt;Property&lt;/code&gt;&lt;/h4&gt;
+&lt;p&gt;The string templating support for &lt;code&gt;Properties&lt;/code&gt; can be used like the &lt;code&gt;$PATH&lt;/code&gt; variable to compose long sequences.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;!-- Build the TSLint arguments --&amp;gt;
+&amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;TSLintArgs&amp;gt;&amp;lt;/TSLintArgs&amp;gt;
+    &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintConfig)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --config &amp;quot;$(TSLintConfig)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+    &amp;lt;TSLintArgs Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --exclude &amp;quot;$(TSLintExcludeJoined)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+    ...
+&amp;lt;/PropertyGroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="use-the-inputs-attribute-so-a-target-can-execute-incrementally"&gt;Use the &lt;code&gt;Inputs&lt;/code&gt; attribute so a &lt;code&gt;Target&lt;/code&gt; can execute incrementally&lt;/h4&gt;
+&lt;p&gt;Recall that MSBuild supports &amp;quot;incremental builds&amp;quot; and &lt;code&gt;Targets&lt;/code&gt; support timestamp based caching.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target
+    AfterTargets=&amp;quot;CompileTypeScript&amp;quot;
+    ...
+    Inputs=&amp;quot;@(TSLintInclude);@(TypeScriptCompile)&amp;quot;
+    Name=&amp;quot;TSLint&amp;quot;
+    Outputs=&amp;quot;$(TSLintTimestampFile)&amp;quot;&amp;gt;
+
+    ...
+
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="use-tasks-to-report-on-status-and-validate-information"&gt;Use &lt;code&gt;Tasks&lt;/code&gt; to report on status and validate information&lt;/h3&gt;
+&lt;p&gt;The built-in &lt;code&gt;Message&lt;/code&gt; &lt;code&gt;Task&lt;/code&gt; is a go to for reporting status to the consumer.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Message Text=&amp;quot;Running TSLint...&amp;quot; Importance=&amp;quot;high&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The built-in &lt;code&gt;Error&lt;/code&gt; &lt;code&gt;Task&lt;/code&gt; is useful for validating inputs...&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Error Condition=&amp;quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&amp;quot; Text=&amp;quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;... and reporting if something doesn't work as expected.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&amp;gt;
+&amp;lt;Error Condition=&amp;quot;'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'&amp;quot; Text=&amp;quot;TSLint checks failed&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="use-the-exec-built-in-task-to-run-an-executable"&gt;Use the &lt;code&gt;Exec&lt;/code&gt; built-in &lt;code&gt;Task&lt;/code&gt; to run an executable&lt;/h4&gt;
+&lt;p&gt;The built-in &lt;code&gt;Exec&lt;/code&gt; &lt;code&gt;Task&lt;/code&gt; makes it simple to delegate more complex behavior to external executables.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;!-- Run TSLint using the Node executable --&amp;gt;
+&amp;lt;Exec
+    Command=&amp;quot;&amp;amp;quot;$(TSLintNodeExe)&amp;amp;quot; &amp;amp;quot;$(TSLintCli)&amp;amp;quot; $(TSLintArgs)&amp;quot;
+    Condition=&amp;quot;'$(TSLintDisabled)' != 'true'&amp;quot;
+    ConsoleToMsBuild=&amp;quot;true&amp;quot;
+    ...
+    Timeout=&amp;quot;$(TSLintTimeout)&amp;quot;&amp;gt;
+        ...
+&amp;lt;/Exec&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="summary"&gt;Summary&lt;/h3&gt;
+&lt;p&gt;MSBuild has the same primitives as general-purpose languages like C#.&lt;/p&gt;
+&lt;p&gt;In this post, we reviewed what what's possible using &lt;code&gt;Properties&lt;/code&gt;, &lt;code&gt;Items&lt;/code&gt;, &lt;code&gt;Tasks&lt;/code&gt;, and &lt;code&gt;Targets&lt;/code&gt; by looking at a real-life open-source example.&lt;/p&gt;
+&lt;p&gt;Hopefully this series has been a helpful explanation of MSBuild as a programming language. If anything was unclear or you'd like to hear more, please feel free to reach out to me on &lt;a href="https://twitter.com/LizzyIsNotBusy"&gt;Twitter&lt;/a&gt;!&lt;/p&gt;
+&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Previous post&lt;/a&gt;
+&lt;/div&gt;
+&lt;h3 id="appendix-full-source-of-tslint.msbuild.targets"&gt;Appendix: Full source of &lt;code&gt;TSLint.MSBuild.targets&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;Source available at &lt;a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot; ?&amp;gt;
+&amp;lt;Project ToolsVersion=&amp;quot;4.0&amp;quot; xmlns=&amp;quot;http://schemas.microsoft.com/developer/msbuild/2003&amp;quot;&amp;gt;
+
+  &amp;lt;!-- Ensures that if this file changes it forces a TypeScript rebuild --&amp;gt;
+  &amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;TypeScriptAllProjects&amp;gt;$(TypeScriptAllProjects);$(MSBuildThisFileFullPath)&amp;lt;/TypeScriptAllProjects&amp;gt;
+    &amp;lt;TSLintTimestampFile Condition=&amp;quot;'$(TSLintTimestampFile)' == ''&amp;quot;&amp;gt;$(OutputPath)\$(MSBuildProjectName).TSLint.timestamp.txt&amp;lt;/TSLintTimestampFile&amp;gt;
+    &amp;lt;TSLintTimestampFile Condition=&amp;quot;'$(TSLintForceBuild)' == 'true'&amp;quot;&amp;gt;$([System.DateTime]::UtcNow.Ticks)&amp;lt;/TSLintTimestampFile&amp;gt;
+  &amp;lt;/PropertyGroup&amp;gt;
+
+  &amp;lt;Target
+    AfterTargets=&amp;quot;CompileTypeScript&amp;quot;
+    Condition=&amp;quot;('@(TSLintInclude)' != '' or '@(TypeScriptCompile)' != '') and ('$(BuildingProject)' == 'true' or '$(TSLintRunWhenNotBuilding)' == 'true')&amp;quot;
+    Inputs=&amp;quot;@(TSLintInclude);@(TypeScriptCompile)&amp;quot;
+    Name=&amp;quot;TSLint&amp;quot;
+    Outputs=&amp;quot;$(TSLintTimestampFile)&amp;quot;&amp;gt;
+
+    &amp;lt;Message Text=&amp;quot;Running TSLint...&amp;quot; Importance=&amp;quot;high&amp;quot; /&amp;gt;
+
+    &amp;lt;ItemGroup Condition=&amp;quot;'$(TSLintExcludeTypeScriptCompile)' != 'true'&amp;quot;&amp;gt;
+      &amp;lt;TSLintInclude Include=&amp;quot;@(TypeScriptCompile)&amp;quot; /&amp;gt;
+    &amp;lt;/ItemGroup&amp;gt;
+
+    &amp;lt;PropertyGroup&amp;gt;
+      &amp;lt;TSLintBreakBuildOnError Condition=&amp;quot;'$(TSLintBreakBuildOnError)' == ''&amp;quot;&amp;gt;false&amp;lt;/TSLintBreakBuildOnError&amp;gt;
+      &amp;lt;TSLintCreateTimestampFile Condition=&amp;quot;'$(TSLintCreateTimestampFile)' == ''&amp;quot;&amp;gt;true&amp;lt;/TSLintCreateTimestampFile&amp;gt;
+      &amp;lt;TSLintFormat Condition=&amp;quot;'$(TSLintFormat)' == ''&amp;quot;&amp;gt;msbuild&amp;lt;/TSLintFormat&amp;gt;
+      &amp;lt;TSLintNodeExe Condition=&amp;quot;'$(TSLintNodeExe)' == ''&amp;quot;&amp;gt;$([System.IO.Path]::GetFullPath(&amp;quot;$(MSBuildThisFileDirectory)..\tools\node-12.4.0.exe&amp;quot;))&amp;lt;/TSLintNodeExe&amp;gt;
+      &amp;lt;TSLintTimeout Condition=&amp;quot;'$(TSLintTimeout)' == ''&amp;quot;&amp;gt;10000000&amp;lt;/TSLintTimeout&amp;gt;
+      &amp;lt;TSLintVersion Condition=&amp;quot;'$(TSLintVersion)' == ''&amp;quot;&amp;gt;*.*.*&amp;lt;/TSLintVersion&amp;gt;
+    &amp;lt;/PropertyGroup&amp;gt;
+
+    &amp;lt;!-- Grab the first matching TSLint CLI in a NuGet packages install --&amp;gt;
+    &amp;lt;ItemGroup Condition=&amp;quot;'$(TSLintCli)' == ''&amp;quot;&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(SolutionDir)packages\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(SolutionDir)packages\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(MSBuildThisFileDirectory)..\..\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(MSBuildThisFileDirectory)..\..\..\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslintCli.js&amp;quot; /&amp;gt;
+      &amp;lt;!-- support for tslint 5.10 and below --&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(SolutionDir)packages\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(SolutionDir)packages\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(MSBuildThisFileDirectory)..\..\tslint.$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(MSBuildThisFileDirectory)..\..\..\tslint\$(TSLintVersion)\tools\node_modules\tslint\lib\tslint-cli.js&amp;quot; /&amp;gt;
+      &amp;lt;TSLintPotentialCli Include=&amp;quot;$(ProjectDir)node_modules\tslint\bin\tslint&amp;quot; /&amp;gt;
+    &amp;lt;/ItemGroup&amp;gt;
+    &amp;lt;PropertyGroup Condition=&amp;quot;'$(TSLintCli)' == ''&amp;quot;&amp;gt;
+      &amp;lt;TSLintCliProperty&amp;gt;@(TSLintPotentialCli);&amp;lt;/TSLintCliProperty&amp;gt;
+      &amp;lt;TSLintCli&amp;gt;$(TSLintCliProperty.Substring(0, $(TSLintCliProperty.IndexOf(';'))))&amp;lt;/TSLintCli&amp;gt;
+    &amp;lt;/PropertyGroup&amp;gt;
+
+    &amp;lt;!-- TSLintExclude might include special characters, so those should be escaped --&amp;gt;
+    &amp;lt;PropertyGroup&amp;gt;
+      &amp;lt;TSLintExclude Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;@(TSLintExclude.Replace(&amp;quot;*&amp;quot;, &amp;quot;%2A&amp;quot;))&amp;lt;/TSLintExclude&amp;gt;
+      &amp;lt;TSLintExclude Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;@(TSLintExclude.Replace(&amp;quot;.&amp;quot;, &amp;quot;%2E&amp;quot;))&amp;lt;/TSLintExclude&amp;gt;
+      &amp;lt;TSLintExclude Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;@(TSLintExclude.Replace('&amp;quot;', &amp;quot;%22&amp;quot;))&amp;lt;/TSLintExclude&amp;gt;
+      
+      &amp;lt;TSLintExcludeJoined Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;@(TSLintExclude, '&amp;quot; --exclude &amp;quot;')&amp;lt;/TSLintExcludeJoined&amp;gt;
+    &amp;lt;/PropertyGroup&amp;gt;
+
+    &amp;lt;!-- Build the TSLint arguments --&amp;gt;
+    &amp;lt;PropertyGroup&amp;gt;
+      &amp;lt;TSLintArgs&amp;gt;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintConfig)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --config &amp;quot;$(TSLintConfig)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'@(TSLintExclude)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --exclude &amp;quot;$(TSLintExcludeJoined)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs&amp;gt;$(TSLintArgs) --format &amp;quot;$(TSLintFormat)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintProject)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --project &amp;quot;$(TSLintProject)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintTypeCheck)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --type-check &amp;quot;$(TSLintTypeCheck)&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'@(TSLintRulesDirectory)' != ''&amp;quot;&amp;gt;$(TSLintArgs) --rules-dir &amp;quot;@(TSLintRulesDirectory, '&amp;quot; --rules-dir &amp;quot;')&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintExtraArgs)' != ''&amp;quot;&amp;gt;$(TSLintArgs) $(TSLintExtraArgs)&amp;lt;/TSLintArgs&amp;gt;
+      &amp;lt;TSLintArgs Condition=&amp;quot;'$(TSLintFileListDisabled)' != 'true' And '@(TSLintInclude)' != ''&amp;quot;&amp;gt;$(TSLintArgs) &amp;quot;@(TSLintInclude, '&amp;quot; &amp;quot;')&amp;quot;&amp;lt;/TSLintArgs&amp;gt;
+    &amp;lt;/PropertyGroup&amp;gt;
+
+    &amp;lt;Error Condition=&amp;quot;'$(TSLintFileListDisabled)' == 'true' And '$(TSLintProject)' == ''&amp;quot; Text=&amp;quot;You disabled file listing on the command line using TSLintFileDisabled, but did not specify a project file with TSLintProject.&amp;quot; /&amp;gt;
+
+    &amp;lt;MakeDir Directories=&amp;quot;$(OutputPath)&amp;quot; /&amp;gt;
+
+    &amp;lt;!-- Run TSLint using the Node executable --&amp;gt;
+    &amp;lt;Exec
+      Command=&amp;quot;&amp;amp;quot;$(TSLintNodeExe)&amp;amp;quot; &amp;amp;quot;$(TSLintCli)&amp;amp;quot; $(TSLintArgs)&amp;quot;
+      Condition=&amp;quot;'$(TSLintDisabled)' != 'true'&amp;quot;
+      ConsoleToMsBuild=&amp;quot;true&amp;quot;
+      EchoOff=&amp;quot;true&amp;quot;
+      IgnoreExitCode=&amp;quot;true&amp;quot;
+      Timeout=&amp;quot;$(TSLintTimeout)&amp;quot;&amp;gt;
+      &amp;lt;Output TaskParameter=&amp;quot;ConsoleOutput&amp;quot; ItemName=&amp;quot;TSLintOutput&amp;quot; /&amp;gt;
+      &amp;lt;Output TaskParameter=&amp;quot;ExitCode&amp;quot; PropertyName=&amp;quot;TSLintErrorCode&amp;quot; /&amp;gt;
+    &amp;lt;/Exec&amp;gt;
+
+    &amp;lt;Touch
+      Condition=&amp;quot;'$(TSLintCreateTimestampFile)' == 'true' and $(TSLintErrorCode) == 0&amp;quot;
+      AlwaysCreate=&amp;quot;true&amp;quot;
+      Files=&amp;quot;$(TSLintTimestampFile)&amp;quot; /&amp;gt;
+
+    &amp;lt;!-- Return an error if TSLint returned an exit code and we should break on errors --&amp;gt;
+    &amp;lt;Error Condition=&amp;quot;'$(TSLintDisabled)' != 'true' and '$(TSLintErrorCode)' != '0' and '$(TSLintBreakBuildOnError)' == 'true'&amp;quot; Text=&amp;quot;TSLint checks failed&amp;quot; /&amp;gt;
+  &amp;lt;/Target&amp;gt;
+&amp;lt;/Project&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">011a0c8c-5b87-2d5e-2573-348fec15abf9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+&lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a .NET project is built. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles functions.&lt;/p&gt;
+&lt;p&gt;MSBuild has a concept of &lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-tasks"&gt;&lt;code&gt;Tasks&lt;/code&gt;&lt;/a&gt; (i.e. functions) that are executed within &lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-targets"&gt;&lt;code&gt;Targets&lt;/code&gt;&lt;/a&gt; (i.e. event handlers).&lt;/p&gt;
+&lt;h3 id="tasks-i.e.functions"&gt;&lt;code&gt;Tasks&lt;/code&gt; (i.e. functions)&lt;/h3&gt;
+&lt;p&gt;A function is executed by locating an XML node inside a &lt;code&gt;Target&lt;/code&gt; XML node (more on these later).&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target&amp;gt;
+    &amp;lt;Error Text=&amp;quot;Something went wrong!&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here would be the equivalent C#:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;throw new Exception(&amp;quot;Something went wrong!&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There are dozens of built-in tasks. Most tasks make common I/O operations easy:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Delete Files=&amp;quot;@(MyFiles)&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;foreach (var fileName in myFiles)
+{
+    File.Delete(fileName);
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;WriteLinesToFile 
+    File=&amp;quot;$(CacheFile)&amp;quot;
+    Lines=&amp;quot;$([System.DateTime]::Now)&amp;quot; 
+    Overwrite=&amp;quot;true&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;File.WriteAllText(
+    cacheFile,
+    DateTime.Now)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;There's even a task called &lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/exec-task"&gt;&lt;code&gt;Exec&lt;/code&gt;&lt;/a&gt; that allows you to run arbitrary console commands!&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Exec Command=&amp;quot;dir&amp;quot; WorkingDirectory=&amp;quot;$(MSBuildProjectDirectory)&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;Command.Run(&amp;quot;dir&amp;quot;, o =&amp;gt; o
+    .WorkingDirectory(projectDirectory));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; The above C# example uses &lt;a href="https://github.com/madelson/MedallionShell"&gt;MedallionShell&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can also define your own task by implementing the &lt;code&gt;ITask&lt;/code&gt; interface. This is a must-know trick when writing complex MSBuild logic. Custom tasks can utilize NuGet packages and are far easier to unit test. The &lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/task-writing"&gt;official docs&lt;/a&gt; are very good on this.&lt;/p&gt;
+&lt;p&gt;Here's an example of how a custom task for minifying code would be invoked:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;UsingTask TaskName=&amp;quot;Minify&amp;quot; AssemblyFile=&amp;quot;.\bin\Debug\My.Minification.Project.MSBuild.dll&amp;quot; /&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MinifyJavaScriptFiles&amp;quot; BeforeTargets=&amp;quot;AfterBuild&amp;quot;&amp;gt;
+    &amp;lt;Info Text=&amp;quot;Minifying files...&amp;quot;&amp;gt;
+    &amp;lt;Minify SourceFiles=&amp;quot;@(NonMinifiedJavaScriptFiles)&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="targets-i.e.event-handlers"&gt;&lt;code&gt;Targets&lt;/code&gt; (i.e. event handlers)&lt;/h3&gt;
+&lt;p&gt;MSBuild has an additional concept &lt;code&gt;Targets&lt;/code&gt; that allows you to &amp;quot;schedule&amp;quot; your tasks. It is easy to think of these like event handlers. Targets are run at a specific point in the lifecycle of a build.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target Name=&amp;quot;MyTarget&amp;quot; BeforeTargets=&amp;quot;BeforeBuild&amp;quot;&amp;gt;
+    &amp;lt;Error Text=&amp;quot;Fail the build!&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;c.BeforeBuild += MyTarget;
+...
+static void MyTarget(object sender, BeforeBuildEventArgs e)
+{
+    throw new Exception(&amp;quot;Fail the build!&amp;quot;)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The most common &amp;quot;events&amp;quot; that you may want your code to handle are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;BeforeBuild&lt;/code&gt;. Before compilation (the creation of &lt;code&gt;.dlls&lt;/code&gt;, etc.) starts. It is best to handle this event if your code is doing validation or preprocessing required by the build.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;AfterBuild&lt;/code&gt;. After compilation has completed. This event is best for code doing post-processing or validation on output file (e.g. minification). NOTE: Unintuitively, a target handling &lt;code&gt;AfterBuild&lt;/code&gt; is still capable of &amp;quot;failing&amp;quot; the build.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Clean&lt;/code&gt;. When a &lt;code&gt;Clean&lt;/code&gt; is requested by the user. It is a best practice to &amp;quot;clean up&amp;quot; after yourself.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;MSBuild follows is designed to support &amp;quot;incremental&amp;quot; builds, e.g. only recompiling, re-restoring NuGet packages, etc. if the changeset since the last build requires it.&lt;/p&gt;
+&lt;p&gt;To implement &amp;quot;incremental builds&amp;quot; &lt;code&gt;Targets&lt;/code&gt; support file timestamp-based caching out of the box:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;If an &lt;code&gt;Inputs&lt;/code&gt; attribute is specified, the &lt;code&gt;Target&lt;/code&gt; will only execute if the &amp;quot;last modified&amp;quot; timestamp of any of files is later than the last execution.&lt;/li&gt;
+&lt;li&gt;If the &lt;code&gt;Target&lt;/code&gt; does execute, &lt;code&gt;Inputs&lt;/code&gt; will be edited to only contain items that have been modified since the last execution.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;ItemGroup&amp;gt;
+    &amp;lt;JavaScriptFiles Include=&amp;quot;wwwroot/*.js&amp;quot; Exclude=&amp;quot;wwwroot/*.min.js&amp;quot;/&amp;gt;
+&amp;lt;/ItemGroup&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MinifyJavaScriptFiles&amp;quot; BeforeTargets=&amp;quot;AfterBuild&amp;quot; Inputs=&amp;quot;$(JavaScriptFiles)&amp;quot;&amp;gt;
+    ... minify files ...
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;public void MinifyJavaScriptFiles(javaScriptFiles)
+{
+    if (HaveAnyTimestampsBeenUpdatedSinceLastExecution(javaScriptFiles)) 
+    { 
+        return; 
+    }
+
+    ... minify files ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="summary"&gt;Summary&lt;/h3&gt;
+&lt;p&gt;MSBuild has the same primitives as general-purpose languages like C#.&lt;/p&gt;
+&lt;p&gt;In this post, we covered its support for functions and event handlers. In the next post, we'll take a look at a real-world example to reinforce what we've learned.&lt;/p&gt;
+&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+&lt;h3 id="appendix-a-quick-note-on-importing-targets"&gt;Appendix: A quick note on importing &lt;code&gt;Targets&lt;/code&gt;&lt;/h3&gt;
+&lt;p&gt;There are three ways to define / import a &lt;code&gt;Target&lt;/code&gt; into your .csproj:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Define the &lt;code&gt;Target&lt;/code&gt; in the .csproj itself.&lt;/strong&gt; This is easy and makes sense for short, adhoc &lt;code&gt;Targets&lt;/code&gt; written to address quirks in your build.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Define a &lt;code&gt;Target&lt;/code&gt; in a &lt;code&gt;.targets&lt;/code&gt; file in the &lt;code&gt;build/&lt;/code&gt; folder of a &lt;code&gt;NuGet&lt;/code&gt; package.&lt;/strong&gt; This is the most reusable and a very valuable skill to be able to deploy if the situation calls for it.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&lt;code&gt;Import&lt;/code&gt; the &lt;code&gt;Target&lt;/code&gt; from a &lt;code&gt;.targets&lt;/code&gt; file.&lt;/strong&gt; This makes organization simple since you can group related &lt;code&gt;Targets&lt;/code&gt; and &lt;code&gt;Properties&lt;/code&gt; in the same files together.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Import Project=&amp;quot;FileWithProperties.props&amp;quot; /&amp;gt;
+&amp;lt;Import Project=&amp;quot;FileWithTargets.targets&amp;quot; /&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">d65c9c31-8cc4-4bfe-9b3a-a62ad39aedb9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+&lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a project is built and compiled. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles variables.&lt;/p&gt;
+&lt;p&gt;MSBuild has two variable types: &lt;code&gt;Properties&lt;/code&gt; (i.e. strings) and &lt;code&gt;Items&lt;/code&gt; (i.e. object arrays).&lt;/p&gt;
+&lt;h3 id="properties-i.e.strings"&gt;&lt;code&gt;Properties&lt;/code&gt; (i.e. strings)&lt;/h3&gt;
+&lt;p&gt;A string variable is declared by locating an XML node inside &lt;code&gt;PropertyGroup&lt;/code&gt; XML node.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;CoolProperty&amp;gt;wow! this is so cool&amp;lt;/CoolProperty&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In many ways, MSBuild behaves similarly to a general-purpose language. Here would be the equivalent C#:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var coolProperty = &amp;quot;wow! this is so cool!&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Properties can be reassigned at any time.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;Direction&amp;gt;Go left&amp;lt;/Direction&amp;gt;
+    &amp;lt;Direction&amp;gt;Sorry! Right!&amp;lt;/Direction&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var direction = &amp;quot;Go left&amp;quot;;
+direction = &amp;quot;Sorry! Right!&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="notice--success" markdown="1"&gt;
+&lt;h4 class="no_toc"&gt;&lt;i class="fas fa-lightbulb"&gt;&lt;/i&gt; Tip: Whitespace matters!&lt;/h4&gt;
+Any and all whitespace inside the XML node is respected.
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;IsFoo&amp;gt;
+    true
+&amp;lt;/Foo&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var isFoo = @&amp;quot;
+    true
+&amp;quot;;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;You can access the value of a property (using &lt;code&gt;$&lt;/code&gt;) to define other strings (i.e. string templating).&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Name&amp;gt;Lizzy&amp;lt;/Name&amp;gt;
+&amp;lt;Greeting&amp;gt;Hello $(Name)!&amp;lt;/Greeting&amp;gt; &amp;lt;!-- Hello Lizzy! --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var name = &amp;quot;Lizzy&amp;quot;;
+var greeting = $&amp;quot;Hello {name}!&amp;quot;; // Hello Lizzy!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Properties can also be defined conditionally using the &lt;code&gt;Condition&lt;/code&gt; attribute.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;UsesNpm Condition=&amp;quot;Exists('package.json')&amp;quot;&amp;gt;true&amp;lt;/UsesNpm&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var usesNpm = File.Exists(Path.Combine(Environment.CurrentDirectory, &amp;quot;package.json&amp;quot;))
+    ? true
+    : string.Empty;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Note:&lt;/strong&gt; Learn more about the available &lt;code&gt;Condition&lt;/code&gt; operators in the &lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-conditions"&gt;official documentation&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id="items-i.e.object-arrays"&gt;&lt;code&gt;Items&lt;/code&gt; (i.e. object arrays)&lt;/h3&gt;
+&lt;p&gt;Am &lt;code&gt;Item&lt;/code&gt; is defined by locating an XML node inside &lt;code&gt;ItemGroup&lt;/code&gt; XML node.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;ItemGroup&amp;gt;
+    &amp;lt;!-- single item --&amp;gt;
+    &amp;lt;FavoriteThings Include=&amp;quot;Raindrops on roses&amp;quot; /&amp;gt;
+    &amp;lt;!-- multiple items --&amp;gt;
+    &amp;lt;FavoriteThings Include=&amp;quot;Whiskers on kittens; bright copper kettles&amp;quot; /&amp;gt;
+&amp;lt;ItemGroup&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var favoriteThings = new[] { &amp;quot;Raindrops on roses&amp;quot; };
+favoriteThings = favoriteThings
+    .Append(&amp;quot;Whiskers on kittens&amp;quot;)
+    .Append(&amp;quot;bright copper kettles&amp;quot;);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;You can access the value of a &lt;code&gt;Item&lt;/code&gt; (using &lt;code&gt;@&lt;/code&gt;).&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;ItemGroup&amp;gt;
+    &amp;lt;CoolFiles Include=&amp;quot;A.txt; B.txt&amp;quot;&amp;gt;
+&amp;lt;ItemGroup&amp;gt;
+
+&amp;lt;Message Text=&amp;quot;@(CoolFiles)&amp;quot; /&amp;gt; &amp;lt;!-- A.txt;B.txt --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var coolFiles = new[] { &amp;quot;A.txt&amp;quot;, &amp;quot;B.txt&amp;quot; };
+Console.WriteLine(string.Join(&amp;quot;;&amp;quot;, coolFiles)); // &amp;quot;A.txt;B.txt&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;MSBuild is designed to make working with files very easy. You can use wildcards to filter all the files included in the project.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;NonMinifiedFiles Include=&amp;quot;*.js&amp;quot; Remove=&amp;quot;*.min.js&amp;quot;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var nonMinifiedFiles = Directory.EnumerateFiles(Environment.CurrentDirectory, &amp;quot;*.js&amp;quot;, SearchOption.AllDirectories)
+    .Where(f =&amp;gt; !f.EndsWith(&amp;quot;.min.js&amp;quot;));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;Items&lt;/code&gt; can be arrays of more complex objects. The child XML nodes of an &lt;code&gt;Item&lt;/code&gt; are called &amp;quot;metadata&amp;quot; and can be accessed using the &lt;code&gt;%&lt;/code&gt; operator.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;ItemGroup&amp;gt;
+    &amp;lt;Stuff Include=&amp;quot;Hide.cs&amp;quot; &amp;gt;
+        &amp;lt;Display&amp;gt;false&amp;lt;/Display&amp;gt;
+    &amp;lt;/Stuff&amp;gt;   
+    &amp;lt;Stuff Include=&amp;quot;Display.cs&amp;quot;&amp;gt;
+        &amp;lt;Display&amp;gt;true&amp;lt;/Display&amp;gt;
+    &amp;lt;/Stuff&amp;gt;
+&amp;lt;/ItemGroup&amp;gt;
+&amp;lt;Message Text=&amp;quot;@(Stuff)&amp;quot; Condition=&amp;quot; '%(Display)' == 'true' &amp;quot;/&amp;gt; &amp;lt;!-- Display.cs --&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var stuff = new[] { new { Name = &amp;quot;Hide.cs&amp;quot;, Display = false }, new { Name = &amp;quot;Display.cs&amp;quot;, Display = true };
+Console.WriteLine(string.Join(&amp;quot;;&amp;quot;, stuff.Where(s =&amp;gt; s.Display))); // &amp;quot;Display.cs&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="summary"&gt;Summary&lt;/h3&gt;
+&lt;p&gt;MSBuild has the same primitives as general-purpose languages like C#.&lt;/p&gt;
+&lt;p&gt;In this post, we covered its support for variables. In the next post, we'll cover its support for functions!&lt;/p&gt;
+&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+&lt;h3 id="appendix-a-quick-note-on-variable-names"&gt;Appendix: A quick note on variable names&lt;/h3&gt;
+&lt;p&gt;A source of MSBuild consternation is the language's lack of variable scoping. There are no &amp;quot;private&amp;quot; variables, so you can overwrite variables defined by any MSBuild target, including the &amp;quot;standard library&amp;quot; that facilitates the compilation of your project's C#!&lt;/p&gt;
+&lt;p&gt;To avoid collisions, I recommend &amp;quot;namespacing&amp;quot; custom variables:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;!-- Very likely to collide! --&amp;gt;
+&amp;lt;IsWebProject&amp;gt;...&amp;lt;/IsWebProject&amp;gt;
+
+&amp;lt;!-- Much better! --&amp;gt;
+&amp;lt;MyOrganizationName_IsWebProject&amp;gt;...&amp;lt;MyOrganizationName_IsWebProject&amp;gt;
+
+&amp;lt;!-- Even better! --&amp;gt;
+&amp;lt;MyNuGetPackageName_IsWebProject&amp;gt;...&amp;lt;MyNuGetPackageName_IsWebProject&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This &amp;quot;feature&amp;quot; of language does have perks. It makes exposing a public API for disabling a build feature dead simple:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;!-- From a NuGet package the minifies your code, provide a default that can be overridden --&amp;gt;
+&amp;lt;MinifyJavaScriptFiles Condition=&amp;quot;'$(GenerateMinifiedSourceMaps)' ==''&amp;quot;&amp;gt;true&amp;lt;/MinifyJavaScriptFiles&amp;gt;
+
+&amp;lt;!-- In a consuming project, disable minification in local dev for better performance --&amp;gt;
+&amp;lt;MinifyJavaScriptFiles Condition=&amp;quot;$(IsLocalDev)&amp;quot;&amp;gt;false&amp;lt;/MinifyJavaScriptFiles&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class="notice--info" markdown="1"&gt;
+##### &lt;i class="fas fa-lightbulb"&gt;&lt;/i&gt; Tip: Avoid naming collisions with the standard library!
+Here is the documentation on built-in `Property` and `Item` names:
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties"&gt;Common MSBuild project properties&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties"&gt;Reserved and well-known properties&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">a480a560-7dbd-4734-63e0-29c8f659df1d</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+&lt;p&gt;You can get pretty far as a .NET developer without understanding MSBuild. Sure, very few months you may need to frantically copy/paste a line of MSBuild from StackOverflow into a .csproj, but you can mostly live in blissful ignorance.&lt;/p&gt;
+&lt;p&gt;As some who has had the (mis?)fortune of spending a lot of time writing MSBuild,  I wanted to put together a resource to empower others to understand it.&lt;/p&gt;
+&lt;h3 id="why-learn-msbuild"&gt;Why learn MSBuild?&lt;/h3&gt;
+&lt;h4 id="msbuild-is-a-useful-tool-for-your-toolbox"&gt;1. MSBuild is a useful tool for your toolbox&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;Does your application have a multi-step README for how to build the project?&lt;/strong&gt; Using MSBuild, you can smush all those steps together -- restoring npm packages, running webpack, transpiling TypeScript -- into a single &lt;code&gt;dotnet build&lt;/code&gt; command.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Does your organization need validation done in every application?&lt;/strong&gt; Using MSBuild, you can easily implement validations that can break the build if not satisfied. An ASP.NET project missing a &lt;code&gt;.ConfigureAwait(false)&lt;/code&gt;? Fail the build!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Want to the &amp;quot;go-to expert&amp;quot; at your organization in something?&lt;/strong&gt; Pick MSBuild. You'll be able to help .NET developers in their darkest days.&lt;/p&gt;
+&lt;h4 id="msbuild-inspires-fear-due-to-unfamiliarity"&gt;2. MSBuild inspires fear due to unfamiliarity&lt;/h4&gt;
+&lt;p&gt;I have seen the eyes of many excellent engineers glaze over when opening an MSBuild file. Hours sunk into throwing copy/pasted statements against the wall to see if anything sticks.&lt;/p&gt;
+&lt;h3 id="how-will-this-blog-series-teach-me-msbuild"&gt;How will this blog series teach me MSBuild?&lt;/h3&gt;
+&lt;p&gt;It's easiest to learn new idea by connecting them to old ones, so this series is going to teach MSBuild by explaining it as a programming language.&lt;/p&gt;
+&lt;p&gt;This series contains 3 posts:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2"&gt;Learn MSBuild - Part 2 - Variables&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3"&gt;Learn MSBuild - Part 3 - Functions&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4"&gt;Learn MSBuild - Part 4 - Real-world MSBuild&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Ready?&lt;/p&gt;
+&lt;div class="notice--info" markdown="1"&gt;
+&lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
+&lt;/div&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">9da41a52-a6f4-e7a8-1f45-00bd43e4c994</guid><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>&lt;p&gt;Last year, I gave a talk (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;) at &lt;a href="https://www.dotnetconf.net/"&gt;.NET Conf&lt;/a&gt; about how my teammates and I automated the migration of 200 applications to .NET Core. At the core of our strategy were a handful of LINQPad scripts that leveraged Roslyn to refactor C# code.&lt;/p&gt;
+&lt;p&gt;Some in attendance were curious about the specifics this refactoring, e.g. what APIs we used, how to get started writing a refactoring script. This post is my belated answer to those questions!&lt;/p&gt;
+&lt;p&gt;This post is not an attempt to exhaustively document the Roslyn APIs. It will attempt to do the opposite. Roslyn has a reputation for being complex and difficult because it has such a wide API surface area. The goal of this post is to share the minimum set of APIs that will provide a basis for writing a practical refactoring script of your own.&lt;/p&gt;
+&lt;h3 id="what-is-roslyn"&gt;What is Roslyn?&lt;/h3&gt;
+&lt;p&gt;Roslyn is the friendly name of the C# compiler (named after &lt;a href="https://en.wikipedia.org/wiki/Roslyn,_Washington"&gt;Roslyn, Washington&lt;/a&gt;). In addition to the typical duties of a compiler, the Roslyn compiler has an API surface for consumers to directly interact with. For example, a consumer can use the Syntax API to parse C#/F#/VB code into the syntax tree representation that the compiler uses during compilation.&lt;/p&gt;
+&lt;p&gt;Released in 2011 and open-sourced in 2014, Roslyn (and its consumer APIs) has received a lot of attention from the .NET team. It is incredibly powerful and a delight to use.&lt;/p&gt;
+&lt;h3 id="setup"&gt;Setup&lt;/h3&gt;
+&lt;p&gt;NOTE: Roslyn has two API surfaces for examining and modifying code: the &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-syntax"&gt;Syntax API&lt;/a&gt; and the &lt;a href="https://docs.microsoft.com/en-us/dotnet/csharp/roslyn-sdk/work-with-semantics"&gt;Semantic API&lt;/a&gt;. The examples in this blog post will all use the Syntax API because I only use the Syntax API, since I have found it is (1) always simpler to setup (2) usually powerful enough for the task at hand.&lt;/p&gt;
+&lt;h4 id="step-0-determine-your-scripting-environment"&gt;Step 0: Determine your scripting environment&lt;/h4&gt;
+&lt;p&gt;An underrated developer skill is the ability to &lt;a href="%22https://lizzy-gallagher.github.io/using-underdocumented-features/#take-it-for-a-test-drive%22"&gt;setup up a minimum environment for any task&lt;/a&gt;. Given the complexity of the API and the &amp;quot;use once&amp;quot; nature of refactoring scripts, you will need an environment that you can quickly iterate within.&lt;/p&gt;
+&lt;p&gt;My first choice for a scripting is always &lt;a href="https://www.linqpad.net/"&gt;LINQPad&lt;/a&gt; because its debugger is a pure delight (aside: your first time using &lt;code&gt;.Dump()&lt;/code&gt; will forever ruin your contentment with Visual Studio's &lt;code&gt;Watch&lt;/code&gt; tab). LINQPad's main drawback its only tenuous support for &lt;a href="https://forum.linqpad.net/discussion/comment/5720/#Comment_5720"&gt;non-Windows machines&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;My second choice (or first choice if I need unit tests), is to set up a bare-bones .NET 5 console project using the Visual Studio template.&lt;/p&gt;
+&lt;h4 id="step-1-install-roslyn"&gt;Step 1: Install &amp;quot;Roslyn&amp;quot;&lt;/h4&gt;
+&lt;p&gt;Install the NuGet package &lt;a href="https://www.nuget.org/packages/Microsoft.CodeAnalysis"&gt;Microsoft.CodeAnalysis&lt;/a&gt;.&lt;/p&gt;
+&lt;h4 id="step-2-drop-in-methods-for-io"&gt;Step 2: Drop in methods for I/O&lt;/h4&gt;
+&lt;p&gt;At the beginning of your script, you'll need to create a syntax tree from a file. At the end, you'll need to write your transformed syntax tree back to that file.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;var content = File.ReadAllText(pathToMyCSharpFile);
+var editor = CreateEditor(content);
+
+// ... make changes using editor ...
+
+var changedRoot = editor.GetChangedRoot();
+var updatedContent = this.FormatChanges(changedRoot);
+File.WriteAllText(pathToMyCSharpFile);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Here are the exact implementations we use:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;// string -&amp;gt; syntax tree
+private SyntaxEditor CreateEditor(string content)
+{
+    var syntaxRoot = SyntaxFactory.ParseCompilationUnit(content);
+    return new SyntaxEditor(syntaxRoot, new AdhocWorkspace());
+}
+
+// syntax tree -&amp;gt; string
+private string FormatChanges(SyntaxNode node)
+{
+    var workspace = new AdhocWorkspace();
+    var options = workspace.Options
+        // change these values to fit your environment / preferences 
+        .WithChangedOption(FormattingOptions.UseTabs, LanguageNames.CSharp, value: true)
+        .WithChangedOption(FormattingOptions.NewLine, LanguageNames.CSharp, value: &amp;quot;\r\n&amp;quot;);
+    return Formatter.Format(node, workspace, options).ToFullString();
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="step-3-drop-in-a-method-to-reduce-contention"&gt;Step 3: Drop in a method to reduce contention&lt;/h4&gt;
+&lt;p&gt;The Roslyn Syntax API parses C# into a tree of nodes: class nodes, method nodes, even semicolon nodes!&lt;/p&gt;
+&lt;p&gt;A byproduct of this design is that when a node is deleted or replaced, all of its child nodes (e.g. all the statement nodes inside of a method node) will disappear from the updated tree. As you can imagine, this can cause a lot of headaches if you attempt to make an update based on data from a stale representation of the tree.&lt;/p&gt;
+&lt;p&gt;Although many of headaches can be avoided by replacing only the narrowest set of nodes, we found that swapping in our own API for &lt;code&gt;ReplaceNode&lt;/code&gt; that required update functions instead of blindly accepting new nodes led to less contention and fewer exceptions.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;static void ReplaceNode&amp;lt;TNode&amp;gt;(
+    SyntaxEditor editor, 
+    TNode node, 
+    Func&amp;lt;TNode, SyntaxNode&amp;gt; computeReplacement) 
+    where TNode : SyntaxNode =&amp;gt;
+    editor.ReplaceNode(node, (n, _) =&amp;gt; computeReplacement((TNode)n));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="start-refactoring"&gt;Start refactoring&lt;/h3&gt;
+&lt;p&gt;The structure of a refactor has two parts:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Identify the narrowest set of nodes to be updated&lt;/li&gt;
+&lt;li&gt;Update!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Here are two real refactors from our conversion script from ASP.NET to ASP.NET Core:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;//
+// The ASP.NET way of accessing a query no longer works on ASP.NET Core
+//
+// OLD: this.Request.Url.Query
+// NEW: this.Request.QueryString.Value
+//
+void ReplaceUsagesOfQueryString(SyntaxEditor editor)
+{
+    // (1) identify the narrowest set of nodes to be updated
+    editor.OriginalRoot
+        .DescendantNodes()
+        .OfType&amp;lt;MemberAccessExpressionSyntax&amp;gt;()
+        .Where(s =&amp;gt; s.ToString() == &amp;quot;this.Request.Url.Query&amp;quot;))
+        .ToList()
+        // (2) update!
+        .ForEach(s =&amp;gt; {
+             ReplaceNode(
+                 editor, 
+                 usage,
+                 // SyntaxFactory is a static class used for creating new nodes
+                 node =&amp;gt; SyntaxFactory
+                    // ParseExpression is the most powerful API in SyntaxFactory.
+                    // Here, instead of creating 3 nested MemberAccessExpressionSyntaxes,
+                    // ParseExpression does the heavy lifting.
+                    .ParseExpression(&amp;quot;this.Request.QueryString.Value&amp;quot;))
+        });
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;//
+// Although many attributes have a direct parallel from ASP.NET MVC or Web Api and ASP.NET Core,
+// they will not be &amp;quot;transitioned&amp;quot; if they are fully qualified and lead to confusing runtime errors.
+//
+// OLD: [System.Web.Mvc.HttpGet]
+// NEW: [HttpGet]
+//
+void ShortenQualifiedAttributeNames(SyntaxEditor editor)
+{
+    // (1) identify the narrowest set of nodes to be updated
+    var attributes = editor.OriginalRoot
+        .DescendantNodes()
+        .OfType&amp;lt;AttributeSyntax&amp;gt;();
+
+    // (2) update!
+    foreach (var attribute in attributes)
+    {
+        // syntaxNode.ToString() returns the string representation of
+        // the node as it was in the original code (including leading
+        // and trailing whitespace)
+        var originalName = attribute.Name.ToString();
+        var shortenedName = Regex.Replace(originalName, @&amp;quot;^System\.Web\.(Mvc|Http)\.&amp;quot;, string.Empty);
+        if (originalName != shortenedName)
+        {
+            ReplaceNode(
+                editor, 
+                attribute, 
+                // .WithX is the syntax API's naming pattern for methods 
+                // that replace one node with another. Here we are 
+                // replacing one NodeSyntax with another.
+                a =&amp;gt; a.WithName(SyntaxFactory.ParseName(shortenedName)));
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The surface area of the Syntax API is quite large, and is best discovered through trial and error.&lt;/p&gt;
+&lt;h4 id="a-note-about-organization"&gt;A note about organization&lt;/h4&gt;
+&lt;p&gt;As your script gets longer, the likelihood of something going wrong -- an exception being thrown, an unexpected pattern -- increases, along with the chance that a .NET solution / project will end up in a limbo state with 50% of the refactors applied.&lt;/p&gt;
+&lt;p&gt;To defend against unexpected exceptions leaving consumers in limbo, my team adopted the &amp;quot;transaction&amp;quot; design pattern, i.e. all changes would be committed or none would be. This pattern added some boilerplate to our otherwise lightweight scripts, but it saved a lot of mental overhead and enabled us to add exception-throwing features like validation.&lt;/p&gt;
+&lt;p&gt;Here's the rough outline of &amp;quot;transaction&amp;quot; pattern:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;Action commit = () =&amp;gt; { };
+
+// per-solution, non-Roslyn updates
+commit += this.UpdateWebConfigs();
+commit += this.UpdateNuGetExe();
+
+// per-project, Roslyn updates
+commit += () =&amp;gt; projects.ForEach(p =&amp;gt; UpdateCSFiles(p));
+
+// we only get here if nothing threw an exception!
+commit();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Let's zoom in on the Roslyn-specific methods:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-c#"&gt;Action UpdateCSFiles(IEnumerable&amp;lt;CSharpProject&amp;gt; projects)
+{
+    var changes = new List&amp;lt;Action&amp;gt;();
+
+    foreach (var project in projects)
+    {
+        var csFiles = Directory
+            .EnumerateFiles(project.Directory, &amp;quot;*.cs&amp;quot;, SearchOption.AllDirectories);
+        foreach (var csFile in csFiles)
+        {
+            if (this.TryUpdateCSCode(File.ReadAllText(csFile), project, out var updatedCode))
+            {
+                changes.Add(() =&amp;gt; File.WriteAllText(csFile, updatedCode, Encoding.UTF8));
+            }
+        }
+    }
+
+    return () =&amp;gt; changes.ForEach(a =&amp;gt; a.Invoke());
+}
+
+
+bool TryUpdateCSCode(string code, CSharpProject project, out string updatedCode)
+{
+    var editor = this.CreateEditor(code);
+
+    this.ShortenQualifiedAttributeNames(editor);
+    
+    // ... more refactoring methods ...
+    
+    this.ReplaceUsagesOfQueryString(editor);
+
+    // to keep the git diff minimal, only commit the changes
+    // if the tree changed  
+    var changedRoot = editor.GetChangedRoot();
+    if (changedRoot.ToFullString() != code)
+    {
+        updatedCode = this.FormatChanges(changedRoot);
+        return true;
+    }
+
+    updatedCode = null;
+    return false;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The details and capabilities of the Roslyn APIs could fill many more blog posts. I am hoping this practical guide to getting started helped you get started.&lt;/p&gt;
+&lt;p&gt;Good luck and happy refactoring!&lt;/p&gt;
+&lt;h3 id="appendix-frequently-asked-questions"&gt;Appendix: Frequently asked questions&lt;/h3&gt;
+&lt;h4 id="how-can-i-learn-more-about-the-syntax-apis-data-model"&gt;How can I learn more about the Syntax API's data model?&lt;/h4&gt;
+&lt;p&gt;It is important to remember that Roslyn syntax trees have a very specific and narrow type for every node.&lt;/p&gt;
+&lt;p&gt;Two tools you can use to learn the names of these types are the&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;The Visual Studio Syntax Visualizer&lt;/strong&gt;. As you click around your code, the tool will focus on the relevant section of the tree. &lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/syntax-visualizer.png" alt="Syntax Visualizer" /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;LINQPad Tree view&lt;/strong&gt;. The tool will create a syntax tree for your entire program.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/linqpad-tree.png" alt="LINQPad tree view" /&gt;&lt;/p&gt;
+&lt;h4 id="when-should-i-automate-refactoring"&gt;When should I automate refactoring?&lt;/h4&gt;
+&lt;p&gt;For the cost-benefit analysis of when automation is worth it, I direct you to this evergreen &lt;a href="https://xkcd.com/1205/"&gt;XKCD comic&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a longer discussion about the value of codifying how to do a modernization for consumers via scripts, I direct you to my talk at .NET Conf (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Since that video is 30 minutes long, here is a summary:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Part of my team's purview is to oversee the health of a web platform with 150 microservices. When we embark on some form of modernization (e.g. .NET Framework to .NET Core), it is always worth it to codify and distribute the change in the form of a well-tested modernization. This is because the microservices (and 100+ console applications) are owned by teams that are experts of their applications, but inexperienced at the specifics of modernization. Instead of requiring all product teams to stumble through the vast list of code changes required for updating, my team automated the changes to streamline the process, something we were uniquely positioned to do as experts of the modernization itself.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Here are a few examples of real-world scripts my team has written and some of the automated steps each required:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Updating from NUnit 2 -&amp;gt; NUnit 3.&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Recover from the removal of &lt;code&gt;[ExpectException]&lt;/code&gt; attribute by adding a line to appropriate test cases to assert that the proper exception type was thrown&lt;/li&gt;
+&lt;li&gt;Rename various attributes / APIs, e.g. &lt;code&gt;[TestFixtureSetUp]&lt;/code&gt; -&amp;gt; &lt;code&gt;[OneTimeSetUp]&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Updating from ASP.NET to ASP.NET Core&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Recover from various API changes (all the examples in this blog post)&lt;/li&gt;
+&lt;li&gt;Migrate from &lt;code&gt;Global.asax.cs&lt;/code&gt; to &lt;code&gt;Program.cs&lt;/code&gt; / &lt;code&gt;Startup.cs&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Add / remove a &lt;strong&gt;lot&lt;/strong&gt; of &lt;code&gt;PackageReferences&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Delete web.configs&lt;/li&gt;
+&lt;li&gt;Move all static content to &lt;code&gt;wwwroot/&lt;/code&gt; and update &lt;code&gt;package.json&lt;/code&gt; and &lt;code&gt;tsconfig.json&lt;/code&gt; accordingly&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Updating to C#8&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Make .csproj changes to enable nullable reference type annotations&lt;/li&gt;
+&lt;li&gt;Based on consumer input -- Use heuristics to add the &amp;quot;easy&amp;quot; nullable reference type annotations (e.g. &lt;code&gt;MyMethod(string optional = null)&lt;/code&gt; -&amp;gt; &lt;code&gt;MyMethod(string? optional = null)&lt;/code&gt;) &lt;strong&gt;or&lt;/strong&gt; add &lt;code&gt;#nullable disable&lt;/code&gt;to each file to allow consumers to convert files one-by-one.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Releasing a major version bump of an internal NuGet package&lt;/strong&gt;
+&lt;ul&gt;
+&lt;li&gt;Recover from our own API changes / renames!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">b8cc3665-5f9a-7524-5f95-b8f8f6e7ace8</guid><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>&lt;p&gt;&lt;a href="https://autofac.org/"&gt;Autofac&lt;/a&gt; is a popular .NET &amp;quot;&lt;a href="https://martinfowler.com/articles/injection.html"&gt;inversion of control&lt;/a&gt;&amp;quot; library. Designed to be unobtrusive, Autofac fades into the background of large applications.&lt;/p&gt;
+&lt;p&gt;This article is for those who have used Autofac without understanding the &lt;em&gt;why&lt;/em&gt; behind it. If you want specific API details, I highly recommend the &lt;a href="https://autofaccn.readthedocs.io/en/latest/"&gt;official documentation&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This post will take a step back from specific API details and instead explain Autofac using the analogy of a restaurant.&lt;/p&gt;
+&lt;h3 id="autofac-a-restaurant-kitchen"&gt;Autofac, a restaurant kitchen&lt;/h3&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
+&lt;h4 id="why-do-restaurants-exist"&gt;Why do restaurants exist?&lt;/h4&gt;
+&lt;p&gt;Most of us have kitchens, access to grocery stores, and (thanks to the internet!) step-by-step instructions for a million different dishes.&lt;/p&gt;
+&lt;p&gt;Why do restaurants still exist? Because cooking complex meals yourself requires effort and precision.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Effort.&lt;/strong&gt; A simple recipe might take 15 minutes; a complex recipe many hours.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Precision.&lt;/strong&gt; For any recipe with more than five steps, I am bound to mismeasure something or undermine perfection with a short cut.&lt;/p&gt;
+&lt;p&gt;For a special dish -- say, a Beef Wellington (a 6 hour effort on a good day), we'd all concede that outsourcing this complex dish to a restaurant's kitchen would be a good trade-off of time and effort.&lt;/p&gt;
+&lt;h4 id="why-does-autofac-exist"&gt;Why does Autofac exist?&lt;/h4&gt;
+&lt;p&gt;Like cooking, managing dependencies yourself requires both effort and precision.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Effort.&lt;/strong&gt; If manually creating dependencies, you instantiate components by &lt;code&gt;new&lt;/code&gt;-ing them which quickly gets hard to read and maintain. Adding a new dependency to a common component requires propagating that change to 100% of instantiations.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Precision.&lt;/strong&gt; Complex applications might require careful handling of component disposal (to prevent memory leaks) or careful component reuse (for caching purposes).&lt;/p&gt;
+&lt;p&gt;Imagine we were to cook a Beef Wellington ourselves:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;// without Autofac or another IOC solution
+public class MyMeal()
+{
+    public MyMeal(Pate pateLeftOverFromLastWeek)
+    {
+        var beefWellington = new BeefWellington(
+            new Steak { Doneness = Doneness.MediumRare },
+            // pâté is expensive! Reuse it if we can.
+            pateLeftOverFromLastWeek,
+            // duxelles has so many ingredients :(
+            new Duxelles(
+                new WhiteButtonMushrooms().TrimEnds(),
+                new Shallot(),
+                ...
+                // (this is an option I would like to set when 
+                // instantiating everything I eat)
+                o =&amp;gt; o.ThrowIfSoHotItWillBurnMyTongue(true)
+            ),
+            ...
+        );
+
+        beefWellington.Enjoy(); // finally!
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Oof.&lt;/p&gt;
+&lt;p&gt;By using Autofac, we can separate instantiation from business logic and reuse our configuration instructions again and again in our code!&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;// with Autofac! So nice!
+public class MyMeal()
+{
+    // You specify how this dependency is created in your Autofac configuration.
+    public MyMeal(BeefWellington beefWellington) // dependency injection!
+    {
+        beefWellington.Enjoy();
+    }
+}
+
+// re-use is really easy!
+// configure Autofac to either reuse the same &amp;quot;recipe&amp;quot; or even the exact same copy!
+public class YourMeal()
+{
+    public YourMeal(BeefWellington beefWellington, Wine wine)
+    {
+        wine.Sip();
+        beefWellington.Enjoy();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;And this magic happens by handing off your recipe to Autofac (in &lt;code&gt;Startup.cs&lt;/code&gt;), your restaurant.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;// when properties are important, specify them!
+builder.Register(() =&amp;gt; new Steak { Doneness = Doneness.MediumRare }); 
+
+// when you don't need anything fancy!
+builder.RegisterType&amp;lt;Shallot&amp;gt;();
+
+// when you need caching!
+builder.RegisterType&amp;lt;Pate&amp;gt;().SingleInstance();
+
+// when you need to pick a constructor!
+builder.RegisterType&amp;lt;Duxelles&amp;gt;(cc =&amp;gt; new Duxelles(
+    cc.Resolve&amp;lt;WhiteButtonMushrooms&amp;gt;().TrimEnds(), 
+    cc.Resolve&amp;lt;Shallot&amp;gt;(),
+    o =&amp;gt; o.ThrowIfSoHotItWillBurnMyTongue(true)));
+
+// and tie it all together!
+builder.RegisterType&amp;lt;BeefWellington&amp;gt;();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="vocabulary"&gt;Vocabulary&lt;/h4&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
+&lt;p&gt;Now that our appetite has been whetted, let's break down this restaurant metaphor.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;You provide Autofac a cookbook full of recipes that it uses to fill customer orders.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Customer orders == Resolving components&lt;/strong&gt; As your application runs, whenever you need a component you &amp;quot;resolve&amp;quot; it from the container. This act of &amp;quot;resolving&amp;quot; dependencies happens throughout your app's lifecycle, e.g. on each HTTP request. Resolving a component is like placing an order -- restaurants don't prebake all their food, so they need to start cooking when an order comes in!&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Recipes == Registrations&lt;/strong&gt; In code, before your application runs, you define a set of instructions called &lt;strong&gt;registrations&lt;/strong&gt; that Autofac uses to create the components when they are &lt;em&gt;resolved&lt;/em&gt; from the container. Like recipes, your registrations are the instructions followed to create the end product.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cookbook == Container&lt;/strong&gt; During application startup, all the registrations are added to an immutable &lt;strong&gt;container&lt;/strong&gt;. At runtime, recipes for resolving components are pulled from this container. Like a cookbook, it is immutable and cannot be changed during runtime / dinner hours. Like a cookbook, if a customer orders something not on the menu / attempts to resolve a component with no registration, you're out of luck.&lt;/p&gt;
+&lt;h4 id="what-options-do-i-have-when-writing-recipes"&gt;What options do I have when writing recipes?&lt;/h4&gt;
+&lt;h5 id="register-with-a-specific-lifetime"&gt;Register with a specific lifetime&lt;/h5&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets//images/autofac-lifetimes-trim.png" alt="Image showing the different lifetimes available in Autofac" /&gt;&lt;/p&gt;
+&lt;p&gt;There are three types of &lt;strong&gt;lifetimes&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Single instance&lt;/li&gt;
+&lt;li&gt;Instance per Dependency&lt;/li&gt;
+&lt;li&gt;Instance per Lifetime Scope&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Single instance.&lt;/strong&gt; Every time you resolve the component, you get the exact same instance of it. This is useful if you are caching something inside that component. Think of this like a pot of soup: the soup is made in a big batch at the beginning of the evening and then every customer is served from the same batch all night. The soup is only cooked once.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Instance per Dependency.&lt;/strong&gt; Every time you resolve the component, you get a new instance of it. This is the default registration and good to use if all your components are stateless / easy. This is like a made-to-order burger. It is not made ahead of time, only when you order it.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Instance per Lifetime Scope.&lt;/strong&gt; Every time you resolve the component &lt;em&gt;within the same lifetime&lt;/em&gt;, you get the exact same instance. This is a API to use if you need to scope your component (e.g. for caching) to some unit of work, e.g. an HTTP request. This is like a bottle of wine for the table. A new one is served to each table that orders a bottle of wine, but the same bottle is shared for the whole tale.&lt;/p&gt;
+&lt;h5 id="common-registration-apis"&gt;Common registration APIs&lt;/h5&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-3.png" alt="Image showing the different registration methods available in Autofac" /&gt;&lt;/p&gt;
+&lt;h5 id="register-as-an-interface"&gt;Register as an interface&lt;/h5&gt;
+&lt;p&gt;Depending on your design philosophy, you may use a lot of interfaces or you might not! Autofac provides an easy hook to register components by their regular type or by any interface they implement.&lt;/p&gt;
+&lt;p&gt;In our restaurant metaphor, interface registration is like ordering coffee after dinner at a restaurant. When ordering coffee this way, you are rarely given a chance to specify your blend or roast.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;// at a coffee shop, you may order the specific type
+builder
+    .Register&amp;lt;ColumbianSingleOriginDarkRoast&amp;gt;()
+    .As&amp;lt;ICoffee&amp;gt;();
+
+// after a restaurant meal, you may instead just request &amp;quot;ICoffee&amp;quot;
+builder
+    .Register&amp;lt;GroceryStoreBlend&amp;gt;()
+    .As&amp;lt;ICoffee&amp;gt;();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id="register-using-reflection"&gt;Register using reflection&lt;/h5&gt;
+&lt;p&gt;This is the bread and butter way to register. If you don't require any specific settings or constructor, but just want to use the defaults for each of your component's dependencies.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;builder.RegisterType&amp;lt;Lettuce&amp;gt;(); // ok because no dependencies!
+builder.RegisterType&amp;lt;LettuceSalad&amp;gt;(); // ok because Lettuce is the only dependency!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id="register-using-a-custom-function"&gt;Register using a custom function&lt;/h5&gt;
+&lt;p&gt;Remember that complicated Beef Wellington recipe earlier in this article? The Duxelles component is a good candidate for using a custom function since it requires some specific configuration. The custom function API is the most flexible as it allows you to use &amp;quot;new&amp;quot; syntax.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;builder.RegisterType&amp;lt;Duxelles&amp;gt;(cc =&amp;gt; new Duxelles(
+    cc.Resolve&amp;lt;WhiteButtonMushrooms&amp;gt;().TrimEnds(), 
+    cc.Resolve&amp;lt;Shallot&amp;gt;(),
+    o =&amp;gt; o.ThrowIfSoHotItWillBurnMyTongue(true)));
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h5 id="register-using-a-module"&gt;Register using a module&lt;/h5&gt;
+&lt;p&gt;A neat, more advanced feature is bundling your registrations together using an Autofac module -- a logical grouping of registrations. This is especially handy if writing a NuGet package or otherwise want to register components that may not be publicly visible to your consumer.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;builder.RegisterModule&amp;lt;PastryModule&amp;gt;();
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-4.png" alt="Image showing the idea of modules" /&gt;&lt;/p&gt;
+&lt;h3 id="summary"&gt;Summary&lt;/h3&gt;
+&lt;p&gt;Autofac is a flexible technology that is a delight to use. This post is purposely just an introduction to the main concepts of Autofac. If you want to dive deeper, you should spend some time with the &lt;a href="%22https://autofaccn.readthedocs.io/en/latest/getting-started/index.html%22"&gt;official documentation&lt;/a&gt; which is excellent.&lt;/p&gt;
+&lt;h3 id="postscript-real-life-wellingtons"&gt;Postscript - Real life Wellingtons&lt;/h3&gt;
+&lt;p&gt;Since you made it this far, here is a picture of real-life Beef Wellington my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.&lt;/p&gt;
+&lt;p&gt;![Image showing a beef wellington](/assets/images/autofac-wellington.jpg&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">2aaa3709-4220-3baa-d270-9bbabbed039f</guid><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>&lt;p&gt;After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“One form of perseverance is the daily discipline of trying to do things better than we did yesterday.”
+― Angela Duckworth, Grit: The Power of Passion and Perseverance&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id="read-and-not-just-tweets"&gt;1. Read (and not just tweets)&lt;/h4&gt;
+&lt;p&gt;I too enjoy scrolling through technical Twitter and HackerNews, but treat these sources like you treat Wikipedia -- following the references to meatier primary sources.&lt;/p&gt;
+&lt;h5 id="read-official-documentation"&gt;Read official documentation&lt;/h5&gt;
+&lt;p&gt;The best documentation contains very little code. It instead spends time explaining the library / technology's high-level approach to its problem. Good documentation give you a solid grasp of relevant concepts. Good documentation will inspire you to better document your own projects!&lt;/p&gt;
+&lt;p&gt;If you are skeptical of these claims, take a spin through the official React, Rust, or Autofac docs.&lt;/p&gt;
+&lt;h5 id="read-blogs"&gt;Read blogs&lt;/h5&gt;
+&lt;p&gt;Use tools like Twitter, HackerNews, or blog aggregators to discover new authors. Some aggregators (like &amp;quot;The Morning Brew&amp;quot;) will highlight official release announcements as well as blog posts from the community.&lt;/p&gt;
+&lt;p&gt;Curating your RSS feed (i.e. deciding who to follow) is a personal journey that I won't comment on.&lt;/p&gt;
+&lt;h5 id="read-books"&gt;Read books&lt;/h5&gt;
+&lt;p&gt;I know, this is a very old school suggestion. There is unique value in hearing information in long-form. Books as a medium give the author more breathing room to provide context and in-depth examples without having to worry about user engagement metrics like a blogger does.&lt;/p&gt;
+&lt;p&gt;Seek out books that are more than reference guides. In the .NET, the north star is &lt;em&gt;C# in Depth&lt;/em&gt; which discusses design decisions made when developing C# features in addition to practical guides on how to make use of these features.&lt;/p&gt;
+&lt;h4 id="take-advantage-of-existing-opportunities"&gt;2. Take advantage of existing opportunities&lt;/h4&gt;
+&lt;p&gt;As you approach projects in your day-to-day, take opportunities to understand the technologies you work with. For example, when tackling a bugfix for a dependency injection error, don't stop at the first StackOverflow post that &amp;quot;fixes&amp;quot; your problem. Spend time reading through the official documentation or blog posts of your dependency injection library and its philosophy. While at it, try to understand what why dependency injection (and more broadly &amp;quot;inversion of control&amp;quot;) is valuable &lt;em&gt;and&lt;/em&gt; why it never was a part of class projects.&lt;/p&gt;
+&lt;p&gt;As you approach designing a new feature, seek out similar examples -- from open source, your own company's code bases, or blog posts from other companies. Getting outside perspective on how others approached design trade-offs can elevate your own technical design.&lt;/p&gt;
+&lt;p&gt;Beyond external resources, leverage your excellent coworker's know-how. Ask the senior engineers on your team about big picture questions, they will appreciate the opportunity to share their technical knowledge!&lt;/p&gt;
+&lt;p&gt;This is likely obvious, but if your company offers technical reading groups, or brown-bags, or &amp;quot;guilds&amp;quot;, you should participate in those formal opportunities as well.&lt;/p&gt;
+&lt;h4 id="be-consistent"&gt;3. Be consistent&lt;/h4&gt;
+&lt;p&gt;If you take one thing away from this post, let it be that &lt;strong&gt;technical growth is not an extracurricular activity&lt;/strong&gt;. Learning is something you can and should be doing on the clock. A great engineer does not need to spend their weeknights or weekends thinking about code.&lt;/p&gt;
+&lt;p&gt;Consider blocking off time on your calendar for a dedicated time for growth. Maybe that means picking 2 articles from your RSS reader while drinking your morning tea. Maybe that means watching part of a conference talk on YouTube right after lunch. Maybe that's meeting every other week with friends to go through a book or blog together.&lt;/p&gt;
+&lt;h4 id="summary"&gt;Summary&lt;/h4&gt;
+&lt;p&gt;Figure out how you like to learn -- reading books, participating in discussion groups, watching conference talks on YouTube -- and do figure out how to weave it into your work day or work week.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">c690f542-09b7-ed68-85cc-6fcd17410a22</guid><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>&lt;p&gt;Most online resources will recommend using &lt;code&gt;BeforeTargets&lt;/code&gt; or &lt;code&gt;AfterTargets&lt;/code&gt; to hook your target into the MSBuild lifecycle &lt;code&gt;Build&lt;/code&gt; method.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
+        BeforeTargets=&amp;quot;Build&amp;quot;&amp;gt;
+    &amp;lt;!-- Do things --&amp;gt;
+&amp;lt;/Target&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyPackage_AfterBuild&amp;quot;
+        AfterTargets=&amp;quot;Build&amp;quot;&amp;gt;
+    &amp;lt;!-- Do things --&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But this breaks down if you add another target framework.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+  &amp;lt;TargetFrameworks&amp;gt;net472;netcoreapp3.1&amp;lt;/TargetFrameworks&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
+        BeforeTargets=&amp;quot;Build&amp;quot;&amp;gt;
+    &amp;lt;Message Text=&amp;quot;Before build: '$(TargetFramework)'&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;Before build: 'net472'
+Before build: 'netcoreapp3.0'
+Before build: ''
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Oof. Your target now runs N+1 times (if the project has N target frameworks).&lt;/p&gt;
+&lt;p&gt;At best, this slows down your build. At worst, it'll break it due to a race condition (e.g. if each iteration attempts to write to the same file).&lt;/p&gt;
+&lt;h3 id="run-a-target-once-per-project-if-multi-targeted"&gt;Run a target once per project (if multi-targeted)&lt;/h3&gt;
+&lt;p&gt;Most of the time you can replace &lt;code&gt;Build&lt;/code&gt; with &lt;code&gt;DispatchToInnerBuilds&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+  &amp;lt;TargetFrameworks&amp;gt;net472;netcoreapp3.1&amp;lt;/TargetFrameworks&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
+        BeforeTargets=&amp;quot;DispatchToInnerBuilds&amp;quot;&amp;gt;
+    &amp;lt;Message Text=&amp;quot;Before build '$(TargetFramework)'&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;Before build: ''
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Success!&lt;/p&gt;
+&lt;p&gt;Well, except that &lt;code&gt;DispatchToInnerBuilds&lt;/code&gt; only exists for multi-targeted projects, so it will not run in a single-targeted project.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+  &amp;lt;TargetFramework&amp;gt;netcoreapp3.1&amp;lt;/TargetFramework&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
+        BeforeTargets=&amp;quot;DispatchToInnerBuilds&amp;quot;&amp;gt;
+  &amp;lt;Message Text=&amp;quot;Before build: '$(TargetFramework)'&amp;quot; /&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="run-a-target-once-per-project"&gt;Run a target once per project&lt;/h3&gt;
+&lt;p&gt;This is the layout of a NuGet package that distributes a target that runs only once per project regardless of whether the project is single- or multi-targeted.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;MyPackage.nuspec&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;...
+&amp;lt;files&amp;gt;
+  &amp;lt;!-- files in the build/ directory run per target framework --&amp;gt;
+  &amp;lt;file src=&amp;quot;MyPackage.targets&amp;quot; target=&amp;quot;build&amp;quot; /&amp;gt;
+  
+  &amp;lt;!-- files in the buildMultiTargeting/ directory run once 
+       per project (regardless of # of target frameworks), 
+       but *only* if the project is multi-targeted --&amp;gt;
+  &amp;lt;file src=&amp;quot;MyPackage.targets&amp;quot; target=&amp;quot;buildMultiTargeting&amp;quot; /&amp;gt;
+  &amp;lt;file src=&amp;quot;MyPackage.props&amp;quot; target=&amp;quot;buildMultiTargeting&amp;quot; /&amp;gt;
+&amp;lt;/files&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Creates this package layout:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-text"&gt;buildMultitargeting/
+  MyPackage.props
+  MyPackage.targets
+build/
+  MyPackage.targets (same content as other MyPackage.targets)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;buildMultiTargeting/MyPackage.props&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Project&amp;gt;
+  &amp;lt;PropertyGroup&amp;gt;
+    &amp;lt;!-- this file only executes in the &amp;quot;outer&amp;quot; build of a
+         multi-targeted project, so we set this variable to
+         keep track of that information --&amp;gt; 
+    &amp;lt;IsOuterBuild&amp;gt;true&amp;lt;/IsOuterBuild&amp;gt;
+  &amp;lt;/PropertyGroup&amp;gt;
+&amp;lt;/Project&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;build/MyPackage.targets&lt;/code&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;PropertyGroup&amp;gt;
+  &amp;lt;IsOuterBuild 
+    Condition=&amp;quot;'$(IsOuterBuild)' == ''&amp;quot;&amp;gt;false&amp;lt;/IsOuterBuild&amp;gt;
+   
+  &amp;lt;!-- Uue DispatchToInnerBuilds if a multi-targetedBuild --&amp;gt;
+  &amp;lt;MyBeforeTargets&amp;gt;BuildDependsOn&amp;lt;/MyBeforeTargets&amp;gt;
+  &amp;lt;MyBeforeTargets 
+    Condition=&amp;quot;$(IsOuterBuild)&amp;quot;&amp;gt;DispatchToInnerBuilds&amp;lt;/MyBeforeTargets&amp;gt;
+   
+   &amp;lt;MyAfterTargets&amp;gt;Build&amp;lt;/MyAfterTargets&amp;gt;
+   &amp;lt;MyAfterTargets 
+     Condition=&amp;quot;$(IsOuterBuild)&amp;quot;&amp;gt;DispatchToInnerBuilds&amp;lt;/MyAfterTargets&amp;gt;
+
+  &amp;lt;!-- to prevent targets from being run extra times,
+       enforce that only the outer build of a multi-targeted
+       project or a single-targeted build can run --&amp;gt;
+  &amp;lt;ShouldRunTarget&amp;gt;false&amp;lt;/ShouldRunTarget&amp;gt;
+  &amp;lt;ShouldRunTarget 
+    Condition=&amp;quot;'$(TargetFrameworks)' == '' 
+      OR $(IsOuterBuild)'&amp;quot;&amp;gt;true&amp;lt;/ShouldRunTarget&amp;gt;
+&amp;lt;/PropertyGroup&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyBeforeBuild&amp;quot;
+        Condition=&amp;quot;$(ShouldRunTarget)&amp;quot;
+        BeforeTargets=&amp;quot;$(MyAfterTargets)&amp;quot;&amp;gt;
+    &amp;lt;!-- Do thing --&amp;gt;
+&amp;lt;/Target&amp;gt;
+
+&amp;lt;Target Name=&amp;quot;MyAfterBuild&amp;quot;
+        Condition=&amp;quot;$(ShouldRunTarget)&amp;quot;
+        AfterTargets=&amp;quot;$(MyAfterTargets)&amp;quot;&amp;gt;
+    &amp;lt;!-- Do thing --&amp;gt;
+&amp;lt;/Target&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;NOTE: This above snippets were edited for horizontal brevity. In production code, you should always prefix your MSBuild variables with the name of your NuGet package (e.g. ShouldRunTarget -&amp;gt; MyProject_ShouldRunTarget). This is because MSBuild allows overwriting of variable names, so you want to be careful not to pollute the global pool of names.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">e5453f3d-d464-7d5a-46f0-9ca462925877</guid><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>&lt;p&gt;It happens. You're building something complex and unique, but not &lt;em&gt;so&lt;/em&gt; complex and unique that zero other humans could have run into the same problem, right?&lt;/p&gt;
+&lt;p&gt;So you search for hours and find a feature (or package (or tool)) that is perfect for your use case... except that has no documentation. Maybe it's referenced in a bullet in the changelog or pops up in intellisense, but as far as you can tell there are no (answered) StackOverflow questions, no blog posts, and little mention in the readme or docs.&lt;/p&gt;
+&lt;p&gt;So what do you do?&lt;/p&gt;
+&lt;h3 id="ask-why-is-this-feature-underdocumented"&gt;Ask &amp;quot;Why is this feature underdocumented?&amp;quot;&lt;/h3&gt;
+&lt;p&gt;This question has a slew of possible answers:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The entire project is lacking documentation.&lt;/strong&gt; Not all FOSS projects prioritize documentation, especially those written for a niche set of consumers.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The entire project is a rewrite of a better-documented project into a different language.&lt;/strong&gt; A maintainer may only document the places where the  the port/wrapper/rewrite departs from the public API of the original.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The feature exists for feature-parity, and the maintainers don't want to encourage new usage.&lt;/strong&gt; From time to time, a project wants to reboot (e.g. .NET Framework -&amp;gt; .NET Core). To ensure long-time consumers can migrate, maintainers may include features that are no longer recommended. Omitting documentation is a fair way to discourage usage by new consumers.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The feature is a pet project.&lt;/strong&gt; If a project is amenable to feature contributions, some contributor-suggested features may be merged with the contributor walking away satisfied but leaving a niche, undocumented feature in her wake.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;The feature is new and the community hasn't found it yet.&lt;/strong&gt; Even in popular libraries, it takes time for new features to be adopted, blogged about, and asked about on StackOverflow.&lt;/p&gt;
+&lt;p&gt;There isn't a hard rule here, but be open to the possibility that the answer to this question might dictate that you shouldn't use this feature.&lt;/p&gt;
+&lt;h3 id="seek-out-usages"&gt;Seek out usages&lt;/h3&gt;
+&lt;p&gt;Yes, we all prefer the minimal examples and best practices in official documentation, blog posts, or StackOverflow questions.&lt;/p&gt;
+&lt;p&gt;But when these are unavailable, the next best thing is real-world usages in applications similar to your own.&lt;/p&gt;
+&lt;p&gt;When doing this search, you need to resist the urge to use your favorite search engine (none of the major ones index source code) and instead use the advanced features of your favorite code-hosting platform (e.g. GitHub).&lt;/p&gt;
+&lt;p&gt;Most platforms will let you narrow the search with filters:&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;By file extensions&lt;/strong&gt; Beyond the obvious, these filters can be especially helpful if the project you are investigating is a rewrite/port/wrapper of a project in another language. If you can't find usages of the feature in the C# library, you can seek out usages in the Java or C++ versions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;To specific repositories.&lt;/strong&gt; An A+ unit test suite can be as useful as A- documentation. If you filter to the project's own repository, you can find the feature's unit tests. Unit tests excel at revealing the behavior of the feature with edge cases.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;By popularity of repositories.&lt;/strong&gt; To be fair, I rarely filter results by &amp;quot;stars&amp;quot; but see the value in removing some noisy results (e.g. unchanged forks of the original project).&lt;/p&gt;
+&lt;p&gt;Again, be open to the possibility that if you are struggling to find usages of this feature &lt;em&gt;and especially if unit tests are low-quality or missing&lt;/em&gt;, this implies that you should not use this feature.&lt;/p&gt;
+&lt;h3 id="read-the-source-code"&gt;Read the source code&lt;/h3&gt;
+&lt;p&gt;If the usages you found did not answer your questions, now is the time to sit down with some tea and read the source code.&lt;/p&gt;
+&lt;p&gt;Reading code is a valuable skill. Like all skills, you need to practice it in order to improve.&lt;sup&gt;1&lt;/sup&gt;&lt;/p&gt;
+&lt;p&gt;When possible, I recommend cloning the code locally to click through references and usages. Spend time understanding doc comments and examining static members (which might not show up in intellisense).&lt;/p&gt;
+&lt;h3 id="take-it-for-a-test-drive"&gt;Take it for a test drive&lt;/h3&gt;
+&lt;p&gt;If you take anything from this blog post, let it be &amp;quot;you should test out features in minimal environments&amp;quot;.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;What is a minimal environment?&lt;/strong&gt; Something you can iterate in quickly without interference from existing code.&lt;/p&gt;
+&lt;p&gt;This can be a scripting environment (e.g. LINQPad for C#, Jupyter notebooks for Python) or a single-file console application or a web route that loads a single JavaScript file.&lt;/p&gt;
+&lt;p&gt;Using a minimal sandbox saves you the effort spent integrating with your existing database, style rules, etc. It also saves you the time spent answering &amp;quot;is this not working because of the code using the new feature or because of the integration code I wrote?&amp;quot;.&lt;/p&gt;
+&lt;p&gt;Whatever you choose for your sandbox, it should be something &lt;em&gt;you&lt;/em&gt; are comfortable with and that you can attach a debugger to. The fine-grained ability of a debugger to examine internals during execution is indispensable when trying to understand a new feature.&lt;/p&gt;
+&lt;h3 id="a-real-world-example-query-interception-in-entity-framework-core"&gt;A real-world example: Query interception in Entity Framework Core&lt;/h3&gt;
+&lt;p&gt;Recently at work, I investigated &amp;quot;query interception&amp;quot; in EntityFramework Core, a feature which at the time had a sum total of two paragraphs written about it on the internet. And I wrote a &lt;a href="https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html"&gt;blog post&lt;/a&gt; about it!&lt;/p&gt;
+&lt;p&gt;Here's how I followed my own advice:&lt;/p&gt;
+&lt;h4 id="step-1-why-was-the-feature-underdocumented"&gt;Step 1: Why was the feature underdocumented?&lt;/h4&gt;
+&lt;p&gt;Query interception is a niche feature that was blocking many long-time consumers from migrating from EF 6 to EF Core. It was added in the third major version release of EF Core (a telling sign that it was not considered a &amp;quot;core&amp;quot; feature).&lt;/p&gt;
+&lt;p&gt;Like my own team, consumers have built complicated cathedrals on the foundation on query interception and were not excited about migrating without the promise that they could lift and shift their setup.&lt;/p&gt;
+&lt;h4 id="step-2-seek-out-usages"&gt;Step 2: Seek out usages&lt;/h4&gt;
+&lt;p&gt;I struck out when searching for real-world usages on GitHub, but I did find the excellent EntityFramework Core test suite.&lt;/p&gt;
+&lt;p&gt;An open question I had was how EF Core query interception handled exceptions thrown at various stages of the query lifecycle. I pleasantly surprised to find an entire file devoted to testing the exception-handling behavior!&lt;/p&gt;
+&lt;h4 id="step-3-read-the-source-code"&gt;Step 3: Read the source code&lt;/h4&gt;
+&lt;p&gt;The base class for query interception has 16 overridable methods, some of which are async versions of each other.&lt;/p&gt;
+&lt;p&gt;An open question I had (unanswered by my search for usages) was whether it was sufficient to override just one method from an async/sync pair. Reading the code, I learned that neither method of a async/async method pair called the other, so overriding both would be a must!&lt;/p&gt;
+&lt;p&gt;Also, I discovered a super valuable static method for suppressing query execution. I had not seen usage of this method in the tests (it was tested in a separate file), so I would not have known about this method without reading the source!&lt;/p&gt;
+&lt;h4 id="step-4-take-it-for-a-test-drive"&gt;Step 4: Take it for a test drive&lt;/h4&gt;
+&lt;p&gt;Here are the steps to my minimal environment:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Created a console app from a built-in Visual Studio template&lt;/li&gt;
+&lt;li&gt;Created a SQLite database (the easiest flavor of database, literally one file on the filesystem)&lt;/li&gt;
+&lt;li&gt;Added code to set up EF Core (copied from the EF Core SQLite documentation)&lt;/li&gt;
+&lt;li&gt;Added code to empty and re-populate the database at the start of each test run&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;So in about 10-15 minutes, I had a sandbox in which to run many tiny experiments.&lt;/p&gt;
+&lt;h3 id="conclusion"&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;Being able to learn about features without relying on documentation is a valuable skill to have in your software development toolbox.&lt;/p&gt;
+&lt;p&gt;Although this post has primarily focuses on using open-source features (with publicly available code), the advice also applies to working with legacy code at your organization.&lt;/p&gt;
+&lt;p&gt;Finally, consider documenting the outcome of your research!&lt;/p&gt;
+&lt;p&gt;You could:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;volunteer to contribute documentation (if the project is open-source)&lt;/li&gt;
+&lt;li&gt;answer StackOverflow questions&lt;/li&gt;
+&lt;li&gt;write a &lt;a href="https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html"&gt;blog post&lt;/a&gt;!&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;It was this impulse to document the outcome of researching a feature that inspired me to start this blog!&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p&gt;&lt;sup&gt;1&lt;/sup&gt; Once, while waxing about Computer Science curriculums, my team lead lamented that classes overemphasize writing code over reading code, even though a large part of a developer's time is spent inside complex projects where understanding context is essential. My team lead proposed that to remedy this imbalance, CS classes could require &amp;quot;book reports&amp;quot; where students would write up their understanding of some project. I think it's a neat idea.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">fd7a9cc0-6800-5c46-69a0-0c5918ae9db4</guid><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>&lt;p&gt;At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.&lt;/p&gt;
+&lt;p&gt;I investigated query interception. Although this is a heavily used feature internally, I found literally two paragraphs of information about the feature in Entity Framework Core.&lt;/p&gt;
+&lt;p&gt;This is a summary of what I learned about the feature and is attempting to be the blog post that I wish I would have found during my investigation.&lt;/p&gt;
+&lt;h3 id="what-is-query-interception"&gt;What is query interception?&lt;/h3&gt;
+&lt;p&gt;Query interception is the ability to insert logic before a query executes on the database or insert logic immediately after a query executes (and before control returns to the calling code).&lt;/p&gt;
+&lt;p&gt;There are a variety of real world use cases for this feature:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Extend the timeout of a command that has certain characteristics&lt;/li&gt;
+&lt;li&gt;Log diagnostic information when a query fails with an exception&lt;/li&gt;
+&lt;li&gt;Log a warning when the number of rows read into memory is above a certain threshold&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="how-do-i-use-query-interception-in-entity-framework-core"&gt;How do I use query interception in Entity Framework Core?&lt;/h3&gt;
+&lt;p&gt;EF Core exposes a base class &lt;code&gt;DbCommandInterceptor&lt;/code&gt; with hooks into the query &amp;quot;life cycle&amp;quot;.&lt;/p&gt;
+&lt;p&gt;Create a class that extends DbCommandInterceptor&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public class TestQueryInterceptor : DbCommandInterceptor
+{
+  ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;then override the individual life cycle methods you care about:&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;// runs before a query is executed
+public override InterceptionResult&amp;lt;DbDataReader&amp;gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&amp;lt;DbDataReader&amp;gt; result)
+{
+    ...
+}
+
+// runs after a query is executed
+public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
+{
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;NOTE: Most life cycle methods have a synchronous and an asynchronous version. Annoyingly, asynchronous queries only trigger the asynchronous method (and vice-versa), so you must override both when writing an interceptor.&lt;/p&gt;
+&lt;h4 id="how-to-install-a-dbcommandinterceptor"&gt;How to install a DbCommandInterceptor&lt;/h4&gt;
+&lt;p&gt;You can add multiple interceptors when configuring your DbContext.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public class SampleDbContext : DbContext
+{
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder
+            .UseSqlite(@&amp;quot;Data Source=Sample.db;&amp;quot;)
+            .AddInterceptors(new SampleInterceptor1(), new SampleInterceptor2());
+    }
+
+    ...
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="how-to-modify-the-command-before-execution"&gt;How to modify the command before execution&lt;/h4&gt;
+&lt;p&gt;This is fairly straightforward because most of &lt;code&gt;DbCommand&lt;/code&gt;'s properties are settable.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public override InterceptionResult&amp;lt;DbDataReader&amp;gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&amp;lt;DbDataReader&amp;gt; result)
+{
+   command.CommandText += &amp;quot; OPTION (OPTIMIZE FOR UNKNOWN)&amp;quot;;
+   
+   command.CommandTimeout = 12345;
+   
+   return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="how-to-suppress-execution"&gt;How to suppress execution&lt;/h4&gt;
+&lt;p&gt;By returning a new &lt;code&gt;InterceptionResult&lt;/code&gt; created via &lt;code&gt;InterceptionResult&amp;lt;T&amp;gt;.SuppressWithResult()&lt;/code&gt; from a pre-event life cycle method, the command will not be executed.&lt;/p&gt;
+&lt;p&gt;It is important to note that any other &lt;code&gt;DbCommandInterceptor&lt;/code&gt;s installed will still execute (and can check whether another interceptor has suppressed execution via the &lt;code&gt;HasResult&lt;/code&gt; property on &lt;code&gt;result&lt;/code&gt;).&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public override InterceptionResult&amp;lt;object&amp;gt; ScalarExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&amp;lt;object&amp;gt; result)
+{
+    if (this.ShouldSuppressExecution(command))
+    {
+        return InterceptionResult.SuppressWithResult&amp;lt;object&amp;gt;(null);
+    }
+    
+    return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It is worth mentioning that an exception thrown in a pre-event life cycle method will technically prevent execution. Do not take advantage of this fact. It is almost always bad design to use exceptions for control flow. Exceptions should be save for exceptional situations.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public override InterceptionResult&amp;lt;DbDataReader&amp;gt; ReaderExecuting(DbCommand command, CommandEventData eventData, InterceptionResult&amp;lt;DbDataReader&amp;gt; result)
+{
+   if (this.IsSomethingWrongWithThisCommand(command, out var reasonSomethingIsWrong))
+   {
+       // query will not be executed
+       throw new InvalidOperationException(reasonSomethingIsWrong);
+   }
+   
+   return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="change-the-result-of-execution"&gt;Change the result of execution&lt;/h4&gt;
+&lt;p&gt;From a post-event life cycle method, you can opt to return a different result.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt;public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEventData eventData, DbDataReader result)
+{
+    if (this.ShouldChangeResult(command, out var changedResult))
+    {
+        return changedResult;
+    }
+    
+    return result;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h4 id="how-to-log-diagnostic-data-if-theres-an-exception"&gt;How to log diagnostic data if there's an exception&lt;/h4&gt;
+&lt;p&gt;Although you can't catch exceptions, you can respond to them before they are thrown.&lt;/p&gt;
+&lt;pre&gt;&lt;code class="language-cs"&gt; public override void CommandFailed(DbCommand command, CommandErrorEventData eventData)
+  {
+      // there is a lot of other metadata on `eventData` that you might find useful
+      this.LogDiagnosticInformation(
+          eventData.Duration,
+          eventData.Exception,
+          command.CommandText);
+  }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id="appendix-1-what-types-of-operations-can-you-intercept"&gt;Appendix 1: What types of operations can you intercept?&lt;/h3&gt;
+&lt;p&gt;There are 17 methods you can overwrite when implementing &lt;code&gt;DbCommandInterceptor&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Here is a cheat sheet:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Method&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;CommandCreating&lt;/td&gt;
+&lt;td&gt;Before a command is created (NOTE: Everything is a command, so this will intercept all queries)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CommandCreated&lt;/td&gt;
+&lt;td&gt;After a command creation but before execution&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;CommandFailed[Async]&lt;/td&gt;
+&lt;td&gt;After a command has failed with an exception during execution&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReaderExecuting[Async]&lt;/td&gt;
+&lt;td&gt;Before a &amp;quot;query&amp;quot; command is executed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ReaderExecuted[Async]&lt;/td&gt;
+&lt;td&gt;After a &amp;quot;query&amp;quot; command is executed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NonQueryExecuting[Async]&lt;/td&gt;
+&lt;td&gt;Before a &amp;quot;non-query&amp;quot; command is executed (NOTE: An example of a non-query are usages of &lt;code&gt;ExecuteSqlRaw&lt;/code&gt;)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;NonQueryExecuted[Async]&lt;/td&gt;
+&lt;td&gt;After a &amp;quot;non-query&amp;quot; command is executed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ScalarExecuting[Async]&lt;/td&gt;
+&lt;td&gt;Before a &amp;quot;scalar&amp;quot; command is executed (NOTE: &amp;quot;scalar&amp;quot; is kind of synonymous with stored procedure)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;ScalarExecuted[Async]&lt;/td&gt;
+&lt;td&gt;After a &amp;quot;scalar&amp;quot; command is executed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;DataReaderDisposing&lt;/td&gt;
+&lt;td&gt;After a command is executed&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item></channel></rss>

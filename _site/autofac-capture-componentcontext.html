@@ -72,7 +72,7 @@ container.Resolve&lt;ApplePie&gt;().UseApple(); // ERROR! This resolve operation
 <p>As explained below, there are no meaningful downsides to this technique for 99.9% of projects. The impact is a very, very small performance hit as the <code>IComponentContext</code> from <code>cc.Resolve&lt;IComponentContext&gt;()</code> is a tiny bit slower than the parameter <code>IComponentContext</code> (<code>cc</code>).</p>
 <h3 id="why-does-this-work">Why does this work?</h3>
 <p><strong>Disclaimer:</strong> This section discusses the internals of Autofac. All details are liable to change at any time. This section is accurate as of Autofac version 6.1.0.</p>
-<p><strong>Note:</strong> This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try <a href="./illustrated-autofac.html">An illustrated guide to Autofac</a>.</p>
+<p><strong>Note:</strong> This section is deep in the weeds of Autofac internals. For a conceptual explainer of Autofac try <a href="https://lizzy-gallagher.github.io/_site/illustrated-autofac.html">An illustrated guide to Autofac</a>.</p>
 <p>The first thing to understand is that the <code>IComponentContext</code> resolved <em>inside</em> <code>Register</code> is not the same instance as the <code>IComponentContext</code> which is a parameter.</p>
 <pre class="prettyprint"><code class="language-c#">cb.Register(cc =&gt; {
     var context = cc.Resolve&lt;IComponentContext&gt;();

@@ -38,7 +38,7 @@
     <div style="text-align: center;">03-31-21</div>
     
     <div class="notice--info" markdown="1">
-<a href="./learn-msbuild-part-1.html">Previous post</a> | <a href="./learn-msbuild-part-3.html">Next post</a>
+<a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html">Previous post</a> | <a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html">Next post</a>
 </div>
 <p>MSBuild is a <a href="https://en.wikipedia.org/wiki/Domain-specific_language">domain-specific language</a>, tailored to customizing how a project is built and compiled. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles variables.</p>
 <p>MSBuild has two variable types: <code>Properties</code> (i.e. strings) and <code>Items</code> (i.e. object arrays).</p>
@@ -135,7 +135,7 @@ Console.WriteLine(string.Join(&quot;;&quot;, stuff.Where(s =&gt; s.Display))); /
 <p>MSBuild has the same primitives as general-purpose languages like C#.</p>
 <p>In this post, we covered its support for variables. In the next post, we'll cover its support for functions!</p>
 <div class="notice--info" markdown="1">
-<a href="./learn-msbuild-part-1.html">Previous post</a> | <a href="./learn-msbuild-part-3.html">Next post</a>
+<a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html">Previous post</a> | <a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html">Next post</a>
 </div>
 <h3 id="appendix-a-quick-note-on-variable-names">Appendix: A quick note on variable names</h3>
 <p>A source of MSBuild consternation is the language's lack of variable scoping. There are no &quot;private&quot; variables, so you can overwrite variables defined by any MSBuild target, including the &quot;standard library&quot; that facilitates the compilation of your project's C#!</p>

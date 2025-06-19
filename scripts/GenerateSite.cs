@@ -6,6 +6,8 @@ using Markdig;
 using Markdig.Helpers;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using System.Security.Cryptography;
+using System.Text;
 
 var markdownPipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 
@@ -16,12 +18,16 @@ var markdownDirectory = Path.Combine(homeDirectory, "_posts");
 var blogPostHtmlTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogPost.template.html"));
 var blogHomeTemplate = File.ReadAllText(Path.Combine(homeDirectory, "scripts", "BlogHome.template.html"));
 
+// Save off I/O actions (instead of doing them immediately), so that we can use the old
+// copies of files to compute things like "did a new post get published".
+var actions = new List<Action>();
+
 //
 // STEP 0: Clean up from previous runs of this script
 //
 foreach (var previouslyGeneratedFile in Directory.EnumerateFiles(outputDirectory))
 {
-    File.Delete(previouslyGeneratedFile);
+    actions.Add(() => File.Delete(previouslyGeneratedFile));
 }
 
 //
@@ -59,6 +65,22 @@ foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.
     // generate HTML content
     var htmlContent = Markdown.ToHtml(content, markdownPipeline);
 
+    // support links like [Next post](/learn-msbuild-part-2) 
+    var linkRegex = new Regex(@"\[(?<displayText>[^\]]*)\]\((?<relativeLink>[^\)]*)\)");
+    htmlContent = linkRegex.Replace(htmlContent, match =>
+    {
+        var displayText = match.Groups["displayText"];
+        var relativeLink = match.Groups["relativeLink"];
+        return $"<a href=\"{relativeLink}.html\">{displayText}</a>";
+    });
+
+    // change relative links to absolute links (comment out when testing the HTML for a new blog post locally)
+    htmlContent = htmlContent
+        .Replace("src=\"/", "src=\"https://lizzy-gallagher.github.io/_site/")
+        .Replace("src=\".", "src=\"https://lizzy-gallagher.github.io/_site")
+        .Replace("href=\"/", "href=\"https://lizzy-gallagher.github.io/_site/")
+        .Replace("href=\".", "href=\"https://lizzy-gallagher.github.io/_site");
+
     // populate the template
     var templatedContent = blogPostHtmlTemplate
         .Replace("<!-- TEMPLATE: TITLE -->", title)
@@ -69,20 +91,13 @@ foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.
     templatedContent = templatedContent
         .Replace("<pre>", "<pre class=\"prettyprint\">");
 
-    // support links like [Next post](/learn-msbuild-part-2) 
-    var linkRegex = new Regex(@"\[(?<displayText>[^\]]*)\]\((?<relativeLink>[^\)]*)\)");
-    templatedContent = linkRegex.Replace(templatedContent, match =>
-    {    
-        var displayText = match.Groups["displayText"];
-        var relativeLink = match.Groups["relativeLink"];
-        return $"<a href=\".{relativeLink}.html\">{displayText}</a>";
-    });
-
     var htmlFileName = string.Join(string.Empty, Path.GetFileNameWithoutExtension(markdownLocation).SkipWhile(c => !c.IsAlpha())) + ".html";;
     var htmlLocation = Path.Combine(outputDirectory, htmlFileName);
-    File.WriteAllText(path: htmlLocation, contents: templatedContent);
 
-    blogPostMetadatas.Add(new BlogPostMetadata(Title: title, PublishDate: date, FileName: htmlFileName));
+    var isUpdated = !File.Exists(htmlLocation) || File.ReadAllText(htmlLocation) != templatedContent;
+
+    actions.Add(() => File.WriteAllText(path: htmlLocation, contents: templatedContent));
+    blogPostMetadatas.Add(new BlogPostMetadata(Title: title, PublishDate: date, FileName: htmlFileName, HtmlContentForRssFeed: htmlContent, isUpdated: isUpdated));
 }
 
 //
@@ -96,25 +111,64 @@ var listItemsHtml = blogPostMetadatas
 
 var templatedBlogHome = blogHomeTemplate
     .Replace("<!-- TEMPLATE: ITEMS -->", string.Join(Environment.NewLine, listItemsHtml));
-File.WriteAllText(path: Path.Combine(outputDirectory, "blog.html"), templatedBlogHome);
+actions.Add(() => File.WriteAllText(path: Path.Combine(outputDirectory, "blog.html"), templatedBlogHome));
 
 //
 // STEP 3: Generate RSS feed
 //
 
+var rssLocation = Path.Combine(outputDirectory, "rss.xml");
+
+XmlReader? reader = null;
+SyndicationFeed? existingFeed = null;
+if (File.Exists(rssLocation))
+{
+    reader = XmlReader.Create(rssLocation);
+    existingFeed = SyndicationFeed.Load(reader);
+}
+
 var feed = new SyndicationFeed(
     title: "What's Keeping Lizzy Busy?",
     description: "RSS feed for Lizzy Gallagher's tech blog",
     new Uri("https://lizzy-gallagher.github.io/rss.xml"),
-    id: "FeedID",
+    id: "https://lizzy-gallagher.github.io",
     DateTime.Now)
 {
     Items = blogPostMetadatas
-        .Select(b => new SyndicationItem(title: b.Title, content: "test", itemAlternateLink: new Uri("https://lizzy-gallagher.github.io/_site/" + b.FileName)))
+        .Select(b =>
+        {
+            var cDataContent = new XmlDocument().CreateCDataSection(b.HtmlContentForRssFeed).InnerText;
+
+            // title determines uniqueness (so... new title == new post)
+            var hash = MD5.HashData(Encoding.UTF8.GetBytes(b.Title));
+            var id = new Guid(hash).ToString();
+
+            var previousEntry = existingFeed?.Items.SingleOrDefault(item => item.Id == id);
+            var dateToUse = previousEntry == null || previousEntry.Summary.Text == cDataContent
+                ? DateTime.Now
+                : previousEntry.LastUpdatedTime;
+
+            return new SyndicationItem(
+                id: id,
+                title: b.Title,
+                content: cDataContent,
+                lastUpdatedTime: DateTime.Now,
+                itemAlternateLink: new Uri("https://lizzy-gallagher.github.io/_site/" + b.FileName));
+        })
 };
 
-using XmlWriter writer = XmlWriter.Create(Path.Combine(outputDirectory, "rss.xml"));
-var rssFormatter = new Rss20FeedFormatter(feed);
-rssFormatter.WriteTo(writer);
+reader?.Close();
 
-record BlogPostMetadata(string Title, DateTime PublishDate, string FileName);
+actions.Add(() =>
+{
+    using XmlWriter writer = XmlWriter.Create(rssLocation);
+    var rssFormatter = new Rss20FeedFormatter(feed);
+    rssFormatter.WriteTo(writer);
+});
+
+//
+// STEP 4: Actually do the things!
+//
+actions.ForEach(a => a());
+
+record BlogPostMetadata(string Title, DateTime PublishDate, string FileName, string HtmlContentForRssFeed, bool isUpdated);

@@ -76,8 +76,8 @@ foreach (var markdownLocation in Directory.EnumerateFiles(markdownDirectory, "*.
 
     // change relative links to absolute links (comment out when testing the HTML for a new blog post locally)
     htmlContent = htmlContent
-        .Replace("src=\"/", "src=\"https://lizzy-gallagher.github.io/_site/")
-        .Replace("src=\".", "src=\"https://lizzy-gallagher.github.io/_site")
+        .Replace("src=\"/", "src=\"https://lizzy-gallagher.github.io/")
+        .Replace("src=\".", "src=\"https://lizzy-gallagher.github.io/")
         .Replace("href=\"/", "href=\"https://lizzy-gallagher.github.io/_site/")
         .Replace("href=\".", "href=\"https://lizzy-gallagher.github.io/_site");
 

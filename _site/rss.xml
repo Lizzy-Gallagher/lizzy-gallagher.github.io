@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Wed, 18 Jun 2025 20:28:18 -0400</lastBuildDate><a10:id>https://lizzy-gallagher.github.io</a10:id><item><guid isPermaLink="false">1408cefb-6afc-1b46-2c00-662a918b8b7b</guid><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>&lt;div class="notice--warning" markdown="1"&gt;
+﻿<?xml version="1.0" encoding="utf-8"?><rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0"><channel><title>What's Keeping Lizzy Busy?</title><link>https://lizzy-gallagher.github.io/rss.xml</link><description>RSS feed for Lizzy Gallagher's tech blog</description><lastBuildDate>Wed, 18 Jun 2025 20:48:07 -0400</lastBuildDate><a10:id>https://lizzy-gallagher.github.io</a10:id><item><guid isPermaLink="false">1408cefb-6afc-1b46-2c00-662a918b8b7b</guid><link>https://lizzy-gallagher.github.io/_site/git-clone-a-single-file.html</link><title>How to git clone a single file</title><description>&lt;div class="notice--warning" markdown="1"&gt;
 &lt;h5 id="disclaimer"&gt;&lt;i class="fas fa-exclamation-triangle"&gt;&lt;/i&gt; Disclaimer&lt;/h5&gt;
 &lt;p&gt;This method uses &lt;a href="https://git-scm.com/docs/git-archive"&gt;&lt;code&gt;git archive&lt;/code&gt;&lt;/a&gt; which is not supported by all source control services.&lt;/p&gt;
 &lt;table&gt;
@@ -108,7 +108,7 @@ public class SourceControlledFileProvider
     }
 }
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">3aa24c04-c3b1-62a3-f50a-a1d75d42a2ba</guid><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>&lt;p&gt;At work today, we ran into an &lt;code&gt;ObjectDisposedException&lt;/code&gt; when writing a lambda Autofac registration:&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">3aa24c04-c3b1-62a3-f50a-a1d75d42a2ba</guid><link>https://lizzy-gallagher.github.io/_site/autofac-capture-componentcontext.html</link><title>How to fix "resolve operation has already ended" exceptions in lambda Autofac registrations</title><description>&lt;p&gt;At work today, we ran into an &lt;code&gt;ObjectDisposedException&lt;/code&gt; when writing a lambda Autofac registration:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;This resolve operation has already ended. When registering components using lambdas, the IComponentContext 'c' parameter to the lambda cannot be stored. Instead, either resolve IComponentContext again from 'c', or resolve a Func&amp;lt;&amp;gt; based factory to create subsequent components from.&lt;/p&gt;
 &lt;/blockquote&gt;
@@ -189,7 +189,7 @@ cb.Build().Resolve&amp;lt;object&amp;gt;();
 &lt;/ul&gt;
 &lt;p&gt;It is important to note that &lt;code&gt;DefaultResolveRequestContext&lt;/code&gt; uses &lt;code&gt;LifetimeScope&lt;/code&gt; under the hood to manage creating and sharing instances. This means that both have &lt;em&gt;identical&lt;/em&gt; business logic behavior. The only trade-off is that &lt;code&gt;LifetimeScope&lt;/code&gt; is a very small amount slower because of additional bookkeeping to ensure thread safety. Autofac is rarely a performance bottleneck, so 99.9% of projects can make this tradeoff without losing any sleep.&lt;/p&gt;
 &lt;p&gt;Curious about the philosophy toward thread safety in Autofac? The &lt;a href="https://autofaccn.readthedocs.io/en/latest/advanced/concurrency.html"&gt;&amp;quot;Concurrency&amp;quot; section&lt;/a&gt; of their documentation is quite good.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">1feabf51-375f-ee80-1f9f-e2c63b4bbcec</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">1feabf51-375f-ee80-1f9f-e2c63b4bbcec</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html</link><title>Learn MSBuild - Part 4 - Real-world MSBuild</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Previous post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;This is the file post in our series on learning MSBuild by understanding it as a programming language. To reinforce what we've learned, we are going to dissect a real-world &lt;code&gt;.targets&lt;/code&gt; file: &lt;a href="https://github.com/JoshuaKGoldberg/TSLint.MSBuild/blob/master/src/build/TSLint.MSBuild.targets"&gt;TSLint.MSBuild.targets&lt;/a&gt;.&lt;/p&gt;
@@ -366,7 +366,7 @@ cb.Build().Resolve&amp;lt;object&amp;gt;();
   &amp;lt;/Target&amp;gt;
 &amp;lt;/Project&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">011a0c8c-5b87-2d5e-2573-348fec15abf9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">011a0c8c-5b87-2d5e-2573-348fec15abf9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html</link><title>Learn MSBuild - Part 3 - Functions</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-4.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a .NET project is built. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles functions.&lt;/p&gt;
@@ -472,7 +472,7 @@ static void MyTarget(object sender, BeforeBuildEventArgs e)
 &lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Import Project=&amp;quot;FileWithProperties.props&amp;quot; /&amp;gt;
 &amp;lt;Import Project=&amp;quot;FileWithTargets.targets&amp;quot; /&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">d65c9c31-8cc4-4bfe-9b3a-a62ad39aedb9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">d65c9c31-8cc4-4bfe-9b3a-a62ad39aedb9</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html</link><title>Learn MSBuild - Part 2 - Variables</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html"&gt;Previous post&lt;/a&gt; | &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-3.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;MSBuild is a &lt;a href="https://en.wikipedia.org/wiki/Domain-specific_language"&gt;domain-specific language&lt;/a&gt;, tailored to customizing how a project is built and compiled. It shares concepts with any general-purpose language, and in this post we'll explore how MSBuild handles variables.&lt;/p&gt;
@@ -599,7 +599,7 @@ Here is the documentation on built-in `Property` and `Item` names:
 &lt;li&gt;&lt;a href="https://docs.microsoft.com/en-us/visualstudio/msbuild/msbuild-reserved-and-well-known-properties"&gt;Reserved and well-known properties&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">a480a560-7dbd-4734-63e0-29c8f659df1d</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>&lt;div class="notice--info" markdown="1"&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">a480a560-7dbd-4734-63e0-29c8f659df1d</guid><link>https://lizzy-gallagher.github.io/_site/learn-msbuild-part-1.html</link><title>Learn MSBuild - Part 1 - Motivation</title><description>&lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
 &lt;p&gt;You can get pretty far as a .NET developer without understanding MSBuild. Sure, very few months you may need to frantically copy/paste a line of MSBuild from StackOverflow into a .csproj, but you can mostly live in blissful ignorance.&lt;/p&gt;
@@ -623,7 +623,7 @@ Here is the documentation on built-in `Property` and `Item` names:
 &lt;div class="notice--info" markdown="1"&gt;
 &lt;a href="https://lizzy-gallagher.github.io/_site/learn-msbuild-part-2.html"&gt;Next post&lt;/a&gt;
 &lt;/div&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">9da41a52-a6f4-e7a8-1f45-00bd43e4c994</guid><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>&lt;p&gt;Last year, I gave a talk (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;) at &lt;a href="https://www.dotnetconf.net/"&gt;.NET Conf&lt;/a&gt; about how my teammates and I automated the migration of 200 applications to .NET Core. At the core of our strategy were a handful of LINQPad scripts that leveraged Roslyn to refactor C# code.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">9da41a52-a6f4-e7a8-1f45-00bd43e4c994</guid><link>https://lizzy-gallagher.github.io/_site/roslyn-refactoring.html</link><title>Refactor C# code with the Roslyn Syntax API</title><description>&lt;p&gt;Last year, I gave a talk (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;) at &lt;a href="https://www.dotnetconf.net/"&gt;.NET Conf&lt;/a&gt; about how my teammates and I automated the migration of 200 applications to .NET Core. At the core of our strategy were a handful of LINQPad scripts that leveraged Roslyn to refactor C# code.&lt;/p&gt;
 &lt;p&gt;Some in attendance were curious about the specifics this refactoring, e.g. what APIs we used, how to get started writing a refactoring script. This post is my belated answer to those questions!&lt;/p&gt;
 &lt;p&gt;This post is not an attempt to exhaustively document the Roslyn APIs. It will attempt to do the opposite. Roslyn has a reputation for being complex and difficult because it has such a wide API surface area. The goal of this post is to share the minimum set of APIs that will provide a basis for writing a practical refactoring script of your own.&lt;/p&gt;
 &lt;h3 id="what-is-roslyn"&gt;What is Roslyn?&lt;/h3&gt;
@@ -817,12 +817,12 @@ bool TryUpdateCSCode(string code, CSharpProject project, out string updatedCode)
 &lt;p&gt;It is important to remember that Roslyn syntax trees have a very specific and narrow type for every node.&lt;/p&gt;
 &lt;p&gt;Two tools you can use to learn the names of these types are the&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;p&gt;&lt;strong&gt;The Visual Studio Syntax Visualizer&lt;/strong&gt;. As you click around your code, the tool will focus on the relevant section of the tree. &lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/syntax-visualizer.png" alt="Syntax Visualizer" /&gt;&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;The Visual Studio Syntax Visualizer&lt;/strong&gt;. As you click around your code, the tool will focus on the relevant section of the tree. &lt;img src="https://lizzy-gallagher.github.io/assets/images/syntax-visualizer.png" alt="Syntax Visualizer" /&gt;&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;LINQPad Tree view&lt;/strong&gt;. The tool will create a syntax tree for your entire program.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/linqpad-tree.png" alt="LINQPad tree view" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/linqpad-tree.png" alt="LINQPad tree view" /&gt;&lt;/p&gt;
 &lt;h4 id="when-should-i-automate-refactoring"&gt;When should I automate refactoring?&lt;/h4&gt;
 &lt;p&gt;For the cost-benefit analysis of when automation is worth it, I direct you to this evergreen &lt;a href="https://xkcd.com/1205/"&gt;XKCD comic&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;For a longer discussion about the value of codifying how to do a modernization for consumers via scripts, I direct you to my talk at .NET Conf (&lt;a href="https://www.youtube.com/watch?v=C-2haqb60No"&gt;YouTube link&lt;/a&gt;).&lt;/p&gt;
@@ -859,11 +859,11 @@ bool TryUpdateCSCode(string code, CSharpProject project, out string updatedCode)
 &lt;/ul&gt;
 &lt;/li&gt;
 &lt;/ul&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">b8cc3665-5f9a-7524-5f95-b8f8f6e7ace8</guid><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>&lt;p&gt;&lt;a href="https://autofac.org/"&gt;Autofac&lt;/a&gt; is a popular .NET &amp;quot;&lt;a href="https://martinfowler.com/articles/injection.html"&gt;inversion of control&lt;/a&gt;&amp;quot; library. Designed to be unobtrusive, Autofac fades into the background of large applications.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">b8cc3665-5f9a-7524-5f95-b8f8f6e7ace8</guid><link>https://lizzy-gallagher.github.io/_site/illustrated-autofac.html</link><title>An illustrated guide to Autofac</title><description>&lt;p&gt;&lt;a href="https://autofac.org/"&gt;Autofac&lt;/a&gt; is a popular .NET &amp;quot;&lt;a href="https://martinfowler.com/articles/injection.html"&gt;inversion of control&lt;/a&gt;&amp;quot; library. Designed to be unobtrusive, Autofac fades into the background of large applications.&lt;/p&gt;
 &lt;p&gt;This article is for those who have used Autofac without understanding the &lt;em&gt;why&lt;/em&gt; behind it. If you want specific API details, I highly recommend the &lt;a href="https://autofaccn.readthedocs.io/en/latest/"&gt;official documentation&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;This post will take a step back from specific API details and instead explain Autofac using the analogy of a restaurant.&lt;/p&gt;
 &lt;h3 id="autofac-a-restaurant-kitchen"&gt;Autofac, a restaurant kitchen&lt;/h3&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
 &lt;h4 id="why-do-restaurants-exist"&gt;Why do restaurants exist?&lt;/h4&gt;
 &lt;p&gt;Most of us have kitchens, access to grocery stores, and (thanks to the internet!) step-by-step instructions for a million different dishes.&lt;/p&gt;
 &lt;p&gt;Why do restaurants still exist? Because cooking complex meals yourself requires effort and precision.&lt;/p&gt;
@@ -943,7 +943,7 @@ builder.RegisterType&amp;lt;Duxelles&amp;gt;(cc =&amp;gt; new Duxelles(
 builder.RegisterType&amp;lt;BeefWellington&amp;gt;();
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h4 id="vocabulary"&gt;Vocabulary&lt;/h4&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /&gt;&lt;/p&gt;
 &lt;p&gt;Now that our appetite has been whetted, let's break down this restaurant metaphor.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;You provide Autofac a cookbook full of recipes that it uses to fill customer orders.&lt;/p&gt;
@@ -953,7 +953,7 @@ builder.RegisterType&amp;lt;BeefWellington&amp;gt;();
 &lt;p&gt;&lt;strong&gt;Cookbook == Container&lt;/strong&gt; During application startup, all the registrations are added to an immutable &lt;strong&gt;container&lt;/strong&gt;. At runtime, recipes for resolving components are pulled from this container. Like a cookbook, it is immutable and cannot be changed during runtime / dinner hours. Like a cookbook, if a customer orders something not on the menu / attempts to resolve a component with no registration, you're out of luck.&lt;/p&gt;
 &lt;h4 id="what-options-do-i-have-when-writing-recipes"&gt;What options do I have when writing recipes?&lt;/h4&gt;
 &lt;h5 id="register-with-a-specific-lifetime"&gt;Register with a specific lifetime&lt;/h5&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets//images/autofac-lifetimes-trim.png" alt="Image showing the different lifetimes available in Autofac" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets//images/autofac-lifetimes-trim.png" alt="Image showing the different lifetimes available in Autofac" /&gt;&lt;/p&gt;
 &lt;p&gt;There are three types of &lt;strong&gt;lifetimes&lt;/strong&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Single instance&lt;/li&gt;
@@ -964,7 +964,7 @@ builder.RegisterType&amp;lt;BeefWellington&amp;gt;();
 &lt;p&gt;&lt;strong&gt;Instance per Dependency.&lt;/strong&gt; Every time you resolve the component, you get a new instance of it. This is the default registration and good to use if all your components are stateless / easy. This is like a made-to-order burger. It is not made ahead of time, only when you order it.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Instance per Lifetime Scope.&lt;/strong&gt; Every time you resolve the component &lt;em&gt;within the same lifetime&lt;/em&gt;, you get the exact same instance. This is a API to use if you need to scope your component (e.g. for caching) to some unit of work, e.g. an HTTP request. This is like a bottle of wine for the table. A new one is served to each table that orders a bottle of wine, but the same bottle is shared for the whole tale.&lt;/p&gt;
 &lt;h5 id="common-registration-apis"&gt;Common registration APIs&lt;/h5&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-3.png" alt="Image showing the different registration methods available in Autofac" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/autofac-3.png" alt="Image showing the different registration methods available in Autofac" /&gt;&lt;/p&gt;
 &lt;h5 id="register-as-an-interface"&gt;Register as an interface&lt;/h5&gt;
 &lt;p&gt;Depending on your design philosophy, you may use a lot of interfaces or you might not! Autofac provides an easy hook to register components by their regular type or by any interface they implement.&lt;/p&gt;
 &lt;p&gt;In our restaurant metaphor, interface registration is like ordering coffee after dinner at a restaurant. When ordering coffee this way, you are rarely given a chance to specify your blend or roast.&lt;/p&gt;
@@ -994,13 +994,13 @@ builder.RegisterType&amp;lt;LettuceSalad&amp;gt;(); // ok because Lettuce is the
 &lt;p&gt;A neat, more advanced feature is bundling your registrations together using an Autofac module -- a logical grouping of registrations. This is especially handy if writing a NuGet package or otherwise want to register components that may not be publicly visible to your consumer.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-cs"&gt;builder.RegisterModule&amp;lt;PastryModule&amp;gt;();
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-4.png" alt="Image showing the idea of modules" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://lizzy-gallagher.github.io/assets/images/autofac-4.png" alt="Image showing the idea of modules" /&gt;&lt;/p&gt;
 &lt;h3 id="summary"&gt;Summary&lt;/h3&gt;
 &lt;p&gt;Autofac is a flexible technology that is a delight to use. This post is purposely just an introduction to the main concepts of Autofac. If you want to dive deeper, you should spend some time with the &lt;a href="%22https://autofaccn.readthedocs.io/en/latest/getting-started/index.html%22"&gt;official documentation&lt;/a&gt; which is excellent.&lt;/p&gt;
 &lt;h3 id="postscript-real-life-wellingtons"&gt;Postscript - Real life Wellingtons&lt;/h3&gt;
 &lt;p&gt;Since you made it this far, here is a picture of real-life Beef Wellington my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.&lt;/p&gt;
 &lt;p&gt;![Image showing a beef wellington](/assets/images/autofac-wellington.jpg&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">2aaa3709-4220-3baa-d270-9bbabbed039f</guid><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>&lt;p&gt;After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">2aaa3709-4220-3baa-d270-9bbabbed039f</guid><link>https://lizzy-gallagher.github.io/_site/tips-for-growing-as-a-dev.html</link><title>3 tips to accelerate your technical growth as a software engineer (without giving up your weekends)</title><description>&lt;p&gt;After the gauntlet of assignments and expectations that is the modern Computer Science degree, you might notice your technical growth slow. These are tips about how to accelerate your technical growth beyond the ambient learning that full-time software development provides.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;“One form of perseverance is the daily discipline of trying to do things better than we did yesterday.”
 ― Angela Duckworth, Grit: The Power of Passion and Perseverance&lt;/p&gt;
@@ -1026,7 +1026,7 @@ builder.RegisterType&amp;lt;LettuceSalad&amp;gt;(); // ok because Lettuce is the
 &lt;p&gt;Consider blocking off time on your calendar for a dedicated time for growth. Maybe that means picking 2 articles from your RSS reader while drinking your morning tea. Maybe that means watching part of a conference talk on YouTube right after lunch. Maybe that's meeting every other week with friends to go through a book or blog together.&lt;/p&gt;
 &lt;h4 id="summary"&gt;Summary&lt;/h4&gt;
 &lt;p&gt;Figure out how you like to learn -- reading books, participating in discussion groups, watching conference talks on YouTube -- and do figure out how to weave it into your work day or work week.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">c690f542-09b7-ed68-85cc-6fcd17410a22</guid><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>&lt;p&gt;Most online resources will recommend using &lt;code&gt;BeforeTargets&lt;/code&gt; or &lt;code&gt;AfterTargets&lt;/code&gt; to hook your target into the MSBuild lifecycle &lt;code&gt;Build&lt;/code&gt; method.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">c690f542-09b7-ed68-85cc-6fcd17410a22</guid><link>https://lizzy-gallagher.github.io/_site/msbuild-run-target-once-per-project.html</link><title>Run an MSBuild target once per project instead of once per target framework</title><description>&lt;p&gt;Most online resources will recommend using &lt;code&gt;BeforeTargets&lt;/code&gt; or &lt;code&gt;AfterTargets&lt;/code&gt; to hook your target into the MSBuild lifecycle &lt;code&gt;Build&lt;/code&gt; method.&lt;/p&gt;
 &lt;pre&gt;&lt;code class="language-xml"&gt;&amp;lt;Target Name=&amp;quot;MyPackage_BeforeBuild&amp;quot;
         BeforeTargets=&amp;quot;Build&amp;quot;&amp;gt;
     &amp;lt;!-- Do things --&amp;gt;
@@ -1146,7 +1146,7 @@ build/
 &amp;lt;/Target&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;NOTE: This above snippets were edited for horizontal brevity. In production code, you should always prefix your MSBuild variables with the name of your NuGet package (e.g. ShouldRunTarget -&amp;gt; MyProject_ShouldRunTarget). This is because MSBuild allows overwriting of variable names, so you want to be careful not to pollute the global pool of names.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">e5453f3d-d464-7d5a-46f0-9ca462925877</guid><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>&lt;p&gt;It happens. You're building something complex and unique, but not &lt;em&gt;so&lt;/em&gt; complex and unique that zero other humans could have run into the same problem, right?&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">e5453f3d-d464-7d5a-46f0-9ca462925877</guid><link>https://lizzy-gallagher.github.io/_site/using-underdocumented-features.html</link><title>Using underdocumented features</title><description>&lt;p&gt;It happens. You're building something complex and unique, but not &lt;em&gt;so&lt;/em&gt; complex and unique that zero other humans could have run into the same problem, right?&lt;/p&gt;
 &lt;p&gt;So you search for hours and find a feature (or package (or tool)) that is perfect for your use case... except that has no documentation. Maybe it's referenced in a bullet in the changelog or pops up in intellisense, but as far as you can tell there are no (answered) StackOverflow questions, no blog posts, and little mention in the readme or docs.&lt;/p&gt;
 &lt;p&gt;So what do you do?&lt;/p&gt;
 &lt;h3 id="ask-why-is-this-feature-underdocumented"&gt;Ask &amp;quot;Why is this feature underdocumented?&amp;quot;&lt;/h3&gt;
@@ -1211,7 +1211,7 @@ build/
 &lt;p&gt;It was this impulse to document the outcome of researching a feature that inspired me to start this blog!&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p&gt;&lt;sup&gt;1&lt;/sup&gt; Once, while waxing about Computer Science curriculums, my team lead lamented that classes overemphasize writing code over reading code, even though a large part of a developer's time is spent inside complex projects where understanding context is essential. My team lead proposed that to remedy this imbalance, CS classes could require &amp;quot;book reports&amp;quot; where students would write up their understanding of some project. I think it's a neat idea.&lt;/p&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item><item><guid isPermaLink="false">fd7a9cc0-6800-5c46-69a0-0c5918ae9db4</guid><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>&lt;p&gt;At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.&lt;/p&gt;
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item><item><guid isPermaLink="false">fd7a9cc0-6800-5c46-69a0-0c5918ae9db4</guid><link>https://lizzy-gallagher.github.io/_site/query-interception-entity-framework.html</link><title>Query interception in Entity Framework Core</title><description>&lt;p&gt;At work, my team is decoupling our NuGet libraries from Entity Framework to enable consumers to switch to Entity Framework Core. To decide which features should stay / go, we needed to evaluate how compatible Entity Framework Core features were with our abstractions initially built on Entity Framework's APIs.&lt;/p&gt;
 &lt;p&gt;I investigated query interception. Although this is a heavily used feature internally, I found literally two paragraphs of information about the feature in Entity Framework Core.&lt;/p&gt;
 &lt;p&gt;This is a summary of what I learned about the feature and is attempting to be the blog post that I wish I would have found during my investigation.&lt;/p&gt;
 &lt;h3 id="what-is-query-interception"&gt;What is query interception?&lt;/h3&gt;
@@ -1370,4 +1370,4 @@ public override DbDataReader ReaderExecuted(DbCommand command, CommandExecutedEv
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-</description><a10:updated>2025-06-18T20:28:18-04:00</a10:updated></item></channel></rss>
+</description><a10:updated>2025-06-18T20:48:07-04:00</a10:updated></item></channel></rss>

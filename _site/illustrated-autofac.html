@@ -41,7 +41,7 @@
 <p>This article is for those who have used Autofac without understanding the <em>why</em> behind it. If you want specific API details, I highly recommend the <a href="https://autofaccn.readthedocs.io/en/latest/">official documentation</a>.</p>
 <p>This post will take a step back from specific API details and instead explain Autofac using the analogy of a restaurant.</p>
 <h3 id="autofac-a-restaurant-kitchen">Autofac, a restaurant kitchen</h3>
-<p><img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /></p>
+<p><img src="https://lizzy-gallagher.github.io/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /></p>
 <h4 id="why-do-restaurants-exist">Why do restaurants exist?</h4>
 <p>Most of us have kitchens, access to grocery stores, and (thanks to the internet!) step-by-step instructions for a million different dishes.</p>
 <p>Why do restaurants still exist? Because cooking complex meals yourself requires effort and precision.</p>
@@ -121,7 +121,7 @@ builder.RegisterType&lt;Duxelles&gt;(cc =&gt; new Duxelles(
 builder.RegisterType&lt;BeefWellington&gt;();
 </code></pre>
 <h4 id="vocabulary">Vocabulary</h4>
-<p><img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /></p>
+<p><img src="https://lizzy-gallagher.github.io/assets/images/autofac-main.png" alt="You provide autofac a cookbook full of recipes that it uses to fill customer orders" /></p>
 <p>Now that our appetite has been whetted, let's break down this restaurant metaphor.</p>
 <blockquote>
 <p>You provide Autofac a cookbook full of recipes that it uses to fill customer orders.</p>
@@ -131,7 +131,7 @@ builder.RegisterType&lt;BeefWellington&gt;();
 <p><strong>Cookbook == Container</strong> During application startup, all the registrations are added to an immutable <strong>container</strong>. At runtime, recipes for resolving components are pulled from this container. Like a cookbook, it is immutable and cannot be changed during runtime / dinner hours. Like a cookbook, if a customer orders something not on the menu / attempts to resolve a component with no registration, you're out of luck.</p>
 <h4 id="what-options-do-i-have-when-writing-recipes">What options do I have when writing recipes?</h4>
 <h5 id="register-with-a-specific-lifetime">Register with a specific lifetime</h5>
-<p><img src="https://lizzy-gallagher.github.io/_site/assets//images/autofac-lifetimes-trim.png" alt="Image showing the different lifetimes available in Autofac" /></p>
+<p><img src="https://lizzy-gallagher.github.io/assets//images/autofac-lifetimes-trim.png" alt="Image showing the different lifetimes available in Autofac" /></p>
 <p>There are three types of <strong>lifetimes</strong>:</p>
 <ul>
 <li>Single instance</li>
@@ -142,7 +142,7 @@ builder.RegisterType&lt;BeefWellington&gt;();
 <p><strong>Instance per Dependency.</strong> Every time you resolve the component, you get a new instance of it. This is the default registration and good to use if all your components are stateless / easy. This is like a made-to-order burger. It is not made ahead of time, only when you order it.</p>
 <p><strong>Instance per Lifetime Scope.</strong> Every time you resolve the component <em>within the same lifetime</em>, you get the exact same instance. This is a API to use if you need to scope your component (e.g. for caching) to some unit of work, e.g. an HTTP request. This is like a bottle of wine for the table. A new one is served to each table that orders a bottle of wine, but the same bottle is shared for the whole tale.</p>
 <h5 id="common-registration-apis">Common registration APIs</h5>
-<p><img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-3.png" alt="Image showing the different registration methods available in Autofac" /></p>
+<p><img src="https://lizzy-gallagher.github.io/assets/images/autofac-3.png" alt="Image showing the different registration methods available in Autofac" /></p>
 <h5 id="register-as-an-interface">Register as an interface</h5>
 <p>Depending on your design philosophy, you may use a lot of interfaces or you might not! Autofac provides an easy hook to register components by their regular type or by any interface they implement.</p>
 <p>In our restaurant metaphor, interface registration is like ordering coffee after dinner at a restaurant. When ordering coffee this way, you are rarely given a chance to specify your blend or roast.</p>
@@ -172,7 +172,7 @@ builder.RegisterType&lt;LettuceSalad&gt;(); // ok because Lettuce is the only de
 <p>A neat, more advanced feature is bundling your registrations together using an Autofac module -- a logical grouping of registrations. This is especially handy if writing a NuGet package or otherwise want to register components that may not be publicly visible to your consumer.</p>
 <pre class="prettyprint"><code class="language-cs">builder.RegisterModule&lt;PastryModule&gt;();
 </code></pre>
-<p><img src="https://lizzy-gallagher.github.io/_site/assets/images/autofac-4.png" alt="Image showing the idea of modules" /></p>
+<p><img src="https://lizzy-gallagher.github.io/assets/images/autofac-4.png" alt="Image showing the idea of modules" /></p>
 <h3 id="summary">Summary</h3>
 <p>Autofac is a flexible technology that is a delight to use. This post is purposely just an introduction to the main concepts of Autofac. If you want to dive deeper, you should spend some time with the <a href="%22https://autofaccn.readthedocs.io/en/latest/getting-started/index.html%22">official documentation</a> which is excellent.</p>
 <h3 id="postscript-real-life-wellingtons">Postscript - Real life Wellingtons</h3>

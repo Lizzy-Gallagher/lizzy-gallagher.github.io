@@ -204,4 +204,4 @@ Autofac is a flexible technology that is a delight to use. This post is purposel
 
 Since you made it this far, here is a picture of real-life Beef Wellington my husband, parents, and I made last Christmas. It took us four hours. Next time, we all agreed, we'll order it from a restaurant.
 
-![Image showing a beef wellington](/assets/images/autofac-wellington.jpg
+![Image showing a beef wellington](/assets/images/autofac-wellington.jpg)
